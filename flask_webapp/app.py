@@ -24,5 +24,11 @@ def applied_roles():
     dynamic_content = "This content is coming from Flask!"
     return render_template("applied_roles.html")
 
+
+@app.route('/role_creation')
+def role_creation():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("role_creation.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
