@@ -8,7 +8,7 @@ def design_reference():
     #Keep design reference untouched
     return render_template("design_reference.html")
 
-@app.route('/')
+@app.route('/index')
 def index():
     #This will be our base, customised template that pages will follow
     dynamic_content = "This content is coming from Flask!"
