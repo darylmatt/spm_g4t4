@@ -1,6 +1,8 @@
 from flask import Flask, render_template
+from db.database import create_db
 
 app = Flask(__name__)
+db = create_db()
 
 @app.route('/design_reference')
 def design_reference():
