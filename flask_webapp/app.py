@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+<<<<<<< Updated upstream
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/g4_sbrp'
 
@@ -37,6 +38,9 @@ def create_skill(skill_name):
 
     
    
+=======
+#db = create_db()
+>>>>>>> Stashed changes
 
 @app.route('/design_reference')
 def design_reference():
@@ -44,22 +48,25 @@ def design_reference():
     #Keep design reference untouched
     return render_template("design_reference.html")
 
-@app.route('/index')
+@app.route('/staff_profile')
+def staff_profile():
+    return render_template("staff_profile.html")
+
+@app.route('/all_listings_staff')
 def index():
     #This will be our base, customised template that pages will follow
     dynamic_content = "This content is coming from Flask!"
-    return render_template("index.html")
+    return render_template("all_listings_staff.html")
 
 @app.route('/listings')
 def listings():
     dynamic_content = "This content is coming from Flask!"
     return render_template("listings.html")
 
-@app.route('/applied_roles')
+@app.route('/applied_roles_staff')
 def applied_roles():
     dynamic_content = "This content is coming from Flask!"
     return render_template("applied_roles.html")
-
 
 @app.route('/role_creation')
 def role_creation():
