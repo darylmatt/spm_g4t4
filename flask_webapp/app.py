@@ -6,7 +6,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-<<<<<<< Updated upstream
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/g4_sbrp'
 
@@ -38,9 +37,6 @@ def create_skill(skill_name):
 
     
    
-=======
-#db = create_db()
->>>>>>> Stashed changes
 
 @app.route('/design_reference')
 def design_reference():
@@ -72,6 +68,11 @@ def applied_roles():
 def role_creation():
     dynamic_content = "This content is coming from Flask!"
     return render_template("role_creation.html")
+
+@app.route('/all_listings_HR')
+def all_listings_HR():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("all_listings_HR.html")
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
