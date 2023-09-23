@@ -1,7 +1,8 @@
 from app import db
 from sqlalchemy import ForeignKey
-from staff import Staff
-from role import Role
+from db_config.models.staff import Staff
+from db_config.models.role import Role
+
 
 class Role_Listing(db.Model):
 

@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy import ForeignKey
-from access_control import Access_Control
+from db_config.models.access_control import Access_Control
 
 class Staff(db.Model):
 
@@ -30,3 +30,4 @@ class Staff(db.Model):
     
     def json(self):
         return {"id":self.staff_id, "staff_fname": self.staff_fname, "staff_lname": self.staff_lname, "department": self.dept, "country": self.country, "email": self.email, "role": self.role }
+
