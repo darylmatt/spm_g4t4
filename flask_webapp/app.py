@@ -90,8 +90,25 @@ def listings():
     dynamic_content = "This content is coming from Flask!"
     return render_template("listings.html")
 
-@app.route('/applied_roles_staff/<int:listing_id>', methods=["POST"])
-def applied_roles(listing_id):
+@app.route('/applied_roles_staff')
+def applied_roles():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("applied_roles.html")
+
+
+@app.route('/role_creation')
+def role_creation():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("role_creation.html")
+
+@app.route('/all_listings_HR')
+def all_listings_HR():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("all_listings_HR.html")
+
+#apply for a open role
+@app.route('/apply_role/<int:listing_id>', methods=["POST"])
+def apply_role(listing_id):
     try:
         staff_id = 19  # REPLACE with the actual staff_id
         status = "Pending"
@@ -124,25 +141,15 @@ def applied_roles(listing_id):
             "status": status,
             "applied_date": applied_date,
         }
-        
+
         db.session.execute(insert_sql, params)
         db.session.commit()
 
-        return jsonify({"message": "Application submitted successfully"}), 201
+        return jsonify({"message": "Application submitted successfully", "code": 201}), 201
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/role_creation')
-def role_creation():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("role_creation.html")
-
-@app.route('/all_listings_HR')
-def all_listings_HR():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("all_listings_HR.html")
+        return jsonify({"error": str(e),"code": 500}), 500
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
