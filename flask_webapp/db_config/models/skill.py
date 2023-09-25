@@ -1,6 +1,4 @@
 from db_config.db import db
-from db_config.models.role_skill import Role_Skill
-from db_config.models.staff_skill import Staff_Skill
 
 class Skill(db.Model):
 

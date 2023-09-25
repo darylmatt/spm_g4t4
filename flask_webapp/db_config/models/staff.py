@@ -1,8 +1,5 @@
 from app import db
 from sqlalchemy import ForeignKey
-from db_config.models.access_control import Access_Control
-from db_config.models.role_listing import Role_Listing
-from db_config.models.application import Application
 
 class Staff(db.Model):
 

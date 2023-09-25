@@ -1,5 +1,4 @@
 from app import db
-from db_config.models.staff import Staff
 
 class Access_Control(db.Model):
 

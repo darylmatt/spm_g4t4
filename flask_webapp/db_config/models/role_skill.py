@@ -1,7 +1,5 @@
 from app import db
 from sqlalchemy import ForeignKey
-from db_config.models.role import Role
-from db_config.models.skill import Skill
 
 
 class Role_Skill(db.Model):

@@ -1,6 +1,4 @@
 from app import db
-from db_config.models.role_listing import Role_Listing
-from db_config.models.role_skill import Role_Skill
 
 class Role(db.Model):
 

@@ -3,6 +3,7 @@ from flask_cors import CORS
 from db_config.db import db
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
+from db_config.models import *
 
 app = Flask(__name__)
 
@@ -12,29 +13,27 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-@app.route('/test/<string:skill_name>', methods=['POST'])
-def create_skill(skill_name):
-    data = request.get_json()
-    skill = db.Skill(skill_name, skill_desc=data['skill_desc'])
-   
-    try:
-        skill = db.Skill(skill_name=skill_name, skill_desc=data['skill_desc'])
-        db.session.add(skill)
-        db.session.commit()
-        return "Success"
-    
-    except SQLAlchemyError as e:
-        print(f"Error creating skill: {str(e)}")  # Print the error message for debugging
-        return jsonify({
-            "code": 500,
-            "data": {
-                "Skill_Name": skill_name,
-            },
-            "message": f"An error occurred creating the skill: {str(e)}"
-        }), 500
+# Testing
+@app.route("/skills")
+def get_all():
+    skills = Skill.query.all()
 
+    if len(skills):
+        return jsonify(
+            {
+                "code":200, 
+                "data": [skill.json() for skill in skills]
+            }
+        )
     
-   
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no skills"
+        }
+    ), 404
+
+
 
 @app.route('/design_reference')
 def design_reference():
