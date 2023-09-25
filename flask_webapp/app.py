@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
 from sqlalchemy import text
+from sqlalchemy import and_
 
 
 app = Flask(__name__)
@@ -53,6 +54,36 @@ def index():
     #This will be our base, customised template that pages will follow
     dynamic_content = "This content is coming from Flask!"
     return render_template("all_listings_staff.html")
+
+@app.route('/get_all_open_role_listings', methods=["GET"])
+def get_all_open_role_listings():
+    try:
+        current_time = datetime.now()
+        role_listings = Role_Listing.query.filter(and_(
+            Role_Listing.date_open <= current_time,
+            Role_Listing.date_close >= current_time
+        )).all()
+        if len(role_listings) > 0:
+            return jsonify(
+                {
+                    "code":200, 
+                    "data": [listing.json() for listing in role_listings]
+                }
+            )
+        else:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "There are no role listings"
+                }
+            ), 404
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
 
 @app.route('/listings')
 def listings():
