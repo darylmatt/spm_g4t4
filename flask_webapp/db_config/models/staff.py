@@ -29,6 +29,16 @@ class Staff(db.Model):
         self.email = email
         self.role = role
     
-    def json(self):
-        return {"id":self.staff_id, "staff_fname": self.staff_fname, "staff_lname": self.staff_lname, "department": self.dept, "country": self.country, "email": self.email, "role": self.role }
-
+    def json(self): 
+        return {
+            'staff_id': self.staff_id,
+            'staff_fname': self.staff_fname,
+            'staff_lname': self.staff_lname,
+            'dept': self.dept,
+            'country': self.country,
+            'email': self.email,
+            'role': self.role,
+            'role_listings': [listing.json() for listing in self.role_listings],
+            'staff_skills': [skill.json() for skill in self.staff_skills],
+            'applications': [app.json() for app in self.applications]
+        }

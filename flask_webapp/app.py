@@ -14,9 +14,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 # Testing
-@app.route("/skills")
+@app.route("/roles")
 def get_all():
-    skills = Skill.query.all()
+    skills = Staff.query.all()
 
     if len(skills):
         return jsonify(

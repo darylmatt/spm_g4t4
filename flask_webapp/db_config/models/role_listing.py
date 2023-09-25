@@ -17,3 +17,25 @@ class Role_Listing(db.Model):
     role_name = db.Column(db.String(20), ForeignKey('role.role_name'), nullable=False)
     reporting_mng = db.Column(db.Integer, ForeignKey('staff.staff_id'), nullable=False)
     applications = db.relationship('Application', backref='role_listing')
+
+    def __init__(self, country, dept, num_opening, date_open, date_close, role_name, reporting_mng):
+        self.country = country
+        self.dept = dept
+        self.num_opening = num_opening
+        self.date_open = date_open
+        self.date_close = date_close
+        self.role_name = role_name
+        self.reporting_mng = reporting_mng
+
+    def json(self):
+        return {
+            'listing_id': self.listing_id,
+            'country': self.country,
+            'dept': self.dept,
+            'num_opening': self.num_opening,
+            'date_open': self.date_open.isoformat(),  # Convert to ISO format for JSON
+            'date_close': self.date_close.isoformat(),  # Convert to ISO format for JSON
+            'role_name': self.role_name,
+            'reporting_mng': self.reporting_mng,
+            'applications': [app.json() for app in self.applications]
+        }

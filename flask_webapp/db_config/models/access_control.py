@@ -6,13 +6,16 @@ class Access_Control(db.Model):
 
     access_id = db.Column(db.Integer,primary_key=True)
     access_control_name = db.Column(db.String(20), nullable=False)
-    # One to many relationship with staff
+
     staffs = db.relationship('Staff', backref='access_control')
 
     
-    def __init__(self, id, access_control_name):
-        self.id = id
+    def __init__(self, access_control_name):
         self.access_control_name = access_control_name
-    
+
     def json(self):
-        return {"id":self.access_id, "access_control_name": self.access_control_name}
+        return {
+            'access_id': self.access_id,
+            'access_control_name': self.access_control_name,
+            'staffs': [staff.json() for staff in self.staffs]
+        }

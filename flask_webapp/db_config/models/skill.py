@@ -14,7 +14,13 @@ class Skill(db.Model):
     def __init__(self, skill_name, skill_desc):
         self.skill_name = skill_name
         self.skill_desc = skill_desc
+
     
     def json(self):
-        return {"Skill_Name":self.skill_name, "Skill_Desc": self.skill_desc}
+        return {
+            'skill_name': self.skill_name,
+            'skill_desc': self.skill_desc,
+            'role_skills': [role_skill.json() for role_skill in self.role_skills],
+            'staff_skills': [staff_skill.json() for staff_skill in self.staff_skills]
+        }
     

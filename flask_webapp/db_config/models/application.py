@@ -13,4 +13,18 @@ class Application(db.Model):
     listing_id = db.Column(db.Integer, ForeignKey('role_listing.listing_id'), primary_key = True)
     staff_id = db.Column(db.Integer, ForeignKey('staff.staff_id'), primary_key = True)
 
+    def __init__(self,application_id, status, applied_date, listing_id, staff_id):
+       self.application_id = application_id
+       self.status = status
+       self.applied_date = applied_date
+       self.listing_id = listing_id
+       self.staff_id
     
+    def json(self):
+        return {
+            "application_id": self.application_id,
+            "status" : self.status,
+            "applied_date": self.applied_date,
+            "listing_id":self.listing_id,
+            "staff_id": self.staff_id
+        }
