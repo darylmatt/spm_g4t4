@@ -1,13 +1,12 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
-from db_config.models import Skill
 from db_config.db import db
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/g4_sbrp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,16 +15,15 @@ db.init_app(app)
 @app.route('/test/<string:skill_name>', methods=['POST'])
 def create_skill(skill_name):
     data = request.get_json()
-    skill = Skill(Skill_Name=skill_name, Skill_Desc=data['skill_desc'])
+    skill = db.Skill(skill_name, skill_desc=data['skill_desc'])
    
     try:
-        skill = Skill(Skill_Name=skill_name, Skill_Desc=data['skill_desc'])
+        skill = db.Skill(skill_name=skill_name, skill_desc=data['skill_desc'])
         db.session.add(skill)
         db.session.commit()
         return "Success"
     
     except SQLAlchemyError as e:
-        db.session.rollback()
         print(f"Error creating skill: {str(e)}")  # Print the error message for debugging
         return jsonify({
             "code": 500,

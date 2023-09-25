@@ -1,6 +1,8 @@
 from app import db
 from sqlalchemy import ForeignKey
 from db_config.models.access_control import Access_Control
+from db_config.models.role_listing import Role_Listing
+from db_config.models.application import Application
 
 class Staff(db.Model):
 
@@ -14,10 +16,12 @@ class Staff(db.Model):
     email= db.Column(db.String(50), nullable=False)
 
     # Foreign key relationship to access_control table
-    role = db.Column(db.Integer, ForeignKey('access_control.id'), nullable=False)
+    role = db.Column(db.Integer, ForeignKey('access_control.access_id'), nullable=False)
 
-    # Defining a back reference to access the related access_control record
-    role = db.relationship('Access_Control', backref='staff')
+
+    role_listings = db.relationship('Role_Listing', backref='staff')
+    staff_skills = db.relationship('Staff_Skill', backref='staff')
+    applications = db.relationship('Application', backref='staff')
     
     def __init__(self, id, staff_fname, staff_lname, dept, country, email, role):
         self.staff_id = id

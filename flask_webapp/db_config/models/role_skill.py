@@ -12,10 +12,6 @@ class Role_Skill(db.Model):
     role_name = db.Column(db.String(20), ForeignKey('role.role_name'), primary_key = True, nullable=False)
     skill_name = db.Column(db.String(50), ForeignKey('skill.skill_name'),primary_key = True, nullable=False)
 
-    # Defining a back reference to access the related access_control record
-    role = db.relationship('Role', backref='role_skill')
-    skill = db.relationship('Skill', backref = 'role_skill')
-
 
     def __init__(self, role_name, skill_name):
         self.role_name = role_name

@@ -16,6 +16,4 @@ class Application(db.Model):
     listing_id = db.Column(db.Integer, ForeignKey('role_listing.listing_id'), primary_key = True)
     staff_id = db.Column(db.Integer, ForeignKey('staff.staff_id'), primary_key = True)
 
-    # Backref
-    role_listing = db.relationship('Role_Listing', backref='application')
-    applicant = db.relationship('Staff', backref = 'application')
+    
