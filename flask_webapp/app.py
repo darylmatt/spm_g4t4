@@ -165,7 +165,7 @@ def match_skills(listing_id):
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
         if not role:
-            return jsonify({"error": "Role does not exist.", "status": "404"}), 404
+            return jsonify({"error": "Role does not exist.", "code": "404"}), 404
 
         # Retrieve the role_name using the listing_id
         role_name = (
@@ -195,17 +195,32 @@ def match_skills(listing_id):
         print("Role Skills:", role_skills)
         print("Staff Skills:", staff_skills)
 
+        # Calculate lacking skills
+        lacking_skills = role_skills - staff_skills
+
         # Perform skill matching logic
         matched_skills = staff_skills.intersection(role_skills)
 
+        response_data = {
+            "listing_id": listing_id,
+            "role_name": role_name,
+            "staff_id": staff_id,
+            "matched_skills": list(matched_skills),
+            "lacking_skills": list(lacking_skills)
+        }
+
+        message = None
         if not matched_skills:
-            return jsonify({"message": "You have no matching skills with this role.", "status": 200}), 200
+            message = "You have no matching skills with this role."
         else:
-            return jsonify({"message": "You have matching skills with this role!", "matched_skills": list(matched_skills), "status": 200}), 200
+            message = "You have matching skills with this role!"
+
+        return jsonify({"response_data": response_data, "message": message, "code": 200})
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e),"status": 500}), 500
+        return jsonify({"error": str(e), "code": 500}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
