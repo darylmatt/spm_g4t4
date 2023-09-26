@@ -588,6 +588,9 @@
             <li class="list-group-item" id="your-skill-1">
               Matched Skill 1
             </li>
+            <!-- <li class="list-group-item" id="your-skill-2">
+              Matched Skill 2
+            </li> -->
           </ul>
         </div>
   
@@ -837,70 +840,143 @@
 
   
 <script>
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   // Get the lists of required and your skills
+  //   const requiredSkillsList = document.querySelectorAll("#matched-skills li");
+  //   const yourSkillsList = document.querySelectorAll("#your-skills li");
+
+  //   // Create an array to store your skills
+  //   const yourSkillsArray = [];
+
+  //   // Loop through your skills and check the corresponding checkbox if there's a match
+  //   yourSkillsList.forEach(function (yourSkillItem) {
+  //     const yourSkill = yourSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
+  //     console.log("yourSkill:", yourSkill); // Log the value of yourSkill
+  //     yourSkillsArray.push(yourSkill); // Add yourSkill to the array
+  //   });
+
+  //   // Log yourSkillsArray
+  //   console.log("Your Skills Array:", yourSkillsArray);
+
+  //   // Loop through required skills and check the corresponding checkbox if there's a match
+  //   requiredSkillsList.forEach(function (requiredSkillItem) {
+  //     const requiredSkillLabel = requiredSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
+
+  //     // Check if the required skill exists in yourSkillsArray
+  //     if (yourSkillsArray.includes(requiredSkillLabel)) {
+  //       const checkbox = requiredSkillItem.querySelector("input[type=checkbox]");
+  //       if (checkbox) {
+  //         checkbox.checked = true;
+  //         requiredSkillItem.style.color = "green"; // Set text color to green
+  //         console.log("Match found:", requiredSkillLabel); // Log the matching skill
+  //       }
+  //     } else {
+  //       requiredSkillItem.style.color = "red"; // Set text color to red
+  //     }
+  //   });
+
+  //   // Define the requiredSkillsArray
+  //   const requiredSkillsArray = Array.from(
+  //     document.querySelectorAll("#matched-skills li"),
+  //     (li) => li.textContent.trim().toLowerCase()
+  //   );
+
+  //   // Calculate the percentage of matched skills
+  //   const matchedSkillsCount = yourSkillsArray.filter(skill => requiredSkillsArray.includes(skill)).length;
+  //   const totalRequiredSkillsCount = requiredSkillsArray.length;
+  //   const matchPercentage = (matchedSkillsCount / totalRequiredSkillsCount) * 100;
+
+  //   // Round the percentage up to the nearest integer
+  //   const roundedMatchPercentage = Math.ceil(matchPercentage);
+
+  //   // Update the progress bar with the calculated percentage
+  //   const skillProgressBar = document.getElementById("skillProgressBar");
+  //   skillProgressBar.style.width = roundedMatchPercentage + "%";
+  //   skillProgressBar.textContent = roundedMatchPercentage + "%";
+  //   skillProgressBar.setAttribute("aria-valuenow", roundedMatchPercentage);
+
+  //       // Change the color based on the percentage range
+  //       if (roundedMatchPercentage <= 30) {
+  //     skillProgressBar.classList.add("bg-danger"); // Red
+  //   } else if (roundedMatchPercentage <= 70) {
+  //     skillProgressBar.classList.add("bg-warning"); // Orange
+  //   } else {
+  //     skillProgressBar.classList.add("bg-success"); // Green
+  //   }
+  // }); 
+
   document.addEventListener("DOMContentLoaded", function () {
-    // Get the lists of required and your skills
-    const requiredSkillsList = document.querySelectorAll("#matched-skills li");
-    const yourSkillsList = document.querySelectorAll("#your-skills li");
+  // Get the lists of required and your skills
+  const requiredSkillsList = document.querySelectorAll("#matched-skills li");
+  const yourSkillsList = document.querySelectorAll("#your-skills li");
 
-    // Create an array to store your skills
-    const yourSkillsArray = [];
+  // Create an array to store your skills
+  const yourSkillsArray = [];
 
-    // Loop through your skills and check the corresponding checkbox if there's a match
-    yourSkillsList.forEach(function (yourSkillItem) {
-      const yourSkill = yourSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
-      console.log("yourSkill:", yourSkill); // Log the value of yourSkill
-      yourSkillsArray.push(yourSkill); // Add yourSkill to the array
-    });
+  // Loop through your skills and check the corresponding checkbox if there's a match
+  yourSkillsList.forEach(function (yourSkillItem) {
+    const yourSkill = yourSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
+    console.log("yourSkill:", yourSkill); // Log the value of yourSkill
+    yourSkillsArray.push(yourSkill); // Add yourSkill to the array
+  });
 
-    // Log yourSkillsArray
-    console.log("Your Skills Array:", yourSkillsArray);
+  // Log yourSkillsArray
+  console.log("Your Skills Array:", yourSkillsArray);
 
-    // Loop through required skills and check the corresponding checkbox if there's a match
-    requiredSkillsList.forEach(function (requiredSkillItem) {
-      const requiredSkillLabel = requiredSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
+  // Define the requiredSkillsArray
+  const requiredSkillsArray = Array.from(
+    document.querySelectorAll("#matched-skills li"),
+    (li) => li.textContent.trim().toLowerCase()
+  );
 
-      // Check if the required skill exists in yourSkillsArray
-      if (yourSkillsArray.includes(requiredSkillLabel)) {
-        const checkbox = requiredSkillItem.querySelector("input[type=checkbox]");
-        if (checkbox) {
-          checkbox.checked = true;
-          requiredSkillItem.style.color = "green"; // Set text color to green
-          console.log("Match found:", requiredSkillLabel); // Log the matching skill
-        }
-      } else {
-        requiredSkillItem.style.color = "red"; // Set text color to red
+  // Calculate the percentage of matched skills
+  const matchedSkillsCount = yourSkillsArray.filter(skill =>
+    requiredSkillsArray.includes(skill)
+  ).length;
+  const totalRequiredSkillsCount = requiredSkillsArray.length;
+  const matchPercentage = (matchedSkillsCount / totalRequiredSkillsCount) * 100;
+
+  // Round the percentage up to the nearest integer
+  const roundedMatchPercentage = Math.ceil(matchPercentage);
+
+  // Update the progress bar with the calculated percentage
+  const skillProgressBar = document.getElementById("skillProgressBar");
+  skillProgressBar.style.width = roundedMatchPercentage + "%";
+  skillProgressBar.textContent = roundedMatchPercentage + "%";
+  skillProgressBar.setAttribute("aria-valuenow", roundedMatchPercentage);
+
+  // Define colors for different percentage ranges
+  let progressBarColor = "";
+  if (roundedMatchPercentage <= 35) {
+    progressBarColor = "bg-danger"; // Red
+  } else if (roundedMatchPercentage <= 65) {
+    progressBarColor = "bg-warning"; // Orange
+  } else {
+    progressBarColor = "bg-success"; // Green
+  }
+
+  // Remove existing color classes and set the new color
+  skillProgressBar.classList.remove("bg-danger", "bg-warning", "bg-success");
+  skillProgressBar.classList.add(progressBarColor);
+
+  // Loop through required skills and check the corresponding checkbox if there's a match
+  requiredSkillsList.forEach(function (requiredSkillItem) {
+    const requiredSkillLabel = requiredSkillItem.textContent.trim().toLowerCase(); // Convert to lowercase
+
+    // Check if the required skill exists in yourSkillsArray
+    if (yourSkillsArray.includes(requiredSkillLabel)) {
+      const checkbox = requiredSkillItem.querySelector("input[type=checkbox]");
+      if (checkbox) {
+        checkbox.checked = true;
+        requiredSkillItem.style.color = "green"; // Set text color to green
+        console.log("Match found:", requiredSkillLabel); // Log the matching skill
       }
-    });
-
-    // Define the requiredSkillsArray
-    const requiredSkillsArray = Array.from(
-      document.querySelectorAll("#matched-skills li"),
-      (li) => li.textContent.trim().toLowerCase()
-    );
-
-    // Calculate the percentage of matched skills
-    const matchedSkillsCount = yourSkillsArray.filter(skill => requiredSkillsArray.includes(skill)).length;
-    const totalRequiredSkillsCount = requiredSkillsArray.length;
-    const matchPercentage = (matchedSkillsCount / totalRequiredSkillsCount) * 100;
-
-    // Round the percentage up to the nearest integer
-    const roundedMatchPercentage = Math.ceil(matchPercentage);
-
-    // Update the progress bar with the calculated percentage
-    const skillProgressBar = document.getElementById("skillProgressBar");
-    skillProgressBar.style.width = roundedMatchPercentage + "%";
-    skillProgressBar.textContent = roundedMatchPercentage + "%";
-    skillProgressBar.setAttribute("aria-valuenow", roundedMatchPercentage);
-
-        // Change the color based on the percentage range
-        if (roundedMatchPercentage <= 30) {
-      skillProgressBar.classList.add("bg-danger"); // Red
-    } else if (roundedMatchPercentage <= 70) {
-      skillProgressBar.classList.add("bg-warning"); // Orange
     } else {
-      skillProgressBar.classList.add("bg-success"); // Green
+      requiredSkillItem.style.color = "red"; // Set text color to red
     }
-  }); 
+  });
+});
+
 
 </script>
   
