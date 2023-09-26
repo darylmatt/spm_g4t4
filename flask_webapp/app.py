@@ -150,6 +150,57 @@ def apply_role(listing_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e),"code": 500}), 500
+    
+
+@app.route("/match_skills/<int:listing_id>", methods=["GET"])
+def match_skills(listing_id):
+    try:
+        staff_id = 19  # Placeholder for staff_id (to integrate with login staff_id later on)
+
+        # Check if the role exists
+        role = Role_Listing.query.filter_by(listing_id=listing_id).first()
+        if not role:
+            return jsonify({"error": "Role does not exist.", "status": "404"}), 404
+
+        # Retrieve the role_name using the listing_id
+        role_name = (
+            db.session.query(Role_Listing.role_name)
+            .filter_by(listing_id=listing_id)
+            .scalar()
+        )
+
+        # Retrieve the role's required skills
+        role_skills = set(
+            skill[0] for skill in
+            db.session.query(Role_Skill.skill_name)
+            .filter_by(role_name=role_name)
+            .all()
+        )
+
+        # Retrieve the staff's skills
+        staff_skills = set(
+            skill[0] for skill in
+            db.session.query(Staff_Skill.skill_name)
+            .filter_by(staff_id=staff_id)
+            .all()
+        )
+
+        # Debugging: Print the retrieved skills
+        print("Role Name:", role_name)
+        print("Role Skills:", role_skills)
+        print("Staff Skills:", staff_skills)
+
+        # Perform skill matching logic
+        matched_skills = staff_skills.intersection(role_skills)
+
+        if not matched_skills:
+            return jsonify({"message": "You have no matching skills with this role.", "status": 200}), 200
+        else:
+            return jsonify({"message": "You have matching skills with this role!", "matched_skills": list(matched_skills), "status": 200}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e),"status": 500}), 500
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
