@@ -106,6 +106,11 @@ def all_listings_HR():
     dynamic_content = "This content is coming from Flask!"
     return render_template("all_listings_HR.html")
 
+@app.route('/all_applicants_HR')
+def all_applicants_HR():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("all_applicants_HR.html")
+
 #apply for a open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
