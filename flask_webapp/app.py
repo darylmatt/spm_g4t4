@@ -112,6 +112,32 @@ def get_all_open_listings():
             "code": 500,
             "error": str(e)
             }), 500
+    
+@app.route('/get_all_listings', methods=["GET"])
+def get_all_listings():
+    try:
+        role_listings = Role_Listing.query.all()
+        if len(role_listings) > 0:
+            return jsonify(
+                {
+                    "code":200, 
+                    "data": [listing.json() for listing in role_listings]
+                }
+            )
+        else:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "There are no role listings"
+                }
+            ), 404
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
 
 @app.route('/view_a_listing/<int:listing_id>', methods=['GET'])
 def view_a_listing(listing_id):
@@ -181,8 +207,56 @@ def role_creation():
 
 @app.route('/all_listings_HR')
 def all_listings_HR():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("all_listings_HR.html")
+    listings_json = get_all_listings()
+    listings_dict = json.loads(listings_json.data)
+    listings=[]
+    if listings_dict:
+        data = listings_dict['data']
+        for listing in data:
+            date_open = listing['date_open']
+            input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
+            date_close = listing['date_close']
+            input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
+
+            if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now()):
+                status = "Open"
+            else:
+                status = "Closed"
+
+            manager_json=  get_staff_details(listing['reporting_mng'])
+            manager_dict = json.loads(manager_json.data)
+            manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
+            manager_dept = manager_dict['data']['dept']
+
+            role_desc_json = get_role_description(listing['role_name'])
+            role_desc_dict = json.loads(role_desc_json.data)
+            role_desc = role_desc_dict['data']
+
+            skills_required_json = get_skills_required(listing['role_name'])
+            skills_required_dict = json.loads(skills_required_json.data)
+            skills_required_list = skills_required_dict['data']['skills_required']
+
+            listing_data = {
+                'role_name': listing['role_name'],
+                'date_open': listing['date_open'],
+                'date_close': listing['date_close'],
+                'dept': listing['dept'],
+                'country': listing['country'],
+                'num_opening': listing['num_opening'],
+                'listing_id': listing['listing_id'],
+                'manager_name': manager_name,
+                'manager_dept': manager_dept,
+                'status': status,
+                'role_desc': role_desc,
+                'skills_required_list': skills_required_list
+            }
+            listings.append(listing_data)
+            num_results = len(listings)
+
+        return render_template("all_listings_HR.html", 
+                           listings=listings,
+                           num_results=num_results
+                           )
 
 @app.route('/all_applicants_HR')
 def all_applicants_HR():

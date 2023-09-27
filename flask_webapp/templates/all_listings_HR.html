@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title> All-in-One portal </title>
+  <title> All-in-One SBRP portal </title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -101,7 +101,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
         <img src="static/assets/img/logologo.png" alt="">
-        <span class="d-none d-lg-block">NiceAdmin</span>
+        <span class="d-none d-lg-block">SBRP</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -546,38 +546,19 @@
   
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title">Open Listings </h5>
+            <h5 class="card-title">Open Listings <span>| {{num_results}} results</span></h5>
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-              <div class="post-item clearfix">
-                <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#job1" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                <img src="static/assets/img/news-1.jpg" alt="">
-                <h4><a href="#">Job listing title</a></h4>
-                <p> Posted: 23/9/2023 | Department | Country | </p>
+              {% for listing in listings %}
+                <div class="post-item clearfix">
+                  <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#{{listing.listing_id}}" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false" class="list-group-item list-group-item-action" data-listing-id="{{ listing.listing_id }}">
+                    <img src="static/assets/img/news-1.jpg" alt="">
+                    <h4><a href="#{{listing.listing_id}}">{{listing.role_name }}</a></h4>
+                    <p> Posted: {{ listing.date_open }} | {{ listing.dept }} | {{ listing.country }} | </p>
+                  </div>
                 </div>
-              </div>
-
-              <div class="post-item clearfix">
-                <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#job1" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                <img src="static/assets/img/news-1.jpg" alt="">
-                <h4><a href="#">Job listing title</a></h4>
-                <p> Posted: 23/9/2023 | Department | Country | </p>
-                </div>
-              </div>
-
-              <div class="post-item clearfix">
-                <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#job1" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
-                <img src="static/assets/img/news-1.jpg" alt="">
-                <h4><a href="#">Job listing title</a></h4>
-                <p> Posted: 23/9/2023 | Department | Country | </p>
-                </div>
-              </div>
-
-              
-
+              {% endfor %}
             </div><!-- End s/idebar recent posts-->
-
           </div>
 
 
@@ -627,8 +608,8 @@
 
           
             <div class="tab-content pt-2" id="v-pills-tabContent">
-              
-              <div class="tab-pane fade active profile-overview" id="job1" role="tabpanel">
+              {% for listing in listings %}
+              <div class="tab-pane fade active profile-overview" id="{{listing.listing_id}}" role="tabpanel">
                 <div class="d-flex justify-content-end">
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                 Edit listing
@@ -751,45 +732,38 @@
                   <button type="button" class="btn btn-danger ms-2">Mark as closed</button>
                 </div>
                 <br>
-                <h5 class="card-title">Role 1</h5>
+                <h5 class="card-title">{{listing.role_name}}</h5>
                 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-8">19 September 2023</div>
+                  <div class="col-lg-9 col-md-8">{{listing.date_open}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Application deadline</div>
-                  <div class="col-lg-9 col-md-8">2 October 2023</div>
+                  <div class="col-lg-9 col-md-8">{{listing.date_close}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Status</div>
-                  <div class="col-lg-9 col-md-8">Open</div>
+                  <div class="col-lg-9 col-md-8">{{listing.status}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Country</div>
-                  <div class="col-lg-9 col-md-8">Singapore</div>
+                  <div class="col-lg-9 col-md-8">{{listing.country}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label">Department</div>
-                  <div class="col-lg-9 col-md-8">Technology</div>
+                  <div class="col-lg-9 col-md-8">{{listing.dept}}</div>
                 </div>
-
-                <div class="row">
-                  <div class="col-lg-3 col-md-4 label">Vacancy</div>
-                  <div class="col-lg-9 col-md-8">3</div>
-                </div>
-
-      
             <br>
             <br>
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Hiring manager</h5>
-    <h6> Sample Name | <i>Position</i></h6>
+    <h6> {{listing.manager_name}} | <i>{{listing.manager_dept}}</i></h6>
    
     <!-- Progress Bars with labels-->
   </div>
@@ -800,21 +774,22 @@
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Job description</h5>
-    <ul>
-      <li>Responsibility 1</li>
-      <li>Responsibility 2</li>
-      
-    </ul>
-    <!-- Progress Bars with labels-->
-
-
-   
-  
-
+    <p>
+      {{listing.role_desc}}
+    </p>
   </div>
 </div>
 
-
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Skills Required</h5>
+    <ul>
+      {% for skill in listing.skills_required_list %}
+        <li>{{skill}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 
 <div class="card">
   <div class="card-body">
@@ -876,6 +851,7 @@
 
 
               </div>
+              {% endfor %}
 
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
