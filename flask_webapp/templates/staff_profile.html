@@ -6,6 +6,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
   <title> All-in-One portal </title>
+  <script src = "{{url_for('static', filename='assets/js/fetch_staff_skills.js')}}"></script>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -29,6 +30,7 @@
   <!-- Template Main CSS File -->
   <link href="static/assets/css/style.css" rel="stylesheet">
 
+
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Updated: Aug 30 2023 with Bootstrap v5.3.1
@@ -36,6 +38,8 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+  <!-- Link to Javascript file -->
 </head>
 
 <body>
@@ -367,7 +371,7 @@
                 </li>
 
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Skills</button>
+                  <button id="skillsTabButton" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Skills</button>
                 </li>
 
             
@@ -484,6 +488,12 @@
                     <br>
                     <br>
 
+                    <div id="skillsCard">
+                        <!-- Skills will be dynamically inserted here -->
+                    </div>
+                  <!-- ... (more HTML code) ... -->
+
+<!-- 
                     <div class="card">
                         <div class="card-body">
                           <h5 class="card-title">Skill 1</h5>
@@ -518,7 +528,7 @@
                         <div class="card-body">
                           <h5 class="card-title">Skill 1</h5>
                         </div>
-                      </div>
+                      </div> -->
 
                 </div>
 

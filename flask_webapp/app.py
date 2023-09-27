@@ -17,27 +17,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# Testing
-@app.route("/roles")
-def get_all():
-    skills = Staff.query.all()
-
-    if len(skills):
-        return jsonify(
-            {
-                "code":200, 
-                "data": [skill.json() for skill in skills]
-            }
-        )
-    
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no skills"
-        }
-    ), 404
-
-
 
 @app.route('/design_reference')
 def design_reference():
@@ -88,7 +67,7 @@ def get_all_open_role_listings():
 @app.route('/skills')
 def get_skills():
     # Hardcoded session id
-    staff_id = 999
+    staff_id = 20
 
     staff = Staff.query.filter_by(staff_id = staff_id).first()
     if (staff):
@@ -101,6 +80,7 @@ def get_skills():
             }
         )
 
+    
     return jsonify(
             {
 
@@ -108,6 +88,7 @@ def get_skills():
                 "message": "Staff not found."
             }
         )
+
     
 
 
