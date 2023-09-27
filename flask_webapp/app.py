@@ -85,6 +85,33 @@ def get_all_open_role_listings():
             "error": str(e)
             }), 500
 
+@app.route('/skills')
+def get_skills():
+    # Hardcoded session id
+    staff_id = 999
+
+    staff = Staff.query.filter_by(staff_id = staff_id).first()
+    if (staff):
+        skills = staff.json()['staff_skills']
+        print(skills)
+        return jsonify(
+            {
+                "code": 200,
+                "data": [skill['skill_name'] for skill in skills]
+            }
+        )
+
+    return jsonify(
+            {
+
+                "code": 404,
+                "message": "Staff not found."
+            }
+        )
+    
+
+
+
 @app.route('/listings')
 def listings():
     dynamic_content = "This content is coming from Flask!"
