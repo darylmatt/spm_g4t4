@@ -26,8 +26,54 @@
   <link href="static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
+    <!-- Include jQuery (required for Select2) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include Select2 CSS and JS files -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+
+
   <!-- Template Main CSS File -->
   <link href="static/assets/css/style.css" rel="stylesheet">
+  <style>
+       /* Add custom styling for the dropdown */
+       .custom-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .custom-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 300px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            /* Make options appear vertically */
+            top: 100%;
+            left: 0;
+        }
+
+        .custom-dropdown-content label {
+            display: block;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .custom-dropdown-content label:hover {
+            background-color: #ddd;
+        }
+
+        /* Style for the search input */
+        .search-input {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+</style>
 
   <!-- =======================================================
   * Template Name: NiceAdmin
@@ -284,7 +330,7 @@
       
       <li class="nav-item">
        
-        <a class="nav-link " href="index.html">
+        <a class="nav-link " href="/staff_profile">
           <i class="bi bi-grid"></i>
           <span>Profile</span>
         </a>
@@ -344,34 +390,106 @@
       
         <div class="col-md-2">
           <select id="inputState1" class="form-select">
-            <option selected>Date Posted</option>
-            <option>...</option>
+            <option selected>Any time</option>
+            <option >Past week</option>
+            <option >Past month</option>
+            <option >Past 24 hours</option>
           </select>
         </div>
         <div class="col-md-2">
           <select id="inputState2" class="form-select">
             <option selected>Country</option>
-            <option>...</option>
+            <option>Singapore</option>
+            <option>Malaysia</option>
+            <option>Indonesia</option>
+            <option>Vietnam</option>
+            <option>Hong Kong</option>
           </select>
         </div>
         <div class="col-md-2">
           <select id="inputState2" class="form-select">
             <option selected>Department</option>
-            <option>...</option>
+            <option>Sales</option>
+            <option>Consultancy</option>
+            <option>Systems Solutioning</option>
+            <option>Engineering Operation</option>
+            <option>HR and Admin</option>
+            <option>Finance</option>
+            <option>IT</option>
           </select>
         </div>
-        <div class="col-md-2">
-          <select id="inputState2" class="form-select">
-            <option selected>Skills Required</option>
-            <option>...</option>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <select id="inputState2" class="form-select">
-            <option selected>Experience level</option>
-            <option>...</option>
-          </select>
-        </div>
+
+        <body>
+          <div class="col md-4">
+              <div class="row">
+                  <div class="col-md-6">
+                      <div class="form-group">
+                         
+                          <div class="custom-dropdown">
+                              <button id="dropdownBtn" class="form-select">Required skills</button>
+                              <div id="dropdownContent" class="custom-dropdown-content">
+                                  <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+                                  <label><input type="checkbox" value="Option 1"> Option 1</label>
+                                  <label><input type="checkbox" value="Option 2"> Option 2</label>
+                                  <label><input type="checkbox" value="Option 3"> Option 3</label>
+                                  <label><input type="checkbox" value="Option 4"> Option 4</label>
+                                  <label><input type="checkbox" value="Option 5"> Option 5</label>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      
+          <!-- Include Bootstrap and jQuery JS -->
+          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
+          <script>
+              $(document).ready(function () {
+                  // Show/hide the custom dropdown when the button is clicked
+                  $("#dropdownBtn").click(function () {
+                      $("#dropdownContent").toggle();
+                  });
+      
+                  // Handle checkbox changes to update the button text
+                  $("#dropdownContent input[type='checkbox']").change(function () {
+                      // Uncomment the following line if you want to update the button text with selected options
+                      // updateButtonText();
+                  });
+      
+                  // Handle search input
+                  $("#searchInput").on("input", function () {
+                      filterOptions();
+                  });
+      
+                  // Initial update of the option filter
+                  filterOptions();
+              });
+      
+              // Function to update the button text based on selected checkboxes
+              function updateButtonText() {
+                  let selectedOptions = [];
+                  $("#dropdownContent input[type='checkbox']:checked").each(function () {
+                      selectedOptions.push($(this).val());
+                  });
+      
+                  // Update the button text with selected options
+                  $("#dropdownBtn").text(selectedOptions.length > 0 ? selectedOptions.join(', ') : "Required Skills");
+              }
+      
+              // Function to filter options based on the search input
+              function filterOptions() {
+                  let searchText = $("#searchInput").val().toLowerCase();
+                  $("#dropdownContent label").each(function () {
+                      let optionText = $(this).text().toLowerCase();
+                      if (optionText.indexOf(searchText) !== -1) {
+                          $(this).show();
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+              }
+          </script>
 
         <br>
         <br>
@@ -402,7 +520,9 @@
 
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title">Open Listings <span>| Today</span></h5>
+            <h5 class="card-title">Open Listings</h5>
+
+            
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
@@ -475,9 +595,7 @@
 
             <div class="d-flex align-items-start">
               <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
               </div>
-             
             </div>
           
             <div class="tab-content pt-2" id="v-pills-tabContent">
@@ -486,7 +604,7 @@
                 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-8">19 September 2023</div>
+                  <div class="col-lg-9 col-md-8"></div>
                 </div>
 
                 <div class="row">
@@ -979,6 +1097,7 @@
 
 
 </script>
+
   
 
 

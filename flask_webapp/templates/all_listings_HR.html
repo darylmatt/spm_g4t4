@@ -41,11 +41,46 @@
   href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
   rel="stylesheet"
 />
-<!-- MDB -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.css"
-  rel="stylesheet"
-/>
+
+<style>
+  /* Add custom styling for the dropdown */
+  .custom-dropdown {
+       position: relative;
+       display: inline-block;
+   }
+
+   .custom-dropdown-content {
+       display: none;
+       position: absolute;
+       background-color: #f9f9f9;
+       min-width: 300px;
+       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+       z-index: 1;
+       /* Make options appear vertically */
+       top: 100%;
+       left: 0;
+   }
+
+   .custom-dropdown-content label {
+       display: block;
+       padding: 5px 10px;
+       cursor: pointer;
+   }
+
+   .custom-dropdown-content label:hover {
+       background-color: #ddd;
+   }
+
+   /* Style for the search input */
+   .search-input {
+       width: 100%;
+       padding: 5px;
+       border: none;
+       border-bottom: 1px solid #ccc;
+       margin-bottom: 10px;
+   }
+</style>
+
 
 
 
@@ -364,40 +399,130 @@
       
         <div class="col-md-2">
           <select id="inputState1" class="form-select">
-            <option selected>Date Posted</option>
-            <option>...</option>
+            <option selected>Any time</option>
+            <option >Past week</option>
+            <option >Past month</option>
+            <option >Past 24 hours</option>
           </select>
         </div>
         <div class="col-md-2">
           <select id="inputState2" class="form-select">
             <option selected>Country</option>
-            <option>...</option>
+            <option>Singapore</option>
+            <option>Malaysia</option>
+            <option>Indonesia</option>
+            <option>Vietnam</option>
+            <option>Hong Kong</option>
           </select>
         </div>
         <div class="col-md-2">
           <select id="inputState2" class="form-select">
             <option selected>Department</option>
-            <option>...</option>
+            <option>Sales</option>
+            <option>Consultancy</option>
+            <option>Systems Solutioning</option>
+            <option>Engineering Operation</option>
+            <option>HR and Admin</option>
+            <option>Finance</option>
+            <option>IT</option>
           </select>
         </div>
-        <div class="col-md-2">
-          <select id="inputState2" class="form-select">
-            <option selected>Skills Required</option>
-            <option>...</option>
-          </select>
+
+        <body>
+          <div class="col md-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="multiSelect1"></label>
+                        <div class="custom-dropdown">
+                            <button id="dropdownBtn1" class="btn btn-secondary">Required skills</button>
+                            <div id="dropdownContent1" class="custom-dropdown-content">
+                                <input type="text" class="search-input" id="searchInput1" placeholder="Search...">
+                                <label><input type="checkbox" value="Option 1"> Option 1</label>
+                                <label><input type="checkbox" value="Option 2"> Option 2</label>
+                                <label><input type="checkbox" value="Option 3"> Option 3</label>
+                                <label><input type="checkbox" value="Option 4"> Option 4</label>
+                                <label><input type="checkbox" value="Option 5"> Option 5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
         </div>
-        <div class="col-md-2">
-          <select id="inputState2" class="form-select">
-            <option selected>Experience level</option>
-            <option>...</option>
-          </select>
-        </div>
+    
+        <!-- Include Bootstrap and jQuery JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Show/hide the custom dropdowns when the buttons are clicked
+                $("#dropdownBtn1").click(function () {
+                    $("#dropdownContent1").toggle();
+                });
+    
+                $("#dropdownBtn2").click(function () {
+                    $("#dropdownContent2").toggle();
+                });
+    
+                // Handle checkbox changes to update the button text
+                $("#dropdownContent1 input[type='checkbox']").change(function () {
+                    updateButtonText(1);
+                });
+    
+                $("#dropdownContent2 input[type='checkbox']").change(function () {
+                    updateButtonText(2);
+                });
+    
+                // Handle search input for both dropdowns
+                $("#searchInput1").on("input", function () {
+                    filterOptions(1);
+                });
+    
+                $("#searchInput2").on("input", function () {
+                    filterOptions(2);
+                });
+    
+                // Initial update of the option filter for both dropdowns
+                filterOptions(1);
+                filterOptions(2);
+            });
+    
+             // Function to update the button text based on selected checkboxes
+        function updateButtonText(dropdownId) {
+            let selectedOptions = [];
+            let checkboxSelector = "#dropdownContent" + dropdownId + " input[type='checkbox']:checked";
+
+            $(checkboxSelector).each(function () {
+                selectedOptions.push($(this).val());
+            });
+
+            // Update a separate element to display selected options
+            $("#selectedOptions" + dropdownId).text(selectedOptions.join(', '));
+        }
+
+        // Function to filter options based on the search input for a specific dropdown
+        function filterOptions(dropdownId) {
+            let searchText = $("#searchInput" + dropdownId).val().toLowerCase();
+            let labelSelector = "#dropdownContent" + dropdownId + " label";
+
+            $(labelSelector).each(function () {
+                let optionText = $(this).text().toLowerCase();
+                if (optionText.indexOf(searchText) !== -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+    </script>
 
         <br>
         <br>
    
 
       </div>
+
 
       <br>
       
@@ -418,30 +543,10 @@
             </ul>
           </div>
 
-          <select class="select" multiple data-mdb-placeholder="Example placeholder" multiple>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-            <option value="4">Four</option>
-            <option value="5">Five</option>
-          </select>
-
-          <select class="select" multiple data-mdb-filter="true">
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-            <option value="4">Four</option>
-            <option value="5">Five</option>
-            <option value="6">Six</option>
-            <option value="7">Seven</option>
-            <option value="8">Eight</option>
-            <option value="9">Nine</option>
-            <option value="10">Ten</option>
-          </select>
-
+  
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title">Open Listings <span>| Today</span></h5>
+            <h5 class="card-title">Open Listings </h5>
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
@@ -571,6 +676,7 @@
                           </div>
                         </div>
 
+                    
                    
 
                         <div class="row mb-3">
@@ -583,6 +689,32 @@
                             </select>
                           </div>
                         </div>
+
+
+                        <div class="col-md-6">
+                          <div class="form-group">
+                              <label for="multiSelect2"></label>
+                              <div class="custom-dropdown">
+                                  <button id="dropdownBtn2" class="btn btn-secondary">Required Skills</button>
+                                  <br>
+                                  <br>
+                                  <div id="dropdownContent2" class="custom-dropdown-content">
+                                      <input type="text" class="search-input" id="searchInput2" placeholder="Search...">
+                                      <label><input type="checkbox" value="Option A"> Option A</label>
+                                      <label><input type="checkbox" value="Option B"> Option B</label>
+                                      <label><input type="checkbox" value="Option C"> Option C</label>
+                                      <label><input type="checkbox" value="Option D"> Option D</label>
+                                      <label><input type="checkbox" value="Option E"> Option E</label>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+
+                        
+                 
+                                
+                  
        
                         <div class="row mb-3">
                           <label for="inputDate" class="col-sm-2 col-form-label">Pulished date</label>
