@@ -8,6 +8,7 @@ from db_config.models import *
 from sqlalchemy import text
 from sqlalchemy import and_
 import json
+import requests
 
 
 app = Flask(__name__)
@@ -29,29 +30,43 @@ def design_reference():
 def staff_profile():
     return render_template("staff_profile.html")
 
+
 @app.route('/all_listings_staff')
 def index():
-    listings_json = get_all_open_role_listings()
-    listings_dict = json.loads(listings_json.data)
-    listings=[]
-    if listings_dict:
-        data = listings_dict['data']
-        for listing in data:
-            date_open = listing['date_open']
-            input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
-            date_close = listing['date_close']
-            input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
+        # Fetch staff skills using the existing route
+        staff_skills_json = requests.get('http://127.0.0.1:5500/skills')
+        staff_skills_dict = staff_skills_json.json()
+        staff_skills_set = set(staff_skills_dict.get('data', []))
+
+        listings_json = get_all_open_listings()
+        listings_dict = json.loads(listings_json.data)
+        listings=[]
+
+        if listings_dict:
+            data = listings_dict['data']
+            for listing in data:
+                date_open = listing['date_open']
+                input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
+                date_close = listing['date_close']
+                input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
             if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now()):
                 status = "Open"
             else:
                 status = "Closed"
+            if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now()):
+                status = "Open"
+            else:
+                status = "Closed"
 
-            manager_json=  get_staff_details(listing['reporting_mng'])
-            manager_dict = json.loads(manager_json.data)
-            manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
-            manager_dept = manager_dict['data']['dept']
+                manager_json =  get_staff_details(listing['reporting_mng'])
+                manager_dict = json.loads(manager_json.data)
+                manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
+                manager_dept = manager_dict['data']['dept']
 
+            role_desc_json = get_role_description(listing['role_name'])
+            role_desc_dict = json.loads(role_desc_json.data)
+            role_desc = role_desc_dict['data']
             role_desc_json = get_role_description(listing['role_name'])
             role_desc_dict = json.loads(role_desc_json.data)
             role_desc = role_desc_dict['data']
@@ -59,6 +74,10 @@ def index():
             skills_required_json = get_skills_required(listing['role_name'])
             skills_required_dict = json.loads(skills_required_json.data)
             skills_required_list = skills_required_dict['data']['skills_required']
+
+            # Calculate matched and unmatched skills for each listing
+            matched_skills = set(skills_required_list) & staff_skills_set
+            unmatched_skills = set(skills_required_list) - matched_skills
 
             listing_data = {
                 'role_name': listing['role_name'],
@@ -72,15 +91,17 @@ def index():
                 'manager_dept': manager_dept,
                 'status': status,
                 'role_desc': role_desc,
-                'skills_required_list': skills_required_list
+                'skills_required_list': skills_required_list,
+                'matched_skills': list(matched_skills),  # Include matched skills
+                'unmatched_skills': list(unmatched_skills)  # Include unmatched skills
             }
             listings.append(listing_data)
             num_results = len(listings)
 
     return render_template("all_listings_staff.html", 
-                        listings=listings,
-                        num_results=num_results
-                        )
+                           listings=listings,
+                           num_results=num_results
+                           )
 
 
 @app.route('/get_all_open_role_listings', methods=["GET"])
@@ -206,8 +227,6 @@ def get_skills():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e),"code": 500}), 500
-
-
 
 
 @app.route('/listings')

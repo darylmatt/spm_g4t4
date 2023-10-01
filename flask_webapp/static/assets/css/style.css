@@ -1232,10 +1232,17 @@ h6 {
   color: #012970;
 }
 
-.text-green {
-  color: green;
+
+/*--------------------------------------------------------------
+# Skill-match score progress bar
+--------------------------------------------------------------*/
+.progress-bar[aria-valuenow="1"],
+.progress-bar[aria-valuenow="2"] {
+  min-width: 3%;
 }
 
-.text-red {
-  color: red;
+.progress-bar[aria-valuenow="0"] {
+  min-width: 3%;
+  background: transparent;
+  box-shadow: none;
 }
