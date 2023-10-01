@@ -1,13 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
+
     // Fetch staff skills from your API
     fetch('http://127.0.0.1:5500/skills')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Staff skills fetched:", data);
-        const staffSkills = data.data.map((skill) => skill.toLowerCase()); // Convert staff skills to lowercase
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Staff skills fetched:", data);
+      const staffSkills = data.data.skill_names.map((skill) => skill.toLowerCase());
+      console.log(staffSkills);
+      console.log("Skills Required for Listing:", skills_required_list);
+
+
   
         // Loop through listingData to update progress bars and skills
-        listingData.forEach(function (listing) {
+        listing_data.forEach(function (listing) {
           const listingId = listing.listing_id;
           
           // Query the DOM to get the matched and unmatched skills lists
