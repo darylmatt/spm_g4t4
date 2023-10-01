@@ -84,6 +84,20 @@ document.addEventListener("DOMContentLoaded", function () {
             noUnmatchedSkillsMessage.textContent = "You have no unmatched skills";
             unmatchedSkillsContainer.appendChild(noUnmatchedSkillsMessage);
           }
+
+             // Define feedback based on the progress bar color
+            let feedback = "";
+            if (skillProgressBar.classList.contains("bg-danger")) {
+            feedback = "You are not recommended for this role.";
+            } else if (skillProgressBar.classList.contains("bg-warning")) {
+            feedback = "You are recommended for this role.";
+            } else {
+            feedback = "You are highly recommended for this role.";
+            }
+
+            // Update the feedback div
+            const feedbackContainer = document.getElementById(`feedback-${listingId}`);
+            feedbackContainer.textContent = feedback;
         });
       })
       .catch((error) => {
