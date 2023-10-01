@@ -472,6 +472,50 @@ def match_skills(listing_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e), "code": 500}), 500
+    
+# For role creation
+@app.route("/create/get_depts_and_countries")
+def get_dept_and_countries():
+    try:
+        #Check countries
+        country_list = Country.query.all()
+        if (len(country_list) == 0):
+            return jsonify(
+                {
+                    "code":404,
+                    "message": "Error, no countries are found."
+                },404
+            )
+        
+        #Check departments
+        department_list = Department.query.all()
+        if (len(department_list) == 0):
+              return jsonify(
+                {
+                    "code":404,
+                    "message": "Error, no departments are found."
+                },404
+            )
+        
+        countries  = [c.json() for c in country_list]
+        departments = [j.json() for j in department_list]
+
+        #Return both departments and countries
+        return jsonify(
+            {
+                "code": 200,
+                "data":{
+                    "countries": countries,
+                    "departments":departments
+                }
+            }
+        )
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e), "code": 500}), 500
+
+
 
 
 if __name__ == '__main__':
