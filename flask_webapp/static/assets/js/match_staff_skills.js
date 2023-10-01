@@ -1,57 +1,42 @@
 document.addEventListener("DOMContentLoaded", function () {
-
     // Fetch staff skills from your API
     fetch('http://127.0.0.1:5500/skills')
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Staff skills fetched:", data);
-      const staffSkills = data.data.skill_names.map((skill) => skill.toLowerCase());
-      console.log(staffSkills);
-      console.log("Skills Required for Listing:", skills_required_list);
-
-
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Staff skills fetched:", data);
+        const staffSkills = data.data.skill_names.map((skill) => skill.toLowerCase());
+        console.log(staffSkills);
   
         // Loop through listingData to update progress bars and skills
-        listing_data.forEach(function (listing) {
+        listingData.forEach(function (listing) {
           const listingId = listing.listing_id;
-          
-          // Query the DOM to get the matched and unmatched skills lists
-          const matchedSkillsList = document.querySelectorAll(`#matched-skills-${listingId} li`);
-          const unmatchedSkillsList = document.querySelectorAll(`#unmatched-skills-${listingId} li`);
+  
+          // Get the skills required for this listing
+          const skillsRequiredList = listing.skills_required_list.map((skill) => skill.toLowerCase());
   
           // Calculate the number of matched skills
-          const matchedSkillsCount = Array.from(matchedSkillsList).filter((skillItem) =>
-            staffSkills.includes(skillItem.textContent.trim().toLowerCase())
-          ).length;
+          const matchedSkills = staffSkills.filter((skillItem) =>
+            skillsRequiredList.includes(skillItem)
+          );
   
-          console.log("Matched Skills Count:", matchedSkillsCount);
+          console.log("Matched Skills:", matchedSkills);
   
           // Calculate the total number of required skills (matched + unmatched)
-          const totalRequiredSkillsCount = matchedSkillsList.length + unmatchedSkillsList.length;
+          const totalRequiredSkillsCount = skillsRequiredList.length;
   
           console.log("Total Required Skills Count:", totalRequiredSkillsCount);
   
-          // Calculate the match percentage
-          const matchPercentage = (matchedSkillsCount / totalRequiredSkillsCount) * 100;
-  
-          console.log("Match Percentage:", matchPercentage);
-  
-          // Round the percentage up to the nearest integer
-          const roundedMatchPercentage = Math.ceil(matchPercentage);
-  
-          console.log("Rounded Match Percentage:", roundedMatchPercentage);
-  
           // Update the progress bar with the calculated percentage
           const skillProgressBar = document.getElementById(`skillProgressBar-${listingId}`);
-          skillProgressBar.style.width = roundedMatchPercentage + "%";
-          skillProgressBar.textContent = roundedMatchPercentage + "%";
-          skillProgressBar.setAttribute("aria-valuenow", roundedMatchPercentage);
+          skillProgressBar.style.width = (matchedSkills.length / totalRequiredSkillsCount) * 100 + "%";
+          skillProgressBar.textContent = Math.ceil((matchedSkills.length / totalRequiredSkillsCount) * 100) + "%";
+          skillProgressBar.setAttribute("aria-valuenow", Math.ceil((matchedSkills.length / totalRequiredSkillsCount) * 100));
   
           // Define colors for different percentage ranges
           let progressBarColor = "";
-          if (roundedMatchPercentage <= 35) {
+          if (matchedSkills.length === 0) {
             progressBarColor = "bg-danger"; // Red
-          } else if (roundedMatchPercentage <= 65) {
+          } else if (matchedSkills.length < totalRequiredSkillsCount) {
             progressBarColor = "bg-warning"; // Orange
           } else {
             progressBarColor = "bg-success"; // Green
@@ -60,27 +45,48 @@ document.addEventListener("DOMContentLoaded", function () {
           // Remove existing color classes and set the new color
           skillProgressBar.classList.remove("bg-danger", "bg-warning", "bg-success");
           skillProgressBar.classList.add(progressBarColor);
-
-        // Display "You have no matching skills" if there are no matched skills
-        if (matchedSkillsCount === 0) {
-            const matchedSkillsContainer = document.getElementById(`matched-skills-${listingId}`);
-            const noMatchingSkillsMessage = document.createElement("li");
-            noMatchingSkillsMessage.textContent = "You have no matching skills";
-            matchedSkillsContainer.appendChild(noMatchingSkillsMessage);
+  
+          // Display skills as matched and unmatched
+          const matchedSkillsContainer = document.getElementById(`matched-skills-${listingId}`);
+          const unmatchedSkillsContainer = document.getElementById(`unmatched-skills-${listingId}`);
+  
+          // Clear both containers
+          matchedSkillsContainer.innerHTML = "";
+          unmatchedSkillsContainer.innerHTML = "";
+  
+          listing.skills_required_list.forEach(function (skill) {
+            const skillLowerCase = skill.toLowerCase();
+            if (matchedSkills.includes(skillLowerCase)) {
+              // Display matched skills in green
+              const matchedSkillItem = document.createElement("li");
+              matchedSkillItem.textContent = skill;
+              matchedSkillItem.style.color = "green";
+              matchedSkillsContainer.appendChild(matchedSkillItem);
+            } else {
+              // Display unmatched skills in red
+              const unmatchedSkillItem = document.createElement("li");
+              unmatchedSkillItem.textContent = skill;
+              unmatchedSkillItem.style.color = "red";
+              unmatchedSkillsContainer.appendChild(unmatchedSkillItem);
+            }
+          });
+  
+          // Display "You have no matched skills" if there are no matched skills
+          if (matchedSkills.length === 0) {
+            const noMatchedSkillsMessage = document.createElement("li");
+            noMatchedSkillsMessage.textContent = "You have no matched skills";
+            matchedSkillsContainer.appendChild(noMatchedSkillsMessage);
           }
-
-        // Display "You have no unmatched skills" if there are no unmatched skills
-        if (unmatchedSkillsList.length === 0) {
-            const unmatchedSkillsContainer = document.getElementById(`unmatched-skills-${listingId}`);
+  
+          // Display "You have no unmatched skills" if there are no unmatched skills
+          if (matchedSkills.length === totalRequiredSkillsCount) {
             const noUnmatchedSkillsMessage = document.createElement("li");
             noUnmatchedSkillsMessage.textContent = "You have no unmatched skills";
             unmatchedSkillsContainer.appendChild(noUnmatchedSkillsMessage);
-            }
-
+          }
         });
       })
       .catch((error) => {
         console.error("Error fetching staff skills:", error);
       });
   });
-  

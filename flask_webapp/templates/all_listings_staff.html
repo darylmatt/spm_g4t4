@@ -650,30 +650,31 @@
 
     <br>
 
+    <!-- Inside the loop that iterates over listings -->
     <div class="row">
       <div class="col-lg-6">
         <h6> Matched Skills </h6>
-
         <ul class="list-group list-group-light" id="matched-skills-{{ listing.listing_id }}">
           {% for skill in listing.matched_skills %}
-              <li class="list-group-item" style="color: green;">
-                  {{ skill }}
-              </li>
+            <li class="list-group-item" style="color: green;">
+              {{ skill }}
+            </li>
           {% endfor %}
         </ul>
       </div>
+      
       <div class="col-lg-6">
         <h6> Unmatched Skills </h6>
         <ul class="list-group list-group-light" id="unmatched-skills-{{ listing.listing_id }}">
           {% for skill in listing.unmatched_skills %}
-          <li class="list-group-item" style="color: red;">
+            <li class="list-group-item" style="color: red;">
               {{ skill }}
-          </li>
+            </li>
           {% endfor %}
         </ul>
-        </div>
-  
       </div>
+    </div>
+
   </div>
 
 </div>
@@ -922,7 +923,7 @@
   <script src="static/assets/js/match_staff_skills.js"></script>
 
   <script>
-    var listing_data = {{ listings|tojson|safe }};
+    var listingData = {{ listings | tojson | safe }};
   </script>
 
 
