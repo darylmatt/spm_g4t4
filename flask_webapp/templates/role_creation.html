@@ -404,10 +404,16 @@
 
               <!-- General Form Elements -->
               <form>
+
+                <!-- Role -->
                 <div class="row mb-3">
-                  <label for="inputText" class="col-sm-2 col-form-label">Role Title</label>
+                  <label for="inputText" class="col-sm-2 col-form-label">Role Name</label>
+
                   <div class="col-sm-10">
-                    <input type="text" class="form-control">
+
+                    <select class="form-select" aria-label="createRoleDropdown" id = "createRoleDropdown">
+                      <option disabled selected>Select a role</option>
+                    </select> 
                   </div>
                 </div>
 
@@ -417,9 +423,9 @@
                   
                   <div class="col-sm-10">
 
-                    <!-- Department Dropdown List -->
+                    <!-- Department -->
                     <select class="form-select" aria-label="createSelectDepartment" id = "createDepartmentDropdown">
-                      
+                      <option disabled selected>Select a department</option>
                     </select>
                   </div>
                   </div>
@@ -429,9 +435,10 @@
                   <label for="inputCountry" class="col-sm-2 col-form-label">Country</label>
                   
                   <div class="col-sm-10">
+
                     <!-- Country Dropdown List -->
                     <select class="form-select" aria-label="createSelectCountry" id = "createCountryDropdown">
-                      <!-- Dynamically add using JS file -->
+                      <option disabled selected>Select a country</option>
                     </select>
                   </div>
                 </div>
@@ -439,19 +446,35 @@
              
              
 
-                <label for="inputEmail" class="col-sm-2 col-form-label">Responsibilities</label>
-                <div class="row">
+                <label for="inputEmail" class="col-sm-2col-form-label">Responsibilities</label>
+                <div class="row" id="create_role_desc">
                     <textarea class="form-control" style="height: 100px"></textarea>
                 </div>
 
-                <div class="row mb-3 mt-5">
-                  <label for="inputDate" class="col-sm-2 col-form-label">Start</label>
+                <div class="row my-3">
+                  <label for="inputNumOpenings" class="col-sm-2 col-form-label">Openings</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" min="1" max="150" value="1">
+                  </div>
+                </div>
+
+                <div class="row my-3">
+                  <label for="inputReportingMng" class="col-sm-2 col-form-label">Reporting Manager</label>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" min="1" max="150" value="1">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="inputDate" class="col-sm-2 col-form-label">Start Date</label>
                   <div class="col-sm-10">
                     <input type="date" class="form-control">
                   </div>
                 </div>
+
+
                 <div class="row mb-3">
-                    <label for="inputDate" class="col-sm-2 col-form-label">End</label>
+                    <label for="inputDate" class="col-sm-2 col-form-label">Deadline</label>
                     <div class="col-sm-10">
                       <input type="date" class="form-control">
                     </div>
@@ -459,7 +482,7 @@
                 <!-- submit button -->
                 <div class="row mb-3 pt-3 d-flex justify-content-center">
                     <div class="d-flex justify-content-center mt-4">
-                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                      <button type="submit" class="btn btn-primary" id="create_btn" >Submit</button>
                     </div>
                 </div>
 

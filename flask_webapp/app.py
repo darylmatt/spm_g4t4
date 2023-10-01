@@ -473,10 +473,20 @@ def match_skills(listing_id):
         db.session.rollback()
         return jsonify({"error": str(e), "code": 500}), 500
     
-# For role creation
-@app.route("/create/get_depts_and_countries")
+#Get data for role creation
+@app.route("/create/get_data")
 def get_dept_and_countries():
     try:
+        #Check roles
+        role_list = Role.query.all()
+        if (len(role_list) == 0):
+              return jsonify(
+                {
+                    "code":404,
+                    "message": "No roles in roles list"
+                },404
+            )
+
         #Check countries
         country_list = Country.query.all()
         if (len(country_list) == 0):
@@ -497,6 +507,8 @@ def get_dept_and_countries():
                 },404
             )
         
+        # skills = [skill.get('skill_name') for skill in staff_skills]
+        roles = [r.json().get('role_name') for r in role_list]
         countries  = [c.json() for c in country_list]
         departments = [j.json() for j in department_list]
 
@@ -505,6 +517,7 @@ def get_dept_and_countries():
             {
                 "code": 200,
                 "data":{
+                    "roles": roles,
                     "countries": countries,
                     "departments":departments
                 }
