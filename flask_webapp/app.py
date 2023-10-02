@@ -241,18 +241,12 @@ def role_creation():
     dynamic_content = "This content is coming from Flask!"
     return render_template("role_creation.html")
 
-@app.route('/all_listings_HR')
-def all_listings_HR():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("all_listings_HR.html")
-
-
 @app.route('/login')
 def login():
     dynamic_content = "This content is coming from Flask!"
     return render_template("login.html")
 
-
+@app.route('/all_listings_HR')
 def all_listings_HR():
     listings_json = get_all_listings()
     listings_dict = json.loads(listings_json.data)
