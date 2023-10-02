@@ -246,6 +246,13 @@ def all_listings_HR():
     dynamic_content = "This content is coming from Flask!"
     return render_template("all_listings_HR.html")
 
+
+@app.route('/login')
+def login():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("login.html")
+
+
 def all_listings_HR():
     listings_json = get_all_listings()
     listings_dict = json.loads(listings_json.data)
