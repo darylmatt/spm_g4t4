@@ -26,20 +26,23 @@ document.addEventListener("DOMContentLoaded", function () {
   
           console.log("Total Required Skills Count:", totalRequiredSkillsCount);
   
+            // Calculate the match percentage
+          const matchPercentage = (matchedSkills.length / totalRequiredSkillsCount) * 100;
+
           // Update the progress bar with the calculated percentage
           const skillProgressBar = document.getElementById(`skillProgressBar-${listingId}`);
-          skillProgressBar.style.width = (matchedSkills.length / totalRequiredSkillsCount) * 100 + "%";
-          skillProgressBar.textContent = Math.ceil((matchedSkills.length / totalRequiredSkillsCount) * 100) + "%";
-          skillProgressBar.setAttribute("aria-valuenow", Math.ceil((matchedSkills.length / totalRequiredSkillsCount) * 100));
-  
-          // Define colors for different percentage ranges
+          skillProgressBar.style.width = matchPercentage + "%";
+          skillProgressBar.textContent = Math.ceil(matchPercentage) + "%";
+          skillProgressBar.setAttribute("aria-valuenow", Math.ceil(matchPercentage));
+
+          // Define colors based on the match percentage
           let progressBarColor = "";
-          if (matchedSkills.length === 0) {
+          if (matchPercentage <= 40) {
             progressBarColor = "bg-danger"; // Red
-          } else if (matchedSkills.length < totalRequiredSkillsCount) {
-            progressBarColor = "bg-warning"; // Orange
-          } else {
+          } else if (matchPercentage >= 70) {
             progressBarColor = "bg-success"; // Green
+          } else {
+            progressBarColor = "bg-warning"; // Orange
           }
   
           // Remove existing color classes and set the new color
