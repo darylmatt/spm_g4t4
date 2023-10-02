@@ -488,7 +488,7 @@ def match_skills(listing_id):
         db.session.rollback()
         return jsonify({"error": str(e), "code": 500}), 500
     
-#Get data for role creation
+#Get roles, countries and departments for role creation
 @app.route("/create/get_data")
 def get_dept_and_countries():
     try:
@@ -544,7 +544,44 @@ def get_dept_and_countries():
         return jsonify({"error": str(e), "code": 500}), 500
 
 
-        
+# Get reporting manager given a selected department
+@app.route('/get_manager/<string:country>/<string:dept>', methods=["GET"])
+def get_manager(country,dept):
+    try:
+        staff_list = Staff.query.filter_by(dept=dept,country=country).all()
+        if len(staff_list) > 0:
+            manager_list = []
+            manager_id = []
+            for s in staff_list:
+                if (s.json().get('role')) <= 2:
+                    fname = s.json().get('staff_fname')
+                    lname = s.json().get('staff_lname')
+                    manager_list.append(fname+ " " + lname)
+                    manager_id.append(s.json().get('staff_id'))
+
+            return jsonify(
+                {
+                    "code":200, 
+                    "data": {
+                        "name_list": manager_list,
+                        "id_list": manager_id
+                }
+                }
+            )
+        else:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "No managers found."
+                }
+            ), 404
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
 
 
 

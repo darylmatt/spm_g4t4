@@ -414,6 +414,7 @@
                 </div>
 
                  <!-- Department -->
+                 <div id="dcDropdown">
                  <div class="row mb-3">
                   <label for="inputDepartment" class="col-sm-2 col-form-label">Department</label>
                   
@@ -438,6 +439,7 @@
                     </select>
                   </div>
                 </div>
+              </div>
 
                 <!-- <div class="row mb-3">
                   <label for="inputCountry" class="col-sm-2 col-form-label">Required skills</label>
@@ -478,8 +480,10 @@
 
                 <div class="row my-3">
                   <label for="inputReportingMng" class="col-sm-2 col-form-label">Reporting Manager</label>
-                  <div class="col-sm-10">
-                    <input type="number" class="form-control" min="1" max="150" value="1">
+                  <div class="col-sm-10" id="managerOptions">
+                    <input id="reportingMngError" type="text" class="form-control" placeholder="Please select department and country." disabled>
+                    <select class="form-select" aria-label="createSelectManager" id = "createManagerDropdown" hidden>
+                    </select>                  
                   </div>
                 </div>
 
