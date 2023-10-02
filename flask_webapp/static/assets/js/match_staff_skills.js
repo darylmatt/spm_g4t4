@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch staff skills from your API
-    fetch('http://127.0.0.1:5500/skills')
+    fetch('/skills')
       .then((response) => response.json())
       .then((data) => {
         console.log("Staff skills fetched:", data);
