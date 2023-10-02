@@ -544,6 +544,9 @@ def get_dept_and_countries():
         return jsonify({"error": str(e), "code": 500}), 500
 
 
+        
+
+
 
 
 if __name__ == '__main__':

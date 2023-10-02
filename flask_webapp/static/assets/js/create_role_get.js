@@ -39,3 +39,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     .catch((error) => console.error("Error:", error));
 });
+
+// Role is selected
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Role is selected
+  var selected_role = document.getElementById("createRoleDropdown");
+
+  selected_role.addEventListener("change", function () {
+    // Fetch the correct description from the database
+    fetch("/get_role_description/" + selected_role.value)
+      .then((response) => response.json())
+      .then((data) => {
+        //Populate the description box with this data
+        text_area = document.getElementById("create_role_desc");
+        desc = data.data;
+        text_area.value = desc;
+      });
+  });
+});
