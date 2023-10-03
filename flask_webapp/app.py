@@ -428,7 +428,35 @@ def get_skills_required(role_name):
             "code": 500,
             "error": str(e)
             }), 500
+
+@app.route("/get_all_skills")
+def get_all_skills():
+    try:
     
+        skills = Skill.query.all()
+
+        if len(skills) == 0:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "No skills are found."
+                }
+            ), 404  
+        
+        else:
+            return jsonify({
+                "code": 200,
+                "data": [skill.skill_name for skill in skills]
+            })
+
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500 
+
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 def match_skills(listing_id):
