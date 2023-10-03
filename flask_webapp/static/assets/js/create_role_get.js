@@ -123,4 +123,38 @@ document.addEventListener("DOMContentLoaded", function () {
         "Please select a country.";
     }
   });
+
+  // Set the calendar date
+  var today = new Date().toISOString().split("T")[0];
+  document.getElementById("startDate").setAttribute("min", today);
+
+  //Get start date
+  startDate = document.getElementById("startDate");
+  var errorMsg = document.getElementById("deadlineError");
+  var endDate = document.getElementById("endDate");
+
+  startDate.addEventListener("change", function () {
+    //User setting date for the first time
+    if (errorMsg.hidden == false) {
+      errorMsg.hidden = true;
+      endDate.setAttribute("min", startDate.value);
+      endDate.hidden = false;
+    }
+
+    //User setting date for the second time
+    else {
+      endDate.setAttribute("min", startDate.value);
+    }
+  });
+
+  endDate = document.getElementById("endDate");
+
+  endDate.addEventListener("change", function () {
+    startDate.setAttribute("max", endDate.value);
+    //Check if earlier than start date
+    if (endDate.value < startDate.value) {
+      endDate.setAttribute("min", startDate.value);
+      endDate.value = startDate.value;
+    }
+  });
 });
