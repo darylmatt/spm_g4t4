@@ -246,6 +246,11 @@ def login():
     dynamic_content = "This content is coming from Flask!"
     return render_template("login.html")
 
+@app.route('/register')
+def register():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("register.html")
+
 @app.route('/all_listings_HR')
 def all_listings_HR():
     listings_json = get_all_listings()
