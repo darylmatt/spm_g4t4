@@ -304,7 +304,19 @@ def all_listings_HR():
                            listings=listings,
                            num_results=num_results
                            )
-
+# Define a route to get the listing ID by name
+@app.route('/get_listing_id_by_name/<string:role_name>', methods=["GET"])
+def get_listing_id_by_name(role_name):
+    try:
+        # Query the Role_Listing table to find the listing ID by role name
+        role_listing = Role_Listing.query.filter(Role_Listing.role_name == role_name).first()
+        if role_listing:
+            return jsonify({"listingId": role_listing.listing_id}), 200
+        else:
+            return jsonify({"error": "Role listing not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 #apply for a open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
