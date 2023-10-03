@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         const selected_skills = document.getElementById("selectedSkills");
+        selected_skills.innerHTML = "";
         var required_skills = data.data.skills_required;
         required_skills.forEach((skill) => {
           const skillDiv = document.createElement("div");
