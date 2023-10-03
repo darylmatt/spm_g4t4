@@ -315,8 +315,8 @@ def get_listing_id_by_name(role_name):
             return jsonify({"error": "Role listing not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-#apply for a open role
+
+#apply for open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
     try:
@@ -339,7 +339,7 @@ def apply_role(listing_id):
         if existing_application:
             return jsonify({"error": "You have already applied to this role"}), 400
 
-        # insert application details
+        # Insert application details
         insert_sql = text("""
             INSERT INTO application (listing_id, staff_id, status, applied_date)
             VALUES (:listing_id, :staff_id, :status, :applied_date)
@@ -352,14 +352,31 @@ def apply_role(listing_id):
             "applied_date": applied_date,
         }
 
-        db.session.execute(insert_sql, params)
+        result = db.session.execute(insert_sql, params)
         db.session.commit()
 
-        return jsonify({"message": "Application submitted successfully", "code": 201}), 201
+        cursor = db.session.execute(text("SELECT LAST_INSERT_ID()"))
+        application_id = cursor.fetchone()[0]
+
+        return jsonify({"message": "Application submitted successfully", "application_id": application_id, "code": 201}), 201
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e),"code": 500}), 500
+        return jsonify({"error": str(e), "code": 500}), 500
+
+#check application status
+@app.route('/check_application_status/<int:application_id>/<int:staff_id>', methods=["GET"])
+def check_application_status(application_id, staff_id):
+    try:
+        # Check if the staff member with the specified staff_id has applied with the given application_id
+        application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
+        if application:
+            return jsonify({"status": application.status, "code": 200}), 200
+        else:
+            return jsonify({"error": "Application not found for the given staff_id and application_id", "code": 404}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e), "code": 500}), 500
     
 @app.route('/get_staff_details/<int:staff_id>', methods=["GET"])
 def get_staff_details(staff_id):
