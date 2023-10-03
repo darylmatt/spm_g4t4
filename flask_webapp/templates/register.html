@@ -44,20 +44,20 @@
       background-position: center;
     }
 
-    .content {
-      background-image: url('../static/assets/img/login_bg.png');
+    #mainbody {
+      background-image: url('../static/assets/img/register_bg.png');
       
     }
 
-    .card{
-      margin-right: 120px;
+    .container{
+      width: 5000px;
       
     }
 
   </style>
 </head>
 
-<body class="bg-light">
+<body class="bg-light" id="mainbody">
 
   <header id="header" class="header fixed-top d-flex justify-content-between align-items-center p-2">
     <div class="container d-flex align-items-center">
@@ -93,49 +93,78 @@
     </div>
   </header>
 
-  <main class="content">
-    <div class="container-fluid">
-      <div class="row justify-content-end align-items-center min-vh-100">
-        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="pt-4 pb-2">
-                <h5 class="card-title text-center pb-0 fs-4">Login</h5>
+  <main>
+    <div class="container">
+
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+              <div class="card mb-3">
+
+                <div class="card-body">
+
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Register</h5>
+                  </div>
+
+                  <form class="row g-3 needs-validation" novalidate>
+                    <div class="col-12">
+                      <label for="yourName" class="form-label">Your Name</label>
+                      <input type="text" name="name" class="form-control" id="yourName" required>
+                      <div class="invalid-feedback">Please, enter your name!</div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="yourEmail" class="form-label">Your Email</label>
+                      <input type="email" name="email" class="form-control" id="yourEmail" required>
+                      <div class="invalid-feedback">Please enter a valid Email adddress!</div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="yourUsername" class="form-label">Username</label>
+                      <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        <input type="text" name="username" class="form-control" id="yourUsername" required>
+                        <div class="invalid-feedback">Please choose a username.</div>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="yourPassword" class="form-label">Password</label>
+                      <input type="password" name="password" class="form-control" id="yourPassword" required>
+                      <div class="invalid-feedback">Please enter your password!</div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required>
+                        <label class="form-check-label" for="acceptTerms">I agree and accept the <a href="#">terms and conditions</a></label>
+                        <div class="invalid-feedback">You must agree before submitting.</div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100" type="submit">Create Account</button>
+                    </div>
+                    <div class="col-12">
+                      <p class="small mb-0">Already have an account? <a href="pages-login.html">Log in</a></p>
+                    </div>
+                  </form>
+
+                </div>
               </div>
-              <form class="row g-3 needs-validation" novalidate>
-                <div class="col-12">
-                  <label for="yourUsername" class="form-label">Email Address</label>
-                  <div class="input-group has-validation">
-                    <span class="input-group-text" id="inputGroupPrepend">@</span>
-                    <input type="text" name="username" class="form-control" id="yourUsername" required>
-                    <div class="invalid-feedback">Please enter your username.</div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <label for="yourPassword" class="form-label">Password</label>
-                  <input type="password" name="password" class="form-control" id="yourPassword" required>
-                  <div class="invalid-feedback">Please enter your password!</div>
-                </div>
-                <div class="col-12 d-flex">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember me</label>
-                  </div>
-                  <a href="#" class="ms-2 text-decoration-none text-primary">Forgot Password?</a>
-                </div>
-                <div class="col-12">
-                  <button class="btn btn-primary w-100" type="submit">Login</button>
-                </div>
-                <div class="col-12">
-                  <p class="small mb-0">Don't have an account? <a href="pages-register.html">Create an account</a></p>
-                </div>
-              </form>
+
+   
+
             </div>
           </div>
         </div>
-      </div>
+
+      </section>
+
     </div>
-  </main>
+  </main><!-- End #main -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

@@ -241,18 +241,17 @@ def role_creation():
     dynamic_content = "This content is coming from Flask!"
     return render_template("role_creation.html")
 
-@app.route('/all_listings_HR')
-def all_listings_HR():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("all_listings_HR.html")
-
-
 @app.route('/login')
 def login():
     dynamic_content = "This content is coming from Flask!"
     return render_template("login.html")
 
+@app.route('/register')
+def register():
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("register.html")
 
+@app.route('/all_listings_HR')
 def all_listings_HR():
     listings_json = get_all_listings()
     listings_dict = json.loads(listings_json.data)
@@ -441,7 +440,35 @@ def get_skills_required(role_name):
             "code": 500,
             "error": str(e)
             }), 500
+
+@app.route("/get_all_skills")
+def get_all_skills():
+    try:
     
+        skills = Skill.query.all()
+
+        if len(skills) == 0:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "No skills are found."
+                }
+            ), 404  
+        
+        else:
+            return jsonify({
+                "code": 200,
+                "data": [skill.skill_name for skill in skills]
+            })
+
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500 
+
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 def match_skills(listing_id):
