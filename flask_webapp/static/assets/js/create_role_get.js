@@ -41,8 +41,14 @@ document.addEventListener("DOMContentLoaded", function () {
   //Get all skills
   //Get modal body
   skillSelectModal = document.getElementById("skillSelectModalBody");
+  defaultSkillBtn = document.getElementById("defaultSkillBtn");
+  defaultSkillBtn.addEventListener("click", function () {
+    //Clear the selected skills
+    selected_skills = document.getElementById("selectedSkills");
+    selected_skills.innerHTML = "";
+    get_default_skills();
+  });
 
-  // Assuming you have a valid URL for fetching skills data
   fetch("/get_all_skills")
     .then((response) => response.json())
     .then((data) => {
@@ -69,35 +75,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Role is selected
   var selected_role = document.getElementById("createRoleDropdown");
 
-  selected_role.addEventListener("change", function () {
-    // Fetch the correct description from the database
-    fetch("/get_role_description/" + selected_role.value)
-      .then((response) => response.json())
-      .then((data) => {
-        // Populate the description box with this data
-        text_area = document.getElementById("create_role_desc");
-        desc = data.data;
-        text_area.value = desc;
-      });
-
-    //Fetch the required skills from the database
-
-    //Hide skills error
-    skillsError.hidden = true;
-
-    //Enable select skills button
-
-    skillsSelectBtn.disabled = false;
-    console.log(selected_role.value);
-    const selected_skills = document.getElementById("selectedSkills");
+  //Function to get skills that belong to that role
+  function get_default_skills() {
     fetch("/get_skills_required/" + selected_role.value)
       .then((response) => response.json())
       .then((data) => {
+        const selected_skills = document.getElementById("selectedSkills");
         var required_skills = data.data.skills_required;
         required_skills.forEach((skill) => {
-          console.log(skill);
           const skillDiv = document.createElement("div");
-          // skillDiv.className = "col-md-3";
 
           const skillContainer = document.createElement("div");
           skillContainer.className = "non-clickable-container";
@@ -110,12 +96,41 @@ document.addEventListener("DOMContentLoaded", function () {
           skillCloseBtn.className = "btn-close";
           skillCloseBtn.setAttribute("aria-label", "Close");
 
+          skillCloseBtn.addEventListener("click", function () {
+            // Remove the entire container when the close button is clicked
+            skillDiv.remove();
+          });
+
           skillContainer.appendChild(skillText);
           skillContainer.appendChild(skillCloseBtn);
           skillDiv.appendChild(skillContainer);
           selected_skills.appendChild(skillDiv);
         });
       });
+  }
+
+  selected_role.addEventListener("change", function () {
+    // Fetch the correct description from the database
+    fetch("/get_role_description/" + selected_role.value)
+      .then((response) => response.json())
+      .then((data) => {
+        // Populate the description box with this data
+        text_area = document.getElementById("create_role_desc");
+        desc = data.data;
+        text_area.value = desc;
+      });
+
+    //Fetch the required skills from the database
+    get_default_skills();
+
+    //Hide skills error
+    skillsError.hidden = true;
+
+    //Enable select skills button
+    skillsSelectBtn.disabled = false;
+    document.getElementById("defaultSkillBtn").innerHTML =
+      "Default skills for " + selected_role.value;
+    console.log(selected_role.value);
   });
 
   var selected_country = document.getElementById("createCountryDropdown");
