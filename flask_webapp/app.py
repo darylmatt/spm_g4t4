@@ -97,8 +97,8 @@ def index():
 
                     listingData = {
                         'role_name': listing['role_name'],
-                        'date_open': listing['date_open'],
-                        'date_close': listing['date_close'],
+                        'date_open': input_open_datetime.strftime("%d/%m/%Y"),
+                        'date_close': input_close_datetime.strftime("%d/%m/%Y"),
                         'dept': listing['dept'],
                         'country': listing['country'],
                         'num_opening': listing['num_opening'],
@@ -402,8 +402,8 @@ def all_listings_HR():
 
             listingData = {
                 'role_name': listing['role_name'],
-                'date_open': listing['date_open'],
-                'date_close': listing['date_close'],
+                'date_open': input_open_datetime.strftime("%d/%m/%Y"),
+                'date_close': input_close_datetime.strftime("%d/%m/%Y"),
                 'dept': listing['dept'],
                 'country': listing['country'],
                 'num_opening': listing['num_opening'],
