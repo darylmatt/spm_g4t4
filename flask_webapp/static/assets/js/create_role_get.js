@@ -41,12 +41,28 @@ document.addEventListener("DOMContentLoaded", function () {
   //Get all skills
   //Get modal body
   skillSelectModal = document.getElementById("skillSelectModalBody");
+
+  // Default role-skill button
   defaultSkillBtn = document.getElementById("defaultSkillBtn");
+  selected_skills = document.getElementById("selectedSkills");
   defaultSkillBtn.addEventListener("click", function () {
     //Clear the selected skills
-    selected_skills = document.getElementById("selectedSkills");
     selected_skills.innerHTML = "";
     get_default_skills();
+  });
+
+  //Clear button
+  clearBtn = document.getElementById("clearAllBtn");
+  clearBtn.addEventListener("click", function () {
+    selected_skills.innerHTML = "";
+
+    //Change all checkboxes to unchecked
+    var checkboxes = document
+      .getElementById("skillSelectModalBody")
+      .querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false;
+    });
   });
 
   fetch("/get_all_skills")
@@ -83,10 +99,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const selected_skills = document.getElementById("selectedSkills");
         selected_skills.innerHTML = "";
         var required_skills = data.data.skills_required;
+
         required_skills.forEach((skill) => {
           const skillDiv = document.createElement("div");
 
           const skillContainer = document.createElement("div");
+          skillContainer.id = skill;
           skillContainer.className = "non-clickable-container";
 
           const skillText = document.createElement("span");
@@ -121,7 +139,6 @@ document.addEventListener("DOMContentLoaded", function () {
         text_area.value = desc;
       });
 
-    //Fetch the required skills from the database
     get_default_skills();
 
     //Hide skills error
@@ -133,6 +150,39 @@ document.addEventListener("DOMContentLoaded", function () {
       "Default skills for " + selected_role.value;
     console.log(selected_role.value);
   });
+
+  // Function to handle changes in selected_skills div
+  function handleSelectedSkillsChange() {
+    var selected_skill_values = [];
+    var selected_skills = document.getElementById("selectedSkills");
+    selected_skills.childNodes.forEach((child) => {
+      skill_id = child.childNodes[0].id;
+      // Get their values first and store in a list
+      selected_skill_values.push(skill_id);
+    });
+
+    // Change their checked status
+    var checkboxes = document
+      .getElementById("skillSelectModalBody")
+      .querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      if (selected_skill_values.includes(checkbox.value)) {
+        checkbox.checked = true;
+      } else {
+        checkbox.checked = false;
+      }
+    });
+  }
+
+  // Create a MutationObserver to watch for changes in the selected_skills div
+  const observer = new MutationObserver(handleSelectedSkillsChange);
+
+  // Start observing changes in the selected_skills div
+
+  observer.observe(selected_skills, { childList: true });
+
+  // Initial call to ensure the code runs when the page loads
+  handleSelectedSkillsChange();
 
   var selected_country = document.getElementById("createCountryDropdown");
   var selected_dept = document.getElementById("createDepartmentDropdown");
