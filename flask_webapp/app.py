@@ -370,7 +370,7 @@ def register():
     dynamic_content = "This content is coming from Flask!"
     return render_template("register.html")
 
-@app.route('/all_listings_HR')
+@app.route('/all_listings_HR', methods=["GET", "POST"])
 def all_listings_HR():
     listings_json = get_all_listings()
     listings_dict = json.loads(listings_json.data)
