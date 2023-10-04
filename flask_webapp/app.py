@@ -73,7 +73,7 @@ def index():
                     date_close = listing['date_close']
                     input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
-                    if input_open_datetime < datetime.now() and input_close_datetime > datetime.now():
+                    if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
                         status = "Open"
                     else:
                         status = "Closed"
@@ -148,8 +148,7 @@ def get_all_open_role_listings(search):
         and_(
             Role_Listing.date_open <= current_time,
             Role_Listing.date_close >= current_time,
-            Role_Listing.num_opening > 0,
-            Role_Listing.date_close >= current_time  # This condition appears twice; you may remove one of them.
+            Role_Listing.num_opening > 0
         )
     )
 
@@ -383,7 +382,7 @@ def all_listings_HR():
             date_close = listing['date_close']
             input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
-            if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now()):
+            if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
                 status = "Open"
             else:
                 status = "Closed"
