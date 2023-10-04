@@ -498,18 +498,29 @@ def check_application_status(application_id, staff_id):
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
 
-# cancel app
+# Cancel application
 @app.route('/delete_application/<int:application_id>/<int:staff_id>', methods=["DELETE"])
 def delete_application(application_id, staff_id):
     try:
         # Check if the application with the specified application_id and staff_id exists
         application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
-        
+
         if application:
-            # Delete the application
-            db.session.delete(application)
-            db.session.commit()
-            return jsonify({"message": "Application deleted successfully", "code": 200}), 200
+            # Retrieve the associated role_listing for the application
+            role_listing = Role_Listing.query.filter_by(listing_id=application.listing_id).first()
+
+            if role_listing:
+                # Check if the role_listing is past the application deadline
+                current_datetime = datetime.now()
+                if role_listing.date_close < current_datetime:
+                    return jsonify({"error": "Application cannot be deleted as it's past the deadline", "code": 400}), 400
+
+                # Delete the application
+                db.session.delete(application)
+                db.session.commit()
+                return jsonify({"message": "Application deleted successfully", "code": 200}), 200
+            else:
+                return jsonify({"error": "Role listing not found for the application", "code": 404}), 404
         else:
             return jsonify({"error": "Application not found", "code": 404}), 404
 

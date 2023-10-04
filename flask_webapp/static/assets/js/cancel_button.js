@@ -34,14 +34,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     // button.parentElement.remove();
                 } else if (response.status === 404) {
                     // Application not found
-                    alert("Application not found");
+                    alert("Application not found. It may have already been deleted.");
+                } else if (response.status === 400) {
+                    // Application past the deadline
+                    alert("Application cannot be deleted as it's past the deadline.");
                 } else {
                     // Handle other errors
-                    alert("Error deleting application");
+                    alert("Error deleting application. Please try again later.");
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
+                alert("An unexpected error occurred while deleting the application.");
             });
     }
 });
