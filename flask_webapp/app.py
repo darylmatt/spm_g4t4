@@ -352,11 +352,12 @@ def apply_role(listing_id):
             "applied_date": applied_date,
         }
 
+        
         result = db.session.execute(insert_sql, params)
         db.session.commit()
 
-        cursor = db.session.execute(text("SELECT LAST_INSERT_ID()"))
-        application_id = cursor.fetchone()[0]
+        # Fetch the last inserted ID using SQLAlchemy's execute method
+        application_id = result.lastrowid
 
         return jsonify({"message": "Application submitted successfully", "application_id": application_id, "code": 201}), 201
 
@@ -377,6 +378,26 @@ def check_application_status(application_id, staff_id):
 
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
+
+# cancel app
+@app.route('/delete_application/<int:application_id>/<int:staff_id>', methods=["DELETE"])
+def delete_application(application_id, staff_id):
+    try:
+        # Check if the application with the specified application_id and staff_id exists
+        application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
+        
+        if application:
+            # Delete the application
+            db.session.delete(application)
+            db.session.commit()
+            return jsonify({"message": "Application deleted successfully", "code": 200}), 200
+        else:
+            return jsonify({"error": "Application not found", "code": 404}), 404
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e), "code": 500}), 500
+
     
 @app.route('/get_staff_details/<int:staff_id>', methods=["GET"])
 def get_staff_details(staff_id):
