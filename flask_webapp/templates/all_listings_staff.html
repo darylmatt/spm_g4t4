@@ -94,7 +94,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="/all_Listings_staff" class="logo d-flex align-items-center">
-        <img src="static/assets/img/logologo.png" alt="">
+      
         <span class="d-none d-lg-block">SBRP</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -185,72 +185,7 @@
 
         </li><!-- End Notification Nav -->
 
-        <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
-          </a><!-- End Messages Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
-
-        </li><!-- End Messages Nav -->
-
+  
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -323,11 +258,17 @@
         <div class="text-center">
           <span class="d-none d-md-block">K. Anderson</span>
         </div>
+        <br>
+        <div class="text-center">
+          <span class="d-none d-md-block"> Access: Staff </span>
+        </div>
+
+        
       </a><!-- End Profile Image Icon -->
       
       <li class="nav-item">
        
-        <a class="nav-link " href="/staff_profile">
+        <a class="nav-link collapsed" href="/staff_profile">
           <i class="bi bi-grid"></i>
           <span>Profile</span>
         </a>
@@ -366,29 +307,33 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1> Staff View </h1>
+
       <br>
       <h2>All Open Listings</h2>
       <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-      
-        </ol>
+
       </nav>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search open role..." aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      <form action="" method="post">
+        <div class="row">
+          <div class="col-md-8">
+          <input class="form-control me-2" name="role_name" type="search" placeholder="Search open role..." aria-label="Search">
+          </div>
+          <div class="col-md-2">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+          </div>
+        </div>
+
+    
       <br>
       <div class="row">
 
        
       
         <div class="col-md-2">
-          <select id="inputState1" class="form-select">
+          <select id="inputState1" name="recency" class="form-select">
             <option selected>Any time</option>
             <option >Past week</option>
             <option >Past month</option>
@@ -396,17 +341,17 @@
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" class="form-select">
+          <select id="inputState2" name="country" class="form-select">
             <option selected>Country</option>
-            <option>Singapore</option>
-            <option>Malaysia</option>
-            <option>Indonesia</option>
-            <option>Vietnam</option>
-            <option>Hong Kong</option>
+            <option>SG</option>
+            <option>MY</option>
+            <option>ID</option>
+            <option>VN</option>
+            <option>HK</option>
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" class="form-select">
+          <select id="inputState2" name="department" class="form-select">
             <option selected>Department</option>
             <option>Sales</option>
             <option>Consultancy</option>
@@ -425,14 +370,12 @@
                       <div class="form-group">
                          
                           <div class="custom-dropdown">
-                              <button id="dropdownBtn" class="form-select">Required skills</button>
+                              <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
                               <div id="dropdownContent" class="custom-dropdown-content">
                                   <input type="text" class="search-input" id="searchInput" placeholder="Search...">
-                                  <label><input type="checkbox" value="Option 1"> Option 1</label>
-                                  <label><input type="checkbox" value="Option 2"> Option 2</label>
-                                  <label><input type="checkbox" value="Option 3"> Option 3</label>
-                                  <label><input type="checkbox" value="Option 4"> Option 4</label>
-                                  <label><input type="checkbox" value="Option 5"> Option 5</label>
+                                  <label><input type="checkbox" name="required_skills[]" value="Communication">Communication</label>
+                                  <label><input type="checkbox" name="required_skills[]" value="Stakeholder Management">Stakeholder Management</label>
+                            
                               </div>
                           </div>
                       </div>
@@ -453,7 +396,7 @@
                   // Handle checkbox changes to update the button text
                   $("#dropdownContent input[type='checkbox']").change(function () {
                       // Uncomment the following line if you want to update the button text with selected options
-                      // updateButtonText();
+                       updateButtonText();
                   });
       
                   // Handle search input
@@ -493,7 +436,7 @@
         <br>
         <br>
    
-
+        </form>
       </div>
 
       <br>
@@ -524,8 +467,8 @@
             
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-              {% for listing in listings %}
+              {% if listings %}
+                {% for listing in listings %}
                 <div class="post-item clearfix">
                   <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#{{listing.listing_id}}" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false" class="list-group-item list-group-item-action" data-listing-id="{{ listing.listing_id }}">
                     <img src="static/assets/img/news-1.jpg" alt="">
@@ -533,7 +476,8 @@
                     <p> Posted: {{ listing.date_open }} | {{ listing.dept }} | {{ listing.country }} | </p>
                   </div>
                 </div>
-              {% endfor %}
+                {% endfor %}
+              {% endif %}
 
             </div><!-- End sidebar recent posts-->
 
@@ -563,7 +507,7 @@
         <!-- News & Updates Traffic -->
         <div class="card">
 
-          
+          {% if listings %}
           <div class="card-body pt-3">
             <!-- Bordered Tabs -->
 
@@ -573,6 +517,7 @@
             </div>
           
             <div class="tab-content pt-2" id="v-pills-tabContent">
+              {% if listings %}
               {% for listing in listings %}
               <div class="tab-pane fade active profile-overview" id="{{listing.listing_id}}" role="tabpanel">
                 <h5 class="card-title">{{listing.role_name}}</h5>
@@ -634,6 +579,7 @@
       {% for skill in listing.skills_required_list %}
         <li>{{skill}}</li>
       {% endfor %}
+
     </ul>
   </div>
 </div>
@@ -717,6 +663,8 @@
 
               </div>
               {% endfor %}
+              {% endif %}
+        
 
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
@@ -902,6 +850,7 @@
 
           </div>
         </div>
+        {% endif %}
       </div>
 
 
@@ -934,9 +883,12 @@
   <!-- match_staff_skills js file -->
   <script src="static/assets/js/match_staff_skills.js"></script>
 
+  {% if listings %}
   <script>
+   
     var listingData = {{ listings | tojson | safe }};
   </script>
+   {% endif %}
 
 
   

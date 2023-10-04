@@ -100,18 +100,11 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <img src="static/assets/img/logologo.png" alt="">
         <span class="d-none d-lg-block">SBRP</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
-    <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="#">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-      </form>
-    </div><!-- End Search Bar -->
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
@@ -138,15 +131,7 @@
               <hr class="dropdown-divider">
             </li>
 
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
+           
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -198,68 +183,6 @@
         </li><!-- End Notification Nav -->
 
         <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
-          </a><!-- End Messages Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="static/assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
 
         </li><!-- End Messages Nav -->
 
@@ -376,29 +299,37 @@
   </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
-
+    <br>
     <div class="pagetitle">
-      <h1>All Listings (HR view)</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-      </nav>
+      <h2>Manage Listings</h2>
+    
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search open role..." aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      <form action="" method="post">
+        <div class="row">
+          <div class="col-md-8">
+          <input class="form-control me-2" name="role_name" type="search" placeholder="Search open role..." aria-label="Search">
+          </div>
+          <div class="col-md-2">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+          </div>
+        </div>
+
+    
       <br>
       <div class="row">
 
        
-      
         <div class="col-md-2">
-          <select id="inputState1" class="form-select">
+          <select id="inputState1" name="status" class="form-select">
+            <option selected>Status</option>
+            <option >Open</option>
+            <option >Closed</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <select id="inputState1" name="recency" class="form-select">
             <option selected>Any time</option>
             <option >Past week</option>
             <option >Past month</option>
@@ -406,17 +337,17 @@
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" class="form-select">
+          <select id="inputState2" name="country" class="form-select">
             <option selected>Country</option>
-            <option>Singapore</option>
-            <option>Malaysia</option>
-            <option>Indonesia</option>
-            <option>Vietnam</option>
-            <option>Hong Kong</option>
+            <option>SG</option>
+            <option>MY</option>
+            <option>ID</option>
+            <option>VN</option>
+            <option>HK</option>
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" class="form-select">
+          <select id="inputState2" name="department" class="form-select">
             <option selected>Department</option>
             <option>Sales</option>
             <option>Consultancy</option>
@@ -430,102 +361,82 @@
 
         <body>
           <div class="col md-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="multiSelect1"></label>
-                        <div class="custom-dropdown">
-                            <button id="dropdownBtn1" class="btn btn-secondary">Required skills</button>
-                            <div id="dropdownContent1" class="custom-dropdown-content">
-                                <input type="text" class="search-input" id="searchInput1" placeholder="Search...">
-                                <label><input type="checkbox" value="Option 1"> Option 1</label>
-                                <label><input type="checkbox" value="Option 2"> Option 2</label>
-                                <label><input type="checkbox" value="Option 3"> Option 3</label>
-                                <label><input type="checkbox" value="Option 4"> Option 4</label>
-                                <label><input type="checkbox" value="Option 5"> Option 5</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    
-        <!-- Include Bootstrap and jQuery JS -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                // Show/hide the custom dropdowns when the buttons are clicked
-                $("#dropdownBtn1").click(function () {
-                    $("#dropdownContent1").toggle();
-                });
-    
-                $("#dropdownBtn2").click(function () {
-                    $("#dropdownContent2").toggle();
-                });
-    
-                // Handle checkbox changes to update the button text
-                $("#dropdownContent1 input[type='checkbox']").change(function () {
-                    updateButtonText(1);
-                });
-    
-                $("#dropdownContent2 input[type='checkbox']").change(function () {
-                    updateButtonText(2);
-                });
-    
-                // Handle search input for both dropdowns
-                $("#searchInput1").on("input", function () {
-                    filterOptions(1);
-                });
-    
-                $("#searchInput2").on("input", function () {
-                    filterOptions(2);
-                });
-    
-                // Initial update of the option filter for both dropdowns
-                filterOptions(1);
-                filterOptions(2);
-            });
-    
-             // Function to update the button text based on selected checkboxes
-        function updateButtonText(dropdownId) {
-            let selectedOptions = [];
-            let checkboxSelector = "#dropdownContent" + dropdownId + " input[type='checkbox']:checked";
-
-            $(checkboxSelector).each(function () {
-                selectedOptions.push($(this).val());
-            });
-
-            // Update a separate element to display selected options
-            $("#selectedOptions" + dropdownId).text(selectedOptions.join(', '));
-        }
-
-        // Function to filter options based on the search input for a specific dropdown
-        function filterOptions(dropdownId) {
-            let searchText = $("#searchInput" + dropdownId).val().toLowerCase();
-            let labelSelector = "#dropdownContent" + dropdownId + " label";
-
-            $(labelSelector).each(function () {
-                let optionText = $(this).text().toLowerCase();
-                if (optionText.indexOf(searchText) !== -1) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-    </script>
+              <div class="row">
+                  <div class="col-md-6">
+                      <div class="form-group">
+                         
+                          <div class="custom-dropdown">
+                              <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
+                              <div id="dropdownContent" class="custom-dropdown-content">
+                                  <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+                                  <label><input type="checkbox" name="required_skills[]" value="Communication">Communication</label>
+                                  <label><input type="checkbox" name="required_skills[]" value="Stakeholder Management">Stakeholder Management</label>
+                            
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      
+          <!-- Include Bootstrap and jQuery JS -->
+          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
+          <script>
+              $(document).ready(function () {
+                  // Show/hide the custom dropdown when the button is clicked
+                  $("#dropdownBtn").click(function () {
+                      $("#dropdownContent").toggle();
+                  });
+      
+                  // Handle checkbox changes to update the button text
+                  $("#dropdownContent input[type='checkbox']").change(function () {
+                      // Uncomment the following line if you want to update the button text with selected options
+                       updateButtonText();
+                  });
+      
+                  // Handle search input
+                  $("#searchInput").on("input", function () {
+                      filterOptions();
+                  });
+      
+                  // Initial update of the option filter
+                  filterOptions();
+              });
+      
+              // Function to update the button text based on selected checkboxes
+              function updateButtonText() {
+                  let selectedOptions = [];
+                  $("#dropdownContent input[type='checkbox']:checked").each(function () {
+                      selectedOptions.push($(this).val());
+                  });
+      
+                  // Update the button text with selected options
+                  $("#dropdownBtn").text(selectedOptions.length > 0 ? selectedOptions.join(', ') : "Required Skills");
+              }
+      
+              // Function to filter options based on the search input
+              function filterOptions() {
+                  let searchText = $("#searchInput").val().toLowerCase();
+                  $("#dropdownContent label").each(function () {
+                      let optionText = $(this).text().toLowerCase();
+                      if (optionText.indexOf(searchText) !== -1) {
+                          $(this).show();
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+              }
+          </script>
 
         <br>
         <br>
    
-
+        </form>
       </div>
 
-
       <br>
-      
+
       <div class="row">
       <div class="col-lg-5">
         <!-- News & Updates Traffic -->
