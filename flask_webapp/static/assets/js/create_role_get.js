@@ -156,9 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var selected_skill_values = [];
     var selected_skills = document.getElementById("selectedSkills");
     selected_skills.childNodes.forEach((child) => {
-      skill_id = child.childNodes[0].id;
       // Get their values first and store in a list
-      selected_skill_values.push(skill_id);
+      selected_skill_values.push((skill_id = child.childNodes[0].id));
     });
 
     // Change their checked status
@@ -178,14 +177,61 @@ document.addEventListener("DOMContentLoaded", function () {
   const observer = new MutationObserver(handleSelectedSkillsChange);
 
   // Start observing changes in the selected_skills div
-
   observer.observe(selected_skills, { childList: true });
 
-  // Initial call to ensure the code runs when the page loads
-  handleSelectedSkillsChange();
+  //Onclick
+  var saveBtn = document.getElementById("saveSelection");
+  saveBtn.addEventListener("click", function () {
+    console.log("Clicked");
 
-  var selected_country = document.getElementById("createCountryDropdown");
-  var selected_dept = document.getElementById("createDepartmentDropdown");
+    //Clear the selected skills container
+    container = document.getElementById("selectedSkills");
+    container.innerHTML = "";
+
+    //Get ids of all checkboxes that are checked
+    checkedSkills = [];
+    var checkboxes = document
+      .getElementById("skillSelectModalBody")
+      .querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked == true) {
+        checkedSkills.push(checkbox.id);
+      }
+    });
+
+    // console.log(checkedSkills);
+
+    //Populate the selected skills container
+    checkedSkills.forEach((skill) => {
+      const skillDiv = document.createElement("div");
+
+      const skillContainer = document.createElement("div");
+      skillContainer.id = skill;
+      skillContainer.className = "non-clickable-container";
+
+      const skillText = document.createElement("span");
+      skillText.className = "non-clickable-text text-success";
+      skillText.textContent = skill;
+      const skillCloseBtn = document.createElement("button");
+      skillCloseBtn.type = "button";
+      skillCloseBtn.className = "btn-close";
+      skillCloseBtn.setAttribute("aria-label", "Close");
+
+      skillCloseBtn.addEventListener("click", function () {
+        // Remove the entire container when the close button is clicked
+        skillDiv.remove();
+      });
+
+      skillContainer.appendChild(skillText);
+      skillContainer.appendChild(skillCloseBtn);
+      skillDiv.appendChild(skillContainer);
+      selected_skills.appendChild(skillDiv);
+    });
+  });
+
+  const selected_country = document.getElementById("createCountryDropdown");
+  const selected_dept = document.getElementById("createDepartmentDropdown");
 
   function get_manager() {
     fetch("/get_manager/" + selected_country.value + "/" + selected_dept.value)
