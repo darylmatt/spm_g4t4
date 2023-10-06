@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
 from db_config.db import db
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
@@ -9,6 +9,9 @@ from sqlalchemy import text
 from sqlalchemy import and_
 import json
 import requests
+from fuzzywuzzy import fuzz
+from sqlalchemy import or_
+
 
 
 app = Flask(__name__)
@@ -73,7 +76,7 @@ def index():
                     date_close = listing['date_close']
                     input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
-                    if input_open_datetime < datetime.now() and input_close_datetime > datetime.now():
+                    if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
                         status = "Open"
                     else:
                         status = "Closed"
@@ -97,8 +100,8 @@ def index():
 
                     listingData = {
                         'role_name': listing['role_name'],
-                        'date_open': listing['date_open'],
-                        'date_close': listing['date_close'],
+                        'date_open': input_open_datetime.strftime("%d/%m/%Y"),
+                        'date_close': input_close_datetime.strftime("%d/%m/%Y"),
                         'dept': listing['dept'],
                         'country': listing['country'],
                         'num_opening': listing['num_opening'],
@@ -148,18 +151,44 @@ def get_all_open_role_listings(search):
         and_(
             Role_Listing.date_open <= current_time,
             Role_Listing.date_close >= current_time,
-            Role_Listing.num_opening > 0,
-            Role_Listing.date_close >= current_time  # This condition appears twice; you may remove one of them.
+            Role_Listing.num_opening > 0
         )
     )
 
             if role_name:
                 print('filtering by name')
-                base_query = base_query.filter(Role_Listing.role_name == role_name)
-
+                #Setting a similarity threshold for search and role matching
+                # Set a threshold for matching similarity
+                base_query = base_query.filter(Role_Listing.role_name.like(f"%{role_name}%"))
+                
             if department != "Department":
                 print('filtering by department')
                 base_query = base_query.filter(Role_Listing.dept == department)
+            
+            if country != "Country":
+                print("Filtering by country")
+                base_query = base_query.filter(Role_Listing.country == country)
+
+    
+            if recency != "Any time":
+                print("Filtering by recency")
+                if recency == "Past 24 hours":
+                    print("Filtering by past 24 hours")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=1))
+                elif recency == "Past week":
+                    print("Filtering by past week")
+                    print(Role_Listing.date_open)
+                    print(current_time)
+                    print(current_time - timedelta(days=7))
+                    print(Role_Listing.date_open >= current_time - timedelta(days=7))
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=7))
+                elif recency == "Past month":
+                    print("Filtering by past month")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=30))
+                else:
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+
+                
 
             '''
             if required_skills:
@@ -170,7 +199,6 @@ def get_all_open_role_listings(search):
                 except:
                     pass
                     '''
-            
 
             role_listings = base_query.all()
             if(len(required_skills) > 0):
@@ -241,23 +269,110 @@ def get_all_open_role_listings(search):
         
 
 @app.route('/get_all_listings', methods=["GET"])
-def get_all_listings():
+def get_all_listings(search):
     try:
-        role_listings = Role_Listing.query.all()
-        if len(role_listings) > 0:
-            return jsonify(
-                {
-                    "code":200, 
-                    "data": [listing.json() for listing in role_listings]
-                }
-            )
+
+
+        #Scenario where there is input search & filter
+        if search:
+            print("there is input search by HR")
+            print(search)
+            status = search["status"]
+            role_name = search["role_search"]
+            recency = search["recency"]
+            country = search["country"]
+            department = search["department"]
+            required_skills = search["required_skills"]
+
+            base_query = Role_Listing.query.filter()
+            current_time = datetime.now()
+
+            if status != "Status":
+                print("Filtering by status")
+                if status == "Open":
+                    base_query = Role_Listing.query.filter(
+                        and_(
+                            Role_Listing.date_open <= current_time,
+                            Role_Listing.date_close >= current_time,
+                            Role_Listing.num_opening > 0
+                        )
+                    )
+                elif status == "Closed":
+                    base_query = Role_Listing.query.filter(
+                        or_(
+                            Role_Listing.date_open > current_time,
+                            Role_Listing.date_close < current_time,
+                            Role_Listing.num_opening == 0
+                        )
+                    )
+            
+
+            if role_name:
+                print('filtering by name')
+                #Setting a similarity threshold for search and role matching
+                # Set a threshold for matching similarity
+                base_query = base_query.filter(Role_Listing.role_name.like(f"%{role_name}%"))
+
+            if department != "Department":
+                print('filtering by department')
+                base_query = base_query.filter(Role_Listing.dept == department)
+
+            if country != "Country":
+                print("Filtering by country")
+                base_query = base_query.filter(Role_Listing.country == country)
+            
+            if recency != "Any time":
+                print("Filtering by recency")
+                if recency == "Past 24 hours":
+                    print("Filtering by past 24 hours")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=1))
+                elif recency == "Past week":
+                    print("Filtering by past week")
+                    print(Role_Listing.date_open)
+                    print(current_time)
+                    print(current_time - timedelta(days=7))
+                    print(Role_Listing.date_open >= current_time - timedelta(days=7))
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=7))
+                elif recency == "Past month":
+                    print("Filtering by past month")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=30))
+                else:
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+
+            role_listings = base_query.all()
+            if len(role_listings) > 0:
+                return jsonify(
+                    {
+                        "code":200, 
+                        "data": [listing.json() for listing in role_listings]
+                    }
+                )
+            else:
+                print('no such listing')
+                return jsonify(
+                    {
+                        "code": 404,
+                        "message": "There are no role listings",
+                    }
+                ), 404
         else:
-            return jsonify(
-                {
-                    "code": 404,
-                    "message": "There are no role listings"
-                }
-            ), 404
+            print("there is no input search")
+            role_listings = Role_Listing.query.filter().all()
+
+            if len(role_listings) > 0:
+                return jsonify(
+                    {
+                        "code":200, 
+                        "data": [listing.json() for listing in role_listings]
+                    }
+                )
+            else:
+                return jsonify(
+                    {
+                        "code": 404,
+                        "message": "There are no role listings"
+                    }
+                ), 404
 
     except Exception as e:
         db.session.rollback()
@@ -370,58 +485,88 @@ def register():
     dynamic_content = "This content is coming from Flask!"
     return render_template("register.html")
 
-@app.route('/all_listings_HR')
+@app.route('/all_listings_HR', methods=["GET", "POST"])
 def all_listings_HR():
-    listings_json = get_all_listings()
-    listings_dict = json.loads(listings_json.data)
-    listings=[]
-    if listings_dict:
-        data = listings_dict['data']
-        for listing in data:
-            date_open = listing['date_open']
-            input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
-            date_close = listing['date_close']
-            input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
+    try:
+        #Checking if there is input search/filter
+        status = request.form.get('status')
+        role_search = request.form.get('role_name')
+        recency = request.form.get('recency')
+        country = request.form.get('country')
+        department = request.form.get('department')
+        required_skills = request.form.getlist('required_skills[]')
+        print(status)
+        print(role_search)
+        print(recency)
+        print(country)
+        print(department)
+        print(required_skills)
+        search = False
+        if( status or role_search or recency or country or department or required_skills):
+            print("ROLE SEARCH")
+            search = True
+        
+        if search:
+            search_params = {"role_search": role_search, "status": status, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
+            listings_json = get_all_listings(search_params)
+        else:
+            print("no search")
+            listings_json = get_all_listings(False)
+            print(listings_json)
 
-            if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now()):
-                status = "Open"
-            else:
-                status = "Closed"
+        listings_dict = json.loads(listings_json.data)
+        listings=[]
+        if listings_dict:
+            data = listings_dict['data']
+            for listing in data:
+                date_open = listing['date_open']
+                input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
+                date_close = listing['date_close']
+                input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
-            manager_json=  get_staff_details(listing['reporting_mng'])
-            manager_dict = json.loads(manager_json.data)
-            manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
-            manager_dept = manager_dict['data']['dept']
+                if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
+                    status = "Open"
+                else:
+                    status = "Closed"
 
-            role_desc_json = get_role_description(listing['role_name'])
-            role_desc_dict = json.loads(role_desc_json.data)
-            role_desc = role_desc_dict['data']
+                manager_json=  get_staff_details(listing['reporting_mng'])
+                manager_dict = json.loads(manager_json.data)
+                manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
+                manager_dept = manager_dict['data']['dept']
 
-            skills_required_json = get_skills_required(listing['role_name'])
-            skills_required_dict = json.loads(skills_required_json.data)
-            skills_required_list = skills_required_dict['data']['skills_required']
+                role_desc_json = get_role_description(listing['role_name'])
+                role_desc_dict = json.loads(role_desc_json.data)
+                role_desc = role_desc_dict['data']
 
-            listingData = {
-                'role_name': listing['role_name'],
-                'date_open': listing['date_open'],
-                'date_close': listing['date_close'],
-                'dept': listing['dept'],
-                'country': listing['country'],
-                'num_opening': listing['num_opening'],
-                'listing_id': listing['listing_id'],
-                'manager_name': manager_name,
-                'manager_dept': manager_dept,
-                'status': status,
-                'role_desc': role_desc,
-                'skills_required_list': skills_required_list
-            }
-            listings.append(listingData)
-            num_results = len(listings)
+                skills_required_json = get_skills_required(listing['role_name'])
+                skills_required_dict = json.loads(skills_required_json.data)
+                skills_required_list = skills_required_dict['data']['skills_required']
 
-        return render_template("all_listings_HR.html", 
-                           listings=listings,
-                           num_results=num_results
-                           )
+                listingData = {
+                    'role_name': listing['role_name'],
+                    'date_open': input_open_datetime.strftime("%d/%m/%Y"),
+                    'date_close': input_close_datetime.strftime("%d/%m/%Y"),
+                    'dept': listing['dept'],
+                    'country': listing['country'],
+                    'num_opening': listing['num_opening'],
+                    'listing_id': listing['listing_id'],
+                    'manager_name': manager_name,
+                    'manager_dept': manager_dept,
+                    'status': status,
+                    'role_desc': role_desc,
+                    'skills_required_list': skills_required_list
+                }
+                listings.append(listingData)
+                num_results = len(listings)
+
+            return render_template("all_listings_HR.html", 
+                            listings=listings,
+                            num_results=num_results
+                            )
+    except Exception as e:
+        # Handle exceptions (e.g., network errors) here
+        return str(e), 500  # Return an error response with a 500 status code
+
 # Define a route to get the listing ID by name
 @app.route('/get_listing_id_by_name/<string:role_name>', methods=["GET"])
 def get_listing_id_by_name(role_name):
@@ -471,11 +616,12 @@ def apply_role(listing_id):
             "applied_date": applied_date,
         }
 
+        
         result = db.session.execute(insert_sql, params)
         db.session.commit()
 
-        cursor = db.session.execute(text("SELECT LAST_INSERT_ID()"))
-        application_id = cursor.fetchone()[0]
+        # Fetch the last inserted ID using SQLAlchemy's execute method
+        application_id = result.lastrowid
 
         return jsonify({"message": "Application submitted successfully", "application_id": application_id, "code": 201}), 201
 
@@ -496,6 +642,37 @@ def check_application_status(application_id, staff_id):
 
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
+
+# Cancel application
+@app.route('/delete_application/<int:application_id>/<int:staff_id>', methods=["DELETE"])
+def delete_application(application_id, staff_id):
+    try:
+        # Check if the application with the specified application_id and staff_id exists
+        application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
+
+        if application:
+            # Retrieve the associated role_listing for the application
+            role_listing = Role_Listing.query.filter_by(listing_id=application.listing_id).first()
+
+            if role_listing:
+                # Check if the role_listing is past the application deadline
+                current_datetime = datetime.now()
+                if role_listing.date_close < current_datetime:
+                    return jsonify({"error": "Application cannot be deleted as it's past the deadline", "code": 400}), 400
+
+                # Delete the application
+                db.session.delete(application)
+                db.session.commit()
+                return jsonify({"message": "Application deleted successfully", "code": 200}), 200
+            else:
+                return jsonify({"error": "Role listing not found for the application", "code": 404}), 404
+        else:
+            return jsonify({"error": "Application not found", "code": 404}), 404
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e), "code": 500}), 500
+
     
 @app.route('/get_staff_details/<int:staff_id>', methods=["GET"])
 def get_staff_details(staff_id):
