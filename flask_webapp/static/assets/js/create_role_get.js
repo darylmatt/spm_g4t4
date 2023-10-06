@@ -155,22 +155,30 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleSelectedSkillsChange() {
     var selected_skill_values = [];
     var selected_skills = document.getElementById("selectedSkills");
-    selected_skills.childNodes.forEach((child) => {
-      // Get their values first and store in a list
-      selected_skill_values.push((skill_id = child.childNodes[0].id));
-    });
+    var noSkillsError = document.getElementById("noSkillsError");
 
-    // Change their checked status
-    var checkboxes = document
-      .getElementById("skillSelectModalBody")
-      .querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach((checkbox) => {
-      if (selected_skill_values.includes(checkbox.value)) {
-        checkbox.checked = true;
-      } else {
-        checkbox.checked = false;
-      }
-    });
+    if (selected_skills.childNodes.length == 0) {
+      noSkillsError.hidden = false;
+    } else {
+      noSkillsError.hidden = true;
+      selected_skills.childNodes.forEach((child) => {
+        // Get their values first and store in a list
+        selected_skill_values.push((skill_id = child.childNodes[0].id));
+      });
+
+      // Change their checked status
+      var checkboxes = document
+        .getElementById("skillSelectModalBody")
+        .querySelectorAll('input[type="checkbox"]');
+
+      checkboxes.forEach((checkbox) => {
+        if (selected_skill_values.includes(checkbox.value)) {
+          checkbox.checked = true;
+        } else {
+          checkbox.checked = false;
+        }
+      });
+    }
   }
 
   // Create a MutationObserver to watch for changes in the selected_skills div
@@ -199,8 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
         checkedSkills.push(checkbox.id);
       }
     });
-
-    // console.log(checkedSkills);
 
     //Populate the selected skills container
     checkedSkills.forEach((skill) => {
