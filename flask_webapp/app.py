@@ -9,7 +9,7 @@ from sqlalchemy import text
 from sqlalchemy import and_
 import json
 import requests
-from fuzzywuzzy import fuzz
+# from fuzzywuzzy import fuzz
 from sqlalchemy import or_
 
 
