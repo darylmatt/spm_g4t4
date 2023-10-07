@@ -256,7 +256,13 @@
       <a class="nav-item d-flex flex-column align-items-center justify-content-center" href="#" data-bs-toggle="dropdown">
         <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
         <div class="text-center">
-          <span class="d-none d-md-block">K. Anderson</span>
+          <span class="d-none d-md-block"> 
+            {% if Staff_Name %}
+              {{ Staff_Name }}
+            {% else %}
+              Unknown
+            {% endif %}
+          </span>
         </div>
         <br>
         <div class="text-center">

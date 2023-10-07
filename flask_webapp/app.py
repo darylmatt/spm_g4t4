@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_cors import CORS
 from db_config.db import db
 from datetime import datetime, timedelta
@@ -12,9 +12,31 @@ import requests
 # from fuzzywuzzy import fuzz
 from sqlalchemy import or_
 
-
-
 app = Flask(__name__)
+
+# Session settings
+app.secret_key = 'Our_secret_key'
+user_ids = ['140002', '160008']
+user_dict = {'140002': {
+                'Staff_ID': '140002',
+                'Role' : 2,
+                'Staff_FName': 'Susan',
+                'Staff_LName': 'Goh',
+                'Dept': 'Sales',
+                'Country': 'Singapore',
+                'Email': 'Susan.Goh@allinone.com.sg'
+            },
+            
+            '160008': {
+                'Staff_ID': '160008',
+                'Role' : 4,
+                'Staff_FName': 'Sally',
+                'Staff_LName': 'Loh',
+                'Dept': 'HR',
+                'Country': 'Singapore',
+                'Email': 'Sally.Loh@allinone.com.sg'
+            }}
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp'
 
@@ -31,16 +53,36 @@ def design_reference():
 
 @app.route('/staff_profile')
 def staff_profile():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
     return render_template("staff_profile.html")
 
 @app.route('/all_listings_staff', methods=["GET", "POST"])
-def index():
+def all_listings_staff():
+
+    
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
+    print(Staff_ID)
+    print(Role)
+    print(Staff_Fname)
+    print(Staff_Lname)
+    print(Staff_Name)
+    print(Dept)
+    print(Country)
+    print(Email)
 
     try:
         # Fetch staff skills using the existing route
         # Checking if there is input search/filter
-        
-        
         
         role_search = request.form.get('role_name')
         recency = request.form.get('recency')
@@ -119,12 +161,14 @@ def index():
 
             return render_template("all_listings_staff.html",
                                 listings=listings,
-                                num_results=num_results
+                                num_results=num_results,
+                                Staff_Name = Staff_Name
                                 )
         except:
             print("reached here")
             return render_template("all_listings_staff.html",
-                                num_results="0"
+                                num_results="0",
+                                Staff_Name = Staff_Name
                                 )
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
@@ -271,8 +315,6 @@ def get_all_open_role_listings(search):
 @app.route('/get_all_listings', methods=["GET"])
 def get_all_listings(search):
     try:
-
-
         #Scenario where there is input search & filter
         if search:
             print("there is input search by HR")
@@ -458,6 +500,10 @@ def applied_roles():
 
 @app.route('/role_creation')
 def role_creation():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
     dynamic_content = "This content is coming from Flask!"
     return render_template("role_creation.html")
 
@@ -475,8 +521,37 @@ def role_search():
     print(required_skills)
     return 'role_search'
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    input_id = request.form.get('ID')
+    print(input_id)
+    if input_id in user_ids:
+        #Check access control level
+        Staff_ID = user_dict[input_id]['Staff_ID']
+        Role = user_dict[input_id]['Role']
+        Staff_Fname = user_dict[input_id]['Staff_FName']
+        Staff_Lname = user_dict[input_id]['Staff_LName']
+        Staff_Name = Staff_Fname + " " + Staff_Lname
+        Dept = user_dict[input_id]['Dept']
+        Country = user_dict[input_id]['Country']
+        Email = user_dict[input_id]['Email']
+        
+        session['Staff_ID'] = Staff_ID
+        session['Role'] = Role
+        session['Staff_Fname'] = Staff_Fname
+        session['Staff_Lname'] = Staff_Lname
+        session['Staff_Name'] = Staff_Name
+        session['Dept'] = Dept
+        session['Country'] = Country
+        session['Email'] = Email
+
+       
+        if Role == 2:
+            return redirect(url_for('all_listings_staff'))
+        elif Role == 4:
+            return redirect(url_for('all_listings_HR'))
+    else:
+        print("User not found")
     dynamic_content = "This content is coming from Flask!"
     return render_template("login.html")
 
@@ -487,14 +562,35 @@ def register():
 
 @app.route('/all_listings_HR', methods=["GET", "POST"])
 def all_listings_HR():
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
+    print(Staff_ID)
+    print(Role)
+    print(Staff_Fname)
+    print(Staff_Lname)
+    print(Staff_Name)
+    print(Dept)
+    print(Country)
+    print(Email)
     try:
         #Checking if there is input search/filter
+        
+
         status = request.form.get('status')
         role_search = request.form.get('role_name')
         recency = request.form.get('recency')
         country = request.form.get('country')
         department = request.form.get('department')
         required_skills = request.form.getlist('required_skills[]')
+        print(user_id)
+        print(user_name)
+
         print(status)
         print(role_search)
         print(recency)
@@ -561,7 +657,8 @@ def all_listings_HR():
 
             return render_template("all_listings_HR.html", 
                             listings=listings,
-                            num_results=num_results
+                            num_results=num_results,
+                            Staff_Name = Staff_Name
                             )
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
