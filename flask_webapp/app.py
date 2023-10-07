@@ -677,6 +677,41 @@ def get_listing_id_by_name(role_name):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# get applications
+@app.route('/get_application_history/<int:staff_id>', methods=["GET"])
+def get_application_history(staff_id):
+    try:
+        # Fetch application data for the specified staff_id
+        applications = Application.query.filter_by(staff_id=staff_id).all()
+
+        # Create a list to store application history data
+        application_history = []
+
+        for application in applications:
+            # Fetch role_listing data based on the listing_id in each application
+            role_listing = Role_Listing.query.filter_by(listing_id=application.listing_id).first()
+
+            if role_listing:
+                # Fetch staff data based on staff_id
+                staff = Staff.query.get(staff_id)
+
+                # Combine staff_fname and staff_lname to create staff_name
+                staff_name = f"{staff.staff_fname} {staff.staff_lname}"
+
+                # Append application and role_listing data to the application history list
+                application_history.append({
+                    'application_id': application.application_id,
+                    'staff_name': staff_name,
+                    'role_name': role_listing.role_name,
+                    'applied_date': application.applied_date.strftime('%Y-%m-%d'),
+                    'status': application.status,
+                })
+
+        return jsonify({"application_history": application_history, "code": 200}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e), "code": 500}), 500
+
 #apply for open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
