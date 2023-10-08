@@ -14,23 +14,73 @@ document.addEventListener("DOMContentLoaded", function () {
         applicationHistory.forEach((application, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <th scope="row">${index + 1}</th>
-                <td>${application.staff_name}</td>
-                <td>${application.role_name}</td>
-                <td>${application.applied_date}</td>
-                <td>
-                    <button type="button" class="btn btn-${application.statusClass} rounded-pill">${application.status}</button>
+                <th class="align-middle" scope="row">${index + 1}</th>
+                <td class="align-middle">${application.staff_name}</td>
+                <td class="align-middle">${application.role_name}</td>
+                <td class="align-middle">${application.applied_date}</td>
+                <td class="align-middle">
+                    <div class="d-flex align-items-center">
+                        <span style="margin-right: 5px;">${application.status}</span>
+                        <button id="cancelButton" type="button" class="btn btn-danger cancel-button" data-bs-target="#verticalycentered" data-application-id="${application.application_id}">Cancel</button>
+                    </div>
                 </td>
             `;
 
             // Append the row to the table body
             tableBody.appendChild(row);
+
+            // Add a click event listener to the Cancel button
+            const cancelButton = row.querySelector(".cancel-button");
+            cancelButton.addEventListener("click", function () {
+                const applicationId = cancelButton.getAttribute("data-application-id");
+
+                if (applicationId) {
+                    // Call your cancel application function with the application ID
+                    cancelApplication(applicationId);
+                } else {
+                    // Handle the case where applicationId is not found
+                    alert("Application ID not found.");
+                }
+            });
         });
     }
 
+    // Function to send an HTTP DELETE request to cancel an application
+    function cancelApplication(applicationId) {
+        // Define the URL of your Flask route
+        const url = `/delete_application/${applicationId}`;
+
+        // Send an HTTP DELETE request using the Fetch API
+        fetch(url, {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (response.status === 200) {
+                    // Application was deleted successfully
+                    alert("Application deleted successfully");
+                    // You can also remove the associated HTML element if needed
+                    // button.parentElement.parentElement.remove();
+                    // Or simply refresh the page to update the table
+                    location.reload();
+                } else if (response.status === 404) {
+                    // Application not found
+                    alert("Application not found. It may have already been deleted.");
+                } else if (response.status === 400) {
+                    // Application past the deadline
+                    alert("Application cannot be deleted as it's past the deadline.");
+                } else {
+                    // Handle other errors
+                    alert("Error deleting application. Please try again later.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An unexpected error occurred while deleting the application.");
+            });
+    }
 
     // Make an AJAX request to retrieve application history data
-    fetch("/get_application_history/17") // Replace 19 with the actual staff_id
+    fetch("/get_application_history") // Replace 19 with the actual staff_id
         .then((response) => {
             if (response.status === 200) {
                 return response.json();

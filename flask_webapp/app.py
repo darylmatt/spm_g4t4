@@ -675,10 +675,12 @@ def get_listing_id_by_name(role_name):
         return jsonify({"error": str(e)}), 500
 
 # get applications
-@app.route('/get_application_history/<int:staff_id>', methods=["GET"])
-def get_application_history(staff_id):
+@app.route('/get_application_history', methods=["GET"])
+def get_application_history():
     try:
         # Fetch application data for the specified staff_id
+        staff_id = session.get('Staff_ID')
+        print("staff_id:", staff_id)
         applications = Application.query.filter_by(staff_id=staff_id).all()
 
         # Create a list to store application history data
@@ -773,10 +775,11 @@ def check_application_status(application_id, staff_id):
         return jsonify({"error": str(e), "code": 500}), 500
 
 # Cancel application
-@app.route('/delete_application/<int:application_id>/<int:staff_id>', methods=["DELETE"])
-def delete_application(application_id, staff_id):
+@app.route('/delete_application/<int:application_id>', methods=["DELETE"])
+def delete_application(application_id):
     try:
         # Check if the application with the specified application_id and staff_id exists
+        staff_id = session.get('Staff_ID')
         application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
 
         if application:
