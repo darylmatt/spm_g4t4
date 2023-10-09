@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_cors import CORS
 from db_config.db import db
+from decouple import config
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
@@ -14,8 +15,9 @@ import requests
 
 app = Flask(__name__)
 
+
 # Session settings
-app.secret_key = 'Our_secret_key'
+app.secret_key = config('SECRET_KEY')
 user_ids = ['140002', '160008']
 user_dict = {'140002': {
                 'Staff_ID': '140002',
@@ -38,7 +40,7 @@ user_dict = {'140002': {
             }}
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp'
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
