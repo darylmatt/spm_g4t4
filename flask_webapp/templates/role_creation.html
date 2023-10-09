@@ -492,8 +492,12 @@
              
           <div class="row my-3">
                 <label for="inputResponsibility" class="col-sm-2 py-2 col-form-label">Responsibilities</label>
+                <p class="text-danger" id="no_desc_error">
+                  Please enter a description.
+                </p>
                 <div class="row" >
                     <textarea id="create_role_desc" class="form-control" style="height: 100px"></textarea>
+                 
                 </div>
           </div>
 
@@ -526,7 +530,26 @@
                 <!-- submit button -->
                 <div class="row mb-3 pt-3 d-flex justify-content-center">
                     <div class="d-flex justify-content-center mt-4">
-                      <button type="submit" class="btn btn-primary" id="create_btn" disabled >Submit</button>
+                      <button type="button" class="btn btn-primary" id="create_btn" data-bs-toggle="modal" data-bs-target="#createMsg" disabled>Submit</button>
+
+                      <!-- Modal -->
+<div class="modal fade" id="createMsg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createMsgLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="createMsgLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="createMsgBody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cannotCreate" data-bs-dismiss="modal" hidden>Close</button>
+        <button type="button" class="btn btn-primary" id="backToListings" hidden>Back to all listings</button>
+      </div>
+    </div>
+  </div>
+</div>
                     </div>
                 </div>
 

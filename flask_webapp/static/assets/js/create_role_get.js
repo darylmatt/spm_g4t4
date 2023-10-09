@@ -160,7 +160,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var desc = document.getElementById("create_role_desc");
   desc.addEventListener("change", function () {
-    console.log(desc.value);
     if (desc.value.trim() === "") {
       has_desc = false;
     } else {
@@ -180,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         text_area = document.getElementById("create_role_desc");
         description = data.data;
         text_area.value = description;
+        document.getElementById("no_desc_error").hidden = true;
         has_desc = true;
       });
 
@@ -335,8 +335,10 @@ document.addEventListener("DOMContentLoaded", function () {
   desc.addEventListener("change", function () {
     console.log(desc.value);
     if (desc.value.trim() === "") {
+      document.getElementById("no_desc_error").hidden = false;
       has_desc = false;
     } else {
+      document.getElementById("no_desc_error").hidden = true;
       has_desc = true;
     }
     checkFields();
@@ -419,5 +421,59 @@ document.addEventListener("DOMContentLoaded", function () {
       endDate.value = startDate.value;
     }
     checkFields();
+  });
+  var createBtn = document.getElementById("create_btn");
+
+  createBtn.addEventListener("click", function () {
+    console.log(selected_skills);
+    var skillList = [];
+    selected_skills.childNodes.forEach((child) => {
+      skillList.push(child.childNodes[0].id);
+    });
+    console.log(skillList);
+    var requestData = {
+      title: selected_role.value,
+      department: selected_dept.value,
+      country: selected_country.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+      manager: selected_manager.value,
+      description: desc.value,
+      skills: skillList,
+    };
+
+    fetch("/create/check_listing_exist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set the content type to JSON
+      },
+      body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        //Get the code
+        code = data.code;
+        if (code == 400) {
+          document.getElementById("createMsgLabel").innerHTML =
+            "Role creation failure.";
+          document.getElementById("createMsgBody").innerHTML = data.message;
+          document.getElementById("cannotCreate").hidden = false;
+          document.getElementById("backToListings").hidden = true;
+        } else {
+          document.getElementById("createMsgLabel").innerHTML =
+            "Role creation success!";
+          document.getElementById("createMsgBody").innerHTML = data.message;
+          document.getElementById("cannotCreate").hidden = true;
+          document.getElementById("backToListings").hidden = false;
+        }
+      });
+  });
+
+  // Get the button element by its id
+  var backButton = document.getElementById("backToListings");
+
+  // Add a click event listener to the button
+  backButton.addEventListener("click", function () {
+    window.location.href = "../../all_listings_HR.html";
   });
 });

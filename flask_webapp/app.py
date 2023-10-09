@@ -6,11 +6,11 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
 from sqlalchemy import text
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 import json
 import requests
 # from fuzzywuzzy import fuzz
-from sqlalchemy import or_
+# from sqlalchemy import or_
 
 app = Flask(__name__)
 
@@ -1074,8 +1074,64 @@ def get_manager(country,dept):
             "error": str(e)
             }), 500
 
+@app.route("/create/check_listing_exist", methods=["POST"])
+def check_listing():
+    # Get the JSON data from the request
+    json_data = request.get_json()
+    print(json_data)
 
+    name = json_data["title"]
+    department = json_data["department"]
+    country = json_data["country"]
+    start_date = json_data["startDate"]
+    end_date=json_data["endDate"]
+    manager=json_data["manager"]
+    # skills=json_data["skills"]
+    # desc = json_data["description"]
+    
 
+    print("Printing manager...")
+    print(manager)
+
+    # Query database to see if a role listing like this exists
+
+    matching_listings = Role_Listing.query.filter(
+        and_(Role_Listing.role_name == name,
+        Role_Listing.dept == department,
+        Role_Listing.country == country,
+        Role_Listing.date_close >= start_date)
+        
+    ).all()
+
+    if matching_listings:
+        # If matching listings are found, there are duplicates
+        return jsonify({
+            
+            "code":400,
+            "message": "Listing cannot be created. An active listing exists!"
+            }), 400
+    
+    else:
+        listing = Role_Listing(country,department,2,start_date,end_date,name,manager)
+        try:
+            db.session.add(listing)
+            db.session.commit()
+        except Exception as e:
+            return jsonify(
+            {
+                "code": 500,
+                "error": str(e)
+            }), 500        
+    
+        return jsonify(
+            {
+                "code":201,
+                "data": listing.json(),
+                "message":"New listing created successfully!"
+            }
+        ),201
+
+    
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
