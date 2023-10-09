@@ -585,8 +585,8 @@ def all_listings_HR():
         country = request.form.get('country')
         department = request.form.get('department')
         required_skills = request.form.getlist('required_skills[]')
-        print(user_id)
-        print(user_name)
+        # print(user_id)
+        # print(user_name)
 
         print(status)
         print(role_search)
@@ -660,6 +660,17 @@ def all_listings_HR():
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
         return str(e), 500  # Return an error response with a 500 status code
+
+
+
+@app.route('/all_applicants_HR')
+def all_applicants_HR():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
+    return render_template("all_applicants_HR.html")
+
 
 # Define a route to get the listing ID by name
 @app.route('/get_listing_id_by_name/<string:role_name>', methods=["GET"])
