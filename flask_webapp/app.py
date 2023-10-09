@@ -1044,7 +1044,7 @@ def get_manager(country,dept):
             manager_list = []
             manager_id = []
             for s in staff_list:
-                if (s.json().get('role')) <= 2:
+                if (s.json().get('role')) >= 3:
                     fname = s.json().get('staff_fname')
                     lname = s.json().get('staff_lname')
                     manager_list.append(fname+ " " + lname)
