@@ -453,18 +453,18 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         //Get the code
         code = data.code;
-        if (code == 400) {
-          document.getElementById("createMsgLabel").innerHTML =
-            "Role creation failure.";
-          document.getElementById("createMsgBody").innerHTML = data.message;
-          document.getElementById("cannotCreate").hidden = false;
-          document.getElementById("backToListings").hidden = true;
-        } else {
+        if (code == 201) {
           document.getElementById("createMsgLabel").innerHTML =
             "Role creation success!";
           document.getElementById("createMsgBody").innerHTML = data.message;
           document.getElementById("cannotCreate").hidden = true;
           document.getElementById("backToListings").hidden = false;
+        } else {
+          document.getElementById("createMsgLabel").innerHTML =
+            "Role creation failure.";
+          document.getElementById("createMsgBody").innerHTML = data.message;
+          document.getElementById("cannotCreate").hidden = false;
+          document.getElementById("backToListings").hidden = true;
         }
       });
   });

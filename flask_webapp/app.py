@@ -1116,6 +1116,7 @@ def check_listing():
 
     if matching_listings:
         # If matching listings are found, there are duplicates
+        print(matching_listings)
         return jsonify({
             
             "code":400,
