@@ -450,7 +450,8 @@ def view_a_listing(listing_id):
 @app.route('/skills')
 def get_skills():
     try:
-        staff_id = 20
+        staff_id = 140002  # REPLACE with the actual staff_id
+
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id = staff_id).first()
         print(staff)
@@ -983,7 +984,7 @@ def get_all_skills():
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 def match_skills(listing_id):
     try:
-        staff_id = 19  # Placeholder for staff_id (to integrate with login staff_id later on)
+        staff_id = 140002  # Placeholder for staff_id (to integrate with login staff_id later on)
 
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
