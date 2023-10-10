@@ -665,7 +665,7 @@ def all_listings_HR():
 
 
 
-@app.route('/all_applicants_HR')
+@app.route('/all_applicants_HR', methods=["GET", "POST"])
 def all_applicants_HR():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
