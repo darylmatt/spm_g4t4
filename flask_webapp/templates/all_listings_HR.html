@@ -529,6 +529,9 @@
               {% for listing in listings %}
               <div class="tab-pane fade active profile-overview" id="{{listing.listing_id}}" role="tabpanel">
                 <div class="d-flex justify-content-end">
+                  <button data-listing-id="{{ listing.listing_id }}" style="margin-right: 7px;" type="button" class="btn btn-primary view-applicants-button" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
+                    View Applicants
+                  </button>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                 Edit listing
               </button>
@@ -989,6 +992,23 @@
 
   <!-- Template Main JS File -->
   <script src="static/assets/js/main.js"></script>
+  <script>
+    const viewApplicantsButtons = document.querySelectorAll(".view-applicants-button");
+
+    // Add a click event listener to each button
+    viewApplicantsButtons.forEach(button => {
+      button.addEventListener("click", function() {
+        // Retrieve the listing_id from the data attribute
+        const listingId = this.getAttribute("data-listing-id");
+
+        // Construct the URL with the listing_id query parameter
+        const url = `./all_applicants_HR?listing_id=${listingId}`;
+
+        // Navigate to the all_applicants_HR page with the listing_id in the URL
+        window.location.href = url;
+      });
+    });
+  </script>
 
   <!-- Add MDBootstrap JavaScript components, such as the select component -->s
 <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.19.1/js/mdb.min.js"></script>

@@ -51,6 +51,7 @@ def design_reference():
     #Keep design reference untouched
     return render_template("design_reference.html")
 
+
 @app.route('/staff_profile')
 def staff_profile():
     user_id = session.get('user_id')
@@ -585,8 +586,6 @@ def all_listings_HR():
         country = request.form.get('country')
         department = request.form.get('department')
         required_skills = request.form.getlist('required_skills[]')
-        print(user_id)
-        print(user_name)
 
         print(status)
         print(role_search)
@@ -674,7 +673,7 @@ def get_listing_id_by_name(role_name):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# get applications
+# get applications of each staff
 @app.route('/get_application_history', methods=["GET"])
 def get_application_history():
     try:
@@ -711,11 +710,47 @@ def get_application_history():
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
 
+#get applications by listing id
+@app.route('/get_applications_by_listing/<int:listing_id>', methods=["GET"])
+def get_applications_by_listing(listing_id):
+    try:
+        # Fetch application data for the specified listing_id
+        applications = Application.query.filter_by(listing_id=listing_id).all()
+
+        # Create a list to store application data
+        application_list = []
+
+        for application in applications:
+            # Fetch staff data based on staff_id
+            staff = Staff.query.get(application.staff_id)
+
+            # Combine staff_fname and staff_lname to create staff_name
+            staff_name = f"{staff.staff_fname} {staff.staff_lname}"
+
+            # Append application data to the application list
+            application_list.append({
+                'application_id': application.application_id,
+                'staff_id': staff.staff_id,
+                'staff_name': staff_name,
+                'country': staff.country,
+                'department': staff.dept,
+                'email': staff.email,
+                'role': staff.role,
+                'applied_date': application.applied_date.strftime('%Y-%m-%d'),
+                'status': application.status,
+            })
+
+        return jsonify({"applications": application_list, "code": 200}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e), "code": 500}), 500
+
 #apply for open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
     try:
-        staff_id = 19  # REPLACE with the actual staff_id
+        staff_id = session.get('Staff_ID')
+        print("staff_id:", staff_id)
         status = "Pending"
         applied_date = datetime.now()
 
@@ -761,9 +796,11 @@ def apply_role(listing_id):
         return jsonify({"error": str(e), "code": 500}), 500
 
 #check application status
-@app.route('/check_application_status/<int:application_id>/<int:staff_id>', methods=["GET"])
-def check_application_status(application_id, staff_id):
+@app.route('/check_application_status/<int:application_id>', methods=["GET"])
+def check_application_status(application_id):
     try:
+        staff_id = session.get('Staff_ID')
+        print("staff_id:", staff_id)
         # Check if the staff member with the specified staff_id has applied with the given application_id
         application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
         if application:
