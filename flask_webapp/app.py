@@ -772,12 +772,13 @@ def get_applications_by_listing(listing_id):
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
 
-#apply for open role
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
     try:
         staff_id = session.get('Staff_ID')
-        print("staff_id:", staff_id)
+        if staff_id is None:
+            return jsonify({"error": "User not authenticated"}), 401
+
         status = "Pending"
         applied_date = datetime.now()
 
@@ -809,7 +810,6 @@ def apply_role(listing_id):
             "applied_date": applied_date,
         }
 
-        
         result = db.session.execute(insert_sql, params)
         db.session.commit()
 
@@ -820,7 +820,8 @@ def apply_role(listing_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e), "code": 500}), 500
+        return jsonify({"error": "An error occurred while processing your application", "code": 500}), 500
+
 
 #check application status
 @app.route('/check_application_status/<int:application_id>', methods=["GET"])
