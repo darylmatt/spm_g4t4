@@ -14,7 +14,7 @@ class Role_Listing(db.Model):
     date_close= db.Column(db.DateTime,nullable=False)
 
     # Foreign key relationship to role table
-    role_name = db.Column(db.String(20), ForeignKey('role.role_name'), nullable=False)
+    role_name = db.Column(db.String(20), ForeignKey('role.role_name'), nullable=False, autoincrement=True)
     reporting_mng = db.Column(db.Integer, ForeignKey('staff.staff_id'), nullable=False)
     applications = db.relationship('Application', backref='role_listing')
 

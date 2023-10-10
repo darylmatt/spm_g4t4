@@ -1,3 +1,30 @@
+let has_role = false,
+  has_dept = false,
+  has_country = false,
+  has_skills = false,
+  has_startDate = false,
+  has_deadline = false,
+  has_manager = false,
+  has_desc = false;
+
+function checkFields() {
+  console.log("checking fields");
+  if (
+    has_role &&
+    has_country &&
+    has_deadline &&
+    has_dept &&
+    has_skills &&
+    has_startDate &&
+    has_manager &&
+    has_desc
+  ) {
+    document.getElementById("create_btn").disabled = false;
+  } else {
+    document.getElementById("create_btn").disabled = true;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Fetch data and populate dropdowns
   fetch("/create/get_data")
@@ -55,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
   clearBtn = document.getElementById("clearAllBtn");
   clearBtn.addEventListener("click", function () {
     selected_skills.innerHTML = "";
+    has_skills = false;
 
     //Change all checkboxes to unchecked
     var checkboxes = document
@@ -63,6 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
     checkboxes.forEach((checkbox) => {
       checkbox.checked = false;
     });
+
+    checkFields();
   });
 
   fetch("/get_all_skills")
@@ -89,14 +119,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   // Role is selected
-  var selected_role = document.getElementById("createRoleDropdown");
+  const selected_role = document.getElementById("createRoleDropdown");
 
   //Function to get skills that belong to that role
   function get_default_skills() {
     fetch("/get_skills_required/" + selected_role.value)
       .then((response) => response.json())
       .then((data) => {
-        const selected_skills = document.getElementById("selectedSkills");
+        var selected_skills = document.getElementById("selectedSkills");
         selected_skills.innerHTML = "";
         var required_skills = data.data.skills_required;
 
@@ -128,15 +158,29 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  var desc = document.getElementById("create_role_desc");
+  desc.addEventListener("change", function () {
+    if (desc.value.trim() === "") {
+      has_desc = false;
+    } else {
+      has_desc = true;
+    }
+    checkFields();
+  });
+
   selected_role.addEventListener("change", function () {
     // Fetch the correct description from the database
     fetch("/get_role_description/" + selected_role.value)
       .then((response) => response.json())
       .then((data) => {
+        //set role_selected to true
+        has_role = true;
         // Populate the description box with this data
         text_area = document.getElementById("create_role_desc");
-        desc = data.data;
-        text_area.value = desc;
+        description = data.data;
+        text_area.value = description;
+        document.getElementById("no_desc_error").hidden = true;
+        has_desc = true;
       });
 
     get_default_skills();
@@ -148,7 +192,8 @@ document.addEventListener("DOMContentLoaded", function () {
     skillsSelectBtn.disabled = false;
     document.getElementById("defaultSkillBtn").innerHTML =
       "Default skills for " + selected_role.value;
-    console.log(selected_role.value);
+
+    checkFields();
   });
 
   // Function to handle changes in selected_skills div
@@ -158,8 +203,10 @@ document.addEventListener("DOMContentLoaded", function () {
     var noSkillsError = document.getElementById("noSkillsError");
 
     if (selected_skills.childNodes.length == 0) {
+      has_skills = false;
       noSkillsError.hidden = false;
     } else {
+      has_skills = true;
       noSkillsError.hidden = true;
       selected_skills.childNodes.forEach((child) => {
         // Get their values first and store in a list
@@ -179,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     }
+    checkFields();
   }
 
   // Create a MutationObserver to watch for changes in the selected_skills div
@@ -190,8 +238,6 @@ document.addEventListener("DOMContentLoaded", function () {
   //Onclick
   var saveBtn = document.getElementById("saveSelection");
   saveBtn.addEventListener("click", function () {
-    console.log("Clicked");
-
     //Clear the selected skills container
     container = document.getElementById("selectedSkills");
     container.innerHTML = "";
@@ -285,19 +331,46 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  var desc = document.getElementById("create_role_desc");
+  desc.addEventListener("change", function () {
+    console.log(desc.value);
+    if (desc.value.trim() === "") {
+      document.getElementById("no_desc_error").hidden = false;
+      has_desc = false;
+    } else {
+      document.getElementById("no_desc_error").hidden = true;
+      has_desc = true;
+    }
+    checkFields();
+  });
+
+  //check if a manager has been selected
+  var selected_manager = document.getElementById("createManagerDropdown");
+  selected_manager.addEventListener("change", function () {
+    if (selected_manager.hidden == false) {
+      has_manager = true;
+    } else {
+      has_manager = false;
+    }
+    checkFields();
+  });
+
   // If user selected country first
   selected_country.addEventListener("change", function () {
     // Fetch the correct description from the database
+    has_country = true;
     if (selected_dept.value != "Select a department") {
       get_manager();
     } else {
       document.getElementById("reportingMngError").value =
         "Please select a department.";
     }
+    checkFields();
   });
 
   // If user selected department first
   selected_dept.addEventListener("change", function () {
+    has_dept = true;
     // Fetch the correct description from the database
     if (selected_country.value != "Select a country") {
       get_manager();
@@ -305,6 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("reportingMngError").value =
         "Please select a country.";
     }
+    checkFields();
   });
 
   // Set the calendar date
@@ -317,6 +391,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var endDate = document.getElementById("endDate");
 
   startDate.addEventListener("change", function () {
+    has_startDate = true;
     //User setting date for the first time
     console.log(startDate.value);
     console.log(endDate.value);
@@ -330,11 +405,13 @@ document.addEventListener("DOMContentLoaded", function () {
     else {
       endDate.setAttribute("min", startDate.value);
     }
+    checkFields();
   });
 
   endDate = document.getElementById("endDate");
 
   endDate.addEventListener("change", function () {
+    has_deadline = true;
     console.log(startDate.value);
     console.log(endDate.value);
     startDate.setAttribute("max", endDate.value);
@@ -343,5 +420,60 @@ document.addEventListener("DOMContentLoaded", function () {
       endDate.setAttribute("min", startDate.value);
       endDate.value = startDate.value;
     }
+    checkFields();
+  });
+  var createBtn = document.getElementById("create_btn");
+
+  createBtn.addEventListener("click", function () {
+    console.log(selected_skills);
+    var skillList = [];
+    selected_skills.childNodes.forEach((child) => {
+      skillList.push(child.childNodes[0].id);
+    });
+    console.log(skillList);
+    var requestData = {
+      title: selected_role.value,
+      department: selected_dept.value,
+      country: selected_country.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+      manager: selected_manager.value,
+      description: desc.value,
+      skills: skillList,
+    };
+
+    fetch("/create/check_listing_exist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set the content type to JSON
+      },
+      body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        //Get the code
+        code = data.code;
+        if (code == 201) {
+          document.getElementById("createMsgLabel").innerHTML =
+            "Role creation success!";
+          document.getElementById("createMsgBody").innerHTML = data.message;
+          document.getElementById("cannotCreate").hidden = true;
+          document.getElementById("backToListings").hidden = false;
+        } else {
+          document.getElementById("createMsgLabel").innerHTML =
+            "Role creation failure.";
+          document.getElementById("createMsgBody").innerHTML = data.message;
+          document.getElementById("cannotCreate").hidden = false;
+          document.getElementById("backToListings").hidden = true;
+        }
+      });
+  });
+
+  // Get the button element by its id
+  var backButton = document.getElementById("backToListings");
+
+  // Add a click event listener to the button
+  backButton.addEventListener("click", function () {
+    window.location.href = "../../all_listings_HR.html";
   });
 });

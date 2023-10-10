@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch('/skills')
       .then((response) => response.json())
       .then((data) => {
-        console.log("Staff skills fetched:", data);
+        // console.log("Staff skills fetched:", data);
         const staffSkills = data.data.skill_names.map((skill) => skill.toLowerCase());
-        console.log(staffSkills);
+        // console.log(staffSkills);
   
         // Loop through listingData to update progress bars and skills
         listingData.forEach(function (listing) {
@@ -19,12 +19,12 @@ document.addEventListener("DOMContentLoaded", function () {
             skillsRequiredList.includes(skillItem)
           );
   
-          console.log("Matched Skills:", matchedSkills);
+          // console.log("Matched Skills:", matchedSkills);
   
           // Calculate the total number of required skills (matched + unmatched)
           const totalRequiredSkillsCount = skillsRequiredList.length;
   
-          console.log("Total Required Skills Count:", totalRequiredSkillsCount);
+          // console.log("Total Required Skills Count:", totalRequiredSkillsCount);
   
             // Calculate the match percentage
           const matchPercentage = (matchedSkills.length / totalRequiredSkillsCount) * 100;

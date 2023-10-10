@@ -1,21 +1,23 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 from flask_cors import CORS
 from db_config.db import db
+from decouple import config
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
 from sqlalchemy import text
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 import json
 import requests
 # from fuzzywuzzy import fuzz
-from sqlalchemy import or_
+# from sqlalchemy import or_
 
 app = Flask(__name__)
 
+
 # Session settings
-app.secret_key = 'Our_secret_key'
+app.secret_key = config('SECRET_KEY')
 user_ids = ['140002', '160008']
 user_dict = {'140002': {
                 'Staff_ID': '140002',
@@ -38,7 +40,7 @@ user_dict = {'140002': {
             }}
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp'
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -586,6 +588,8 @@ def all_listings_HR():
         country = request.form.get('country')
         department = request.form.get('department')
         required_skills = request.form.getlist('required_skills[]')
+        # print(user_id)
+        # print(user_name)
 
         print(status)
         print(role_search)
@@ -659,6 +663,17 @@ def all_listings_HR():
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
         return str(e), 500  # Return an error response with a 500 status code
+
+
+
+@app.route('/all_applicants_HR', methods=["GET", "POST"])
+def all_applicants_HR():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
+    return render_template("all_applicants_HR.html")
+
 
 # Define a route to get the listing ID by name
 @app.route('/get_listing_id_by_name/<string:role_name>', methods=["GET"])
@@ -1081,7 +1096,7 @@ def get_manager(country,dept):
             manager_list = []
             manager_id = []
             for s in staff_list:
-                if (s.json().get('role')) <= 2:
+                if (s.json().get('role')) >= 3:
                     fname = s.json().get('staff_fname')
                     lname = s.json().get('staff_lname')
                     manager_list.append(fname+ " " + lname)
@@ -1111,8 +1126,65 @@ def get_manager(country,dept):
             "error": str(e)
             }), 500
 
+@app.route("/create/check_listing_exist", methods=["POST"])
+def check_listing():
+    # Get the JSON data from the request
+    json_data = request.get_json()
+    print(json_data)
 
+    name = json_data["title"]
+    department = json_data["department"]
+    country = json_data["country"]
+    start_date = json_data["startDate"]
+    end_date=json_data["endDate"]
+    manager=json_data["manager"]
+    # skills=json_data["skills"]
+    # desc = json_data["description"]
+    
 
+    print("Printing manager...")
+    print(manager)
+
+    # Query database to see if a role listing like this exists
+
+    matching_listings = Role_Listing.query.filter(
+        and_(Role_Listing.role_name == name,
+        Role_Listing.dept == department,
+        Role_Listing.country == country,
+        Role_Listing.date_close >= start_date)
+        
+    ).all()
+
+    if matching_listings:
+        # If matching listings are found, there are duplicates
+        print(matching_listings)
+        return jsonify({
+            
+            "code":400,
+            "message": "Listing cannot be created. An active listing exists!"
+            }), 400
+    
+    else:
+        listing = Role_Listing(country,department,2,start_date,end_date,name,manager)
+        try:
+            db.session.add(listing)
+            db.session.commit()
+        except Exception as e:
+            return jsonify(
+            {
+                "code": 500,
+                "error": str(e)
+            }), 500        
+    
+        return jsonify(
+            {
+                "code":201,
+                "data": listing.json(),
+                "message":"New listing created successfully!"
+            }
+        ),201
+
+    
 
 if __name__ == '__main__':
     app.run(port=5500,debug=True)
