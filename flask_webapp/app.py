@@ -450,10 +450,10 @@ def view_a_listing(listing_id):
 @app.route('/skills')
 def get_skills():
     try:
-        staff_id = 20  # REPLACE with the actual staff_id
-
+        staff_id = 20
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id = staff_id).first()
+        print(staff)
         if not staff:
             return{
                 "code":404,
@@ -741,6 +741,17 @@ def get_applications_by_listing(listing_id):
 
             # Combine staff_fname and staff_lname to create staff_name
             staff_name = f"{staff.staff_fname} {staff.staff_lname}"
+            staff_skills = list(
+                skill[0] for skill in
+                db.session.query(Staff_Skill.skill_name).filter_by(staff_id=application.staff_id).all()
+            )
+            # Fetch the numeric role
+            numeric_role = staff.role
+
+            # Fetch the corresponding access control name from the AccessControl table
+            access_control = Access_Control.query.filter_by(access_id=numeric_role).first()
+            access_control_name = access_control.access_control_name if access_control else "Unknown"
+            
 
             # Append application data to the application list
             application_list.append({
@@ -750,7 +761,8 @@ def get_applications_by_listing(listing_id):
                 'country': staff.country,
                 'department': staff.dept,
                 'email': staff.email,
-                'role': staff.role,
+                'role': access_control_name,
+                'skills': staff_skills,
                 'applied_date': application.applied_date.strftime('%Y-%m-%d'),
                 'status': application.status,
             })

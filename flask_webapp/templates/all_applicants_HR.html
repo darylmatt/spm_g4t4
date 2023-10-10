@@ -449,20 +449,40 @@
 <script>
       $(document).ready(function () {
       // Fetch applicant data (simulated data for demonstration)
-      var applicantsData = [
-        { id: 'applicant1', name: 'Applicant 1', role: 'Role 1', department: 'Department 1', country: 'Country 1', skills: ['Python', 'Excel', 'SQL'] },
-        { id: 'applicant2', name: 'Applicant 2', role: 'Role 2', department: 'Department 2', country: 'Country 2', skills: ['Java', 'HTML', 'CSS'] },
-        { id: 'applicant3', name: 'Applicant 3', role: 'Role 3', department: 'Department 3', country: 'Country 3', skills: ['JavaScript', 'React', 'Node.js'] },
-        { id: 'applicant4', name: 'Applicant 4', role: 'Role 2', department: 'Department 2', country: 'Country 2', skills: ['Java', 'HTML', 'CSS'] },
-        { id: 'applicant5', name: 'Applicant 5', role: 'Role 1', department: 'Department 1', country: 'Country 1', skills: ['skill1', 'skill2', 'skill3'] },
+      // var applicantsData = [
+      //   { id: 'applicant1', name: 'Applicant 1', role: 'Role 1', department: 'Department 1', country: 'Country 1', skills: ['Python', 'Excel', 'SQL'] },
+      //   { id: 'applicant2', name: 'Applicant 2', role: 'Role 2', department: 'Department 2', country: 'Country 2', skills: ['Java', 'HTML', 'CSS'] },
+      //   { id: 'applicant3', name: 'Applicant 3', role: 'Role 3', department: 'Department 3', country: 'Country 3', skills: ['JavaScript', 'React', 'Node.js'] },
+      //   { id: 'applicant4', name: 'Applicant 4', role: 'Role 2', department: 'Department 2', country: 'Country 2', skills: ['Java', 'HTML', 'CSS'] },
+      //   { id: 'applicant5', name: 'Applicant 5', role: 'Role 1', department: 'Department 1', country: 'Country 1', skills: ['skill1', 'skill2', 'skill3'] },
 
-        // Add data for other applicants here
-      ];
+      //   // Add data for other applicants here
+      // ];
+      var applicantsData = [];
+
+      function fetchAndPopulateApplicantsData(listingId) {
+        // Make an AJAX request to fetch application data
+        fetch(`/get_applications_by_listing/${listingId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("data:", data)
+            // Check if the response contains the 'applications' key
+            if (data.hasOwnProperty('applications')) {
+              applicantsData = data.applications;
+              console.log(applicantsData)
+              createApplicantCards(applicantsData);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
 
       // Function to create applicant cards dynamically
       function createApplicantCards(data) {
         var container = $('#applicantCardsContainer');
         data.forEach(function (applicant) {
+          console.log(applicant)
           var skillsHtml = '';
           applicant.skills.forEach(function (skill) {
             skillsHtml += `<span class="badge rounded-pill bg-primary">${skill}</span> `;
@@ -476,7 +496,7 @@
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <h5 class="card-title">${applicant.name}</h5>
+                    <h5 class="card-title">${applicant.staff_name}</h5>
                     <p class="card-text text-muted small">${applicant.role} | ${applicant.department} | ${applicant.country}</p>
                     <div class="skills-container">${skillsHtml}</div>
                     <div class="mt-3">
@@ -532,6 +552,14 @@
 
         // Show the modal
         $('#profileModal').modal('show');
+      }
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var listingId = urlParams.get('listing_id');
+
+      // Check if listingId is not null and call fetchAndPopulateApplicantsData
+      if (listingId) {
+        fetchAndPopulateApplicantsData(listingId);
       }
 
       // Event listener for view profile links
