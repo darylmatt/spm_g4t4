@@ -616,6 +616,7 @@ def all_listings_HR():
         if listings_dict:
             data = listings_dict['data']
             for listing in data:
+                num_applicants = get_num_applicants_by_listing(listing['listing_id'])
                 date_open = listing['date_open']
                 input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
                 date_close = listing['date_close']
@@ -646,6 +647,7 @@ def all_listings_HR():
                     'dept': listing['dept'],
                     'country': listing['country'],
                     'num_opening': listing['num_opening'],
+                    'num_applicants': num_applicants,
                     'listing_id': listing['listing_id'],
                     'manager_name': manager_name,
                     'manager_dept': manager_dept,
@@ -772,6 +774,11 @@ def get_applications_by_listing(listing_id):
 
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
+    
+def get_num_applicants_by_listing(listing_id):
+# Query your database to count the number of applications for the given listing_id
+    num_applicants = Application.query.filter_by(listing_id=listing_id).count()
+    return num_applicants
 
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
 def apply_role(listing_id):
@@ -1152,6 +1159,7 @@ def check_listing():
     start_date = json_data["startDate"]
     end_date=json_data["endDate"]
     manager=json_data["manager"]
+    vacancy=json_data["vacancy"]
     # skills=json_data["skills"]
     # desc = json_data["description"]
     
@@ -1179,7 +1187,7 @@ def check_listing():
             }), 400
     
     else:
-        listing = Role_Listing(country,department,2,start_date,end_date,name,manager)
+        listing = Role_Listing(country,department,vacancy,start_date,end_date,name,manager)
         try:
             db.session.add(listing)
             db.session.commit()

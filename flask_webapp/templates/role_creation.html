@@ -344,6 +344,17 @@
                   </div>
                 </div>
 
+                <!-- Vacancy -->
+                <div class="row mb-3">
+                  <label for="inputVacancy" class="col-sm-2 col-form-label">Vacancy</label>
+                  <div class="col-sm-10">
+                    <!-- Vacancy Input Field -->
+                    <input type="number" class="form-control" id="createVacancyInput" min="1" required><p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;">
+                      Please enter a value of at least 1.
+                    </p>
+                  </div>
+                </div>
+
 
                 <div class="row mb-3">
                   <label for="inputCountry" class="col-sm-2 col-form-label">Required skills</label>
@@ -395,7 +406,7 @@
              
           <div class="row my-3">
                 <label for="inputResponsibility" class="col-sm-2 py-2 col-form-label">Responsibilities</label>
-                <p class="text-danger" id="no_desc_error">
+                <p class="text-danger" id="no_desc_error" style="color: red; font-size: 14px;">
                   Please enter a description.
                 </p>
                 <div class="row" >

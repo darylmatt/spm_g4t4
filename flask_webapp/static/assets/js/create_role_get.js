@@ -5,6 +5,7 @@ let has_role = false,
   has_startDate = false,
   has_deadline = false,
   has_manager = false,
+  has_vacancy = false,
   has_desc = false;
 
 function checkFields() {
@@ -17,6 +18,7 @@ function checkFields() {
     has_skills &&
     has_startDate &&
     has_manager &&
+    has_vacancy &&
     has_desc
   ) {
     document.getElementById("create_btn").disabled = false;
@@ -38,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const deptSelect = document.getElementById("createDepartmentDropdown");
       const deptList = data.data.departments;
+
+      const vacancy = document.getElementById("createVacancyInput");
 
       roleList.forEach((role) => {
         const selectOption = document.createElement("option");
@@ -359,6 +363,19 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
+  // check if vacancy has been entered
+  var vacancy = document.getElementById("createVacancyInput");
+  vacancy.addEventListener("change", function () {
+    if (vacancy.value < 1) {
+      has_vacancy = false;
+      document.getElementById("vacancyInputWarning").hidden = false;
+    } else {
+      has_vacancy = true;
+      document.getElementById("vacancyInputWarning").hidden = true;
+    }
+    checkFields();
+  });
+
   // If user selected country first
   selected_country.addEventListener("change", function () {
     // Fetch the correct description from the database
@@ -444,6 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
       manager: selected_manager.value,
       description: desc.value,
       skills: skillList,
+      vacancy: vacancy.value,
     };
 
     fetch("/create/check_listing_exist", {
