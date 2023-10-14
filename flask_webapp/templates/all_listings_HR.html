@@ -6,6 +6,11 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
   <title> All-in-One SBRP portal </title>
+
+    <!-- Script to fetch data from database -->
+    <script src="{{url_for('static', filename='assets/js/edit_role_listing.js')}}"></script>
+
+
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -454,7 +459,7 @@
                   <button data-listing-id="{{ listing.listing_id }}" style="margin-right: 7px;" type="button" class="btn btn-primary view-applicants-button" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                     View Applicants
                   </button>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable" id="editBtnListing{{listing.listing_id}}">
                 Edit listing
               </button>
               <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
@@ -466,25 +471,12 @@
                     </div>
                     <div class="modal-body">
                       <form>
+
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label">Role</label>
                           <div class="col-sm-10">
-                            <select class="form-select" aria-label="Default select example">
-                              <option selected></option>
-                              <option value="1">Product Designer</option>
-                              <option value="2">Software Engineer</option>
-                              <option value="3">Product Manager</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Country</label>
-                          <div class="col-sm-10">
-                            <select class="form-select" aria-label="Default select example">
-                              <option selected></option>
-                              <option value="1">Country</option>
-                        
+                            <select class="form-select" aria-label="update_role" id ="update_role_dropdown">
+                              <option default value={{listing.role_name}}>{{listing.role_name}}</option>
                             </select>
                           </div>
                         </div>
@@ -492,76 +484,78 @@
                         <div class="row mb-3">
                           <label class="col-sm-2 col-form-label">Department</label>
                           <div class="col-sm-10">
-                            <select class="form-select" aria-label="Default select example">
-                              <option selected></option>
-                              <option value="1">Department</option>
-                        
+                            <select class="form-select" aria-label="update_dept" id ="update_dept_dropdown">
+                              <option default value={{listing.dept}}>{{listing.dept}}</option>
+                                <!-- Dynamic -->
                             </select>
                           </div>
                         </div>
-
-                    
-                   
 
                         <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Hiring manager</label>
+                          <label class="col-sm-2 col-form-label">Country</label>
                           <div class="col-sm-10">
-                            <select class="form-select" aria-label="Default select example">
-                              <option selected></option>
-                              <option value="1">Manager 1</option>
-                        
+                            <select class="form-select" aria-label="update_country" id = "update_country_dropdown">
+                              <option default value={{listing.country}}>{{listing.country}}</option>
+                             <!-- Dynamic -->
                             </select>
                           </div>
                         </div>
 
 
-                        <div class="col-md-6">
-                          <div class="form-group">
-                              <label for="multiSelect2"></label>
-                              <div class="custom-dropdown">
-                                  <button id="dropdownBtn2" class="btn btn-secondary">Required Skills</button>
-                                  <br>
-                                  <br>
-                                  <div id="dropdownContent2" class="custom-dropdown-content">
-                                      <input type="text" class="search-input" id="searchInput2" placeholder="Search...">
-                                      <label><input type="checkbox" value="Option A"> Option A</label>
-                                      <label><input type="checkbox" value="Option B"> Option B</label>
-                                      <label><input type="checkbox" value="Option C"> Option C</label>
-                                      <label><input type="checkbox" value="Option D"> Option D</label>
-                                      <label><input type="checkbox" value="Option E"> Option E</label>
-                                  </div>
-                              </div>
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label">Required Skills</label>
+                          <div class="container">
+                            <div class="row" id="update_skills">
+                              <!-- Dynamic -->
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="row mb-3">
+                          
+                          <label class="col-sm-2 col-form-label">Number of Openings</label>
+                          <div class="col-sm-10">
+                            <input type="number" id="update_openings" name="openings" min="1">
+                          </div>
+                        </div>
+
+
+                        <div class="row my-3">
+                          <label for="inputResponsibility" class="col-sm-2 py-2 col-form-label">Responsibilities</label>
+                          <div class="row" >
+                              <textarea id="update_role_desc" class="form-control" style="height: 100px" readonly></textarea>
+                           
+                          </div>
+                        </div>
+      
+
+                        <div class="row my-3">
+                          <label class="col-sm-2 col-form-label">Reporting Manager</label>
+                          <div class="col-sm-10">
+                            <select class="form-select" aria-label="select_reporting_m">
+                             <!-- Dynamic -->
+                        
+                            </select>
+                          </div>
+
+                        </div>
+
+                        <div class="row mb-3">
+                          <label for="inputDate" class="col-sm-2 col-form-label">Start Date</label>
+                          <div class="col-sm-10">
+                            <input type="date" class="form-control" id="edit_startDate">
+                          </div>
+                       </div>
+
+                       <div class="row mb-3">
+                          <label for="inputDate" class="col-sm-2 col-form-label">Deadline</label>
+                          <div class="col-sm-10">
+                            <input id="edit_deadlineError" type="text" class="form-control" placeholder="Please select a start date" disabled>
+                            <input type="date" class="form-control" id="edit_endDate" hidden>
                           </div>
                       </div>
-
-
-                        
-                 
-                                
-                  
-       
-                        <div class="row mb-3">
-                          <label for="inputDate" class="col-sm-2 col-form-label">Pulished date</label>
-                          <div class="col-sm-10">
-                            <input type="date" class="form-control">
-                          </div>
-                        </div>
-                        <div class="row mb-3">
-                          <label for="inputDate" class="col-sm-2 col-form-label">Expiry date</label>
-                          <div class="col-sm-10">
-                            <input type="date" class="form-control">
-                          </div>
-                        </div>
-                      
-                        <div class="row mb-3">
-                          <label for="inputPassword" class="col-sm-2 col-form-label">Job description</label>
-                          <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px"></textarea>
-                          </div>
-                        </div>
-
-              
-
+                    
         
                       </form><!-- End General Form Elements -->
                     </div>
@@ -571,7 +565,8 @@
                     </div>
                   </div>
                 </div>
-              </div><!-- End Modal Dialog Scrollable-->
+                </div>  
+
                   <button type="button" class="btn btn-danger ms-2">Mark as closed</button>
                 </div>
                 <br>

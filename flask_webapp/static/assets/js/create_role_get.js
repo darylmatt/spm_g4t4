@@ -140,6 +140,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const skillText = document.createElement("span");
           skillText.className = "non-clickable-text text-success";
           skillText.textContent = skill;
+
+          // To remove the closebtn in the next sprint
+          // ------------------ start ------------------
           const skillCloseBtn = document.createElement("button");
           skillCloseBtn.type = "button";
           skillCloseBtn.className = "btn-close";
@@ -148,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
           skillCloseBtn.addEventListener("click", function () {
             // Remove the entire container when the close button is clicked
             skillDiv.remove();
+            // ------------------ end ------------------
           });
 
           skillContainer.appendChild(skillText);
@@ -474,6 +478,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add a click event listener to the button
   backButton.addEventListener("click", function () {
-    window.location.href = "../../all_listings_HR.html";
+    window.location.href = "../../all_listings_HR";
   });
 });
