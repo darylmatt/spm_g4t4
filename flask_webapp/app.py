@@ -511,6 +511,15 @@ def role_creation():
     dynamic_content = "This content is coming from Flask!"
     return render_template("role_creation.html")
 
+@app.route('/edit_role/<int:listing_id>')
+def edit_role():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
+    dynamic_content = "This content is coming from Flask!"
+    return render_template("edit_role.html")
+
 @app.route('/role_search', methods=["GET", "POST"])
 def role_search():
     role_search = request.form['role_name']
@@ -1205,6 +1214,34 @@ def check_listing():
                 "message":"New listing created successfully!"
             }
         ),201
+
+@app.route("/get_listing_by_id/<int:listing_id>")
+def get_listing(listing_id):
+    try:
+        # Check if listing if exists
+        listing = Role_Listing.query.filter_by(listing_id = listing_id).first()
+        if not listing:
+            return{
+                "code":404,
+                "message":"Listing does not exist"            
+            },404
+
+        #Get listing details
+        listing_details = listing.json()
+
+        return{
+            "code":200,
+            "data": listing_details
+        },200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
+    
+
 
     
 

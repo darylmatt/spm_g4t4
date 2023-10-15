@@ -459,113 +459,10 @@
                   <button data-listing-id="{{ listing.listing_id }}" style="margin-right: 7px;" type="button" class="btn btn-primary view-applicants-button" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                     View Applicants
                   </button>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable" id="editBtnListing{{listing.listing_id}}">
-                Edit listing
-              </button>
-              <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
-                <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Edit listing</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <form>
 
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Role</label>
-                          <div class="col-sm-10">
-                            <select class="form-select" aria-label="update_role" id ="update_role_dropdown">
-                              <option default value={{listing.role_name}}>{{listing.role_name}}</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Department</label>
-                          <div class="col-sm-10">
-                            <select class="form-select" aria-label="update_dept" id ="update_dept_dropdown">
-                              <option default value={{listing.dept}}>{{listing.dept}}</option>
-                                <!-- Dynamic -->
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Country</label>
-                          <div class="col-sm-10">
-                            <select class="form-select" aria-label="update_country" id = "update_country_dropdown">
-                              <option default value={{listing.country}}>{{listing.country}}</option>
-                             <!-- Dynamic -->
-                            </select>
-                          </div>
-                        </div>
-
-
-                        <div class="row mb-3">
-                          <label class="col-sm-2 col-form-label">Required Skills</label>
-                          <div class="container">
-                            <div class="row" id="update_skills">
-                              <!-- Dynamic -->
-                            </div>
-                          </div>
-                        </div>
-
-
-                        <div class="row mb-3">
-                          
-                          <label class="col-sm-2 col-form-label">Number of Openings</label>
-                          <div class="col-sm-10">
-                            <input type="number" id="update_openings" name="openings" min="1">
-                          </div>
-                        </div>
-
-
-                        <div class="row my-3">
-                          <label for="inputResponsibility" class="col-sm-2 py-2 col-form-label">Responsibilities</label>
-                          <div class="row" >
-                              <textarea id="update_role_desc" class="form-control" style="height: 100px" readonly></textarea>
-                           
-                          </div>
-                        </div>
-      
-
-                        <div class="row my-3">
-                          <label class="col-sm-2 col-form-label">Reporting Manager</label>
-                          <div class="col-sm-10">
-                            <select class="form-select" aria-label="select_reporting_m">
-                             <!-- Dynamic -->
-                        
-                            </select>
-                          </div>
-
-                        </div>
-
-                        <div class="row mb-3">
-                          <label for="inputDate" class="col-sm-2 col-form-label">Start Date</label>
-                          <div class="col-sm-10">
-                            <input type="date" class="form-control" id="edit_startDate">
-                          </div>
-                       </div>
-
-                       <div class="row mb-3">
-                          <label for="inputDate" class="col-sm-2 col-form-label">Deadline</label>
-                          <div class="col-sm-10">
-                            <input id="edit_deadlineError" type="text" class="form-control" placeholder="Please select a start date" disabled>
-                            <input type="date" class="form-control" id="edit_endDate" hidden>
-                          </div>
-                      </div>
-                    
-        
-                      </form><!-- End General Form Elements -->
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </div>
-                </div>
-                </div>  
+                  <button type="button" class="btn btn-primary edit-listing-btn" id="editBtn{{listing.listing_id}}">
+                    Edit listing
+                  </button>
 
                   <button type="button" class="btn btn-danger ms-2">Mark as closed</button>
                 </div>
@@ -573,38 +470,38 @@
                 <h5 class="card-title">{{listing.role_name}}</h5>
                 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-8">{{listing.date_open}}</div>
+                  <div class="col-lg-3 col-md-6 label ">Date Posted</div>
+                  <div class="col-lg-9 col-md-6">{{listing.date_open}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">Application deadline</div>
-                  <div class="col-lg-9 col-md-8">{{listing.date_close}}</div>
+                  <div class="col-lg-3 col-md-6 label ">Application deadline</div>
+                  <div class="col-lg-9 col-md-6">{{listing.date_close}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">Status</div>
-                  <div class="col-lg-9 col-md-8">{{listing.status}}</div>
+                  <div class="col-lg-3 col-md-6 label ">Status</div>
+                  <div class="col-lg-9 col-md-6">{{listing.status}}</div>
                 </div>
                 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">No. of Openings</div>
-                  <div class="col-lg-9 col-md-8">{{listing.num_opening}}</div>
+                  <div class="col-lg-3 col-md-6 label ">No. of Openings</div>
+                  <div class="col-lg-9 col-md-6">{{listing.num_opening}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">No. Applied</div>
-                  <div class="col-lg-9 col-md-8">{{listing.num_applicants}}</div>
+                  <div class="col-lg-3 col-md-6 label ">No. Applied</div>
+                  <div class="col-lg-9 col-md-6">{{listing.num_applicants}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label ">Country</div>
-                  <div class="col-lg-9 col-md-8">{{listing.country}}</div>
+                  <div class="col-lg-3 col-md-6 label ">Country</div>
+                  <div class="col-lg-9 col-md-6">{{listing.country}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-4 label">Department</div>
-                  <div class="col-lg-9 col-md-8">{{listing.dept}}</div>
+                  <div class="col-lg-3 col-md-6 label">Department</div>
+                  <div class="col-lg-9 col-md-6">{{listing.dept}}</div>
                 </div>
             <br>
             <br>
