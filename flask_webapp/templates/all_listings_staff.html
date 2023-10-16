@@ -458,7 +458,7 @@
                 </div>
 
             <br>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-primary" >
+            <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}" >
               Apply
             </button>
 
@@ -559,11 +559,11 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}">Confirm</button>
+        <button type="button" class="btn btn-primary confirm-button" data-listing-id="{{listing.listing_id}}">Confirm</button>
       </div>
     </div>
   </div>
-</div
+</div>
 
 <!-- End Vertically centered Modal-->                
                 
@@ -794,47 +794,70 @@
   <!-- match_staff_skills js file -->
   <script src="static/assets/js/match_staff_skills.js"></script>
   <script>
-      $(document).ready(function () {
-    // Add a click event listener to the parent container of the "Apply" buttons
-    $('.tab-pane').on('click', '.apply-button', function () {
-        // Get the listing ID associated with the clicked button
-        const listingId = $(this).data('listing-id');
-        console.log("listingId:", listingId)
+    $(document).ready(function () {
+        // Find all "Apply" buttons
+        const applyButtons = $('.apply-button');
 
-        // Send an HTTP POST request to apply for the role with the listingId
-        fetch(`/apply_role/${listingId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
-        })
-        .then(response => {
-            if (response.status === 201) {
-                // Application was submitted successfully
-                alert('Application submitted successfully');
-                // You can also disable the "Apply" button here if needed
-            } else if (response.status === 400) {
-                // User has already applied to this role
-                return response.json();
-            } else {
-                // Handle other response statuses (e.g., error cases)
-                alert('Error submitting application');
-            }
-        })
-        .then(data => {
-            if (data && data.error) {
-                // Display the specific error message for "You have already applied"
-                alert(data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while submitting the application');
+        // Loop through each button to check and disable if necessary
+        applyButtons.each(function () {
+            const button = $(this);
+            const listingId = button.data('listing-id');
+
+            // Send a request to check the application status
+            $.get(`/check_application_status/${listingId}`, function (data) {
+                console.log("Listing ID:", listingId);
+                console.log("Application Status:", data.status);
+                if (data.status === "Pending") {
+                    // User has already applied, disable the button
+                    button.prop('disabled', true);
+                }
+            });
         });
     });
+</script>
+
+  <script>
+    $(document).ready(function () {
+  // Add a click event listener to the parent container of the "Apply" buttons
+  $('.tab-pane').on('click', '.confirm-button', function () {
+      // Get the listing ID associated with the clicked button
+      const listingId = $(this).data('listing-id');
+      console.log("listingId:", listingId)
+
+      // Send an HTTP POST request to apply for the role with the listingId
+      fetch(`/apply_role/${listingId}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+      })
+      .then(response => {
+          if (response.status === 201) {
+              // Application was submitted successfully
+              alert('Application submitted successfully');
+              // You can also disable the "Apply" button here if needed
+          } else if (response.status === 400) {
+              // User has already applied to this role
+              return response.json();
+          } else {
+              // Handle other response statuses (e.g., error cases)
+              alert('Error submitting application');
+          }
+      })
+      .then(data => {
+          if (data && data.error) {
+              // Display the specific error message for "You have already applied"
+              alert(data.error);
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while submitting the application');
+      });
+  });
 });
-  </script>
+</script>
 
   {% if listings %}
   <script>

@@ -840,18 +840,18 @@ def apply_role(listing_id):
         return jsonify({"error": "An error occurred while processing your application", "code": 500}), 500
 
 
-#check application status
-@app.route('/check_application_status/<int:application_id>', methods=["GET"])
-def check_application_status(application_id):
+@app.route('/check_application_status/<int:listing_id>', methods=["GET"])
+def check_application_status(listing_id):
     try:
-        staff_id = session.get('Staff_ID')
-        print("staff_id:", staff_id)
+        staff_id = session.get("Staff_ID")
+        print("Request received: listing_id =", listing_id, "staff_id =", staff_id)
+
         # Check if the staff member with the specified staff_id has applied with the given application_id
-        application = Application.query.filter_by(application_id=application_id, staff_id=staff_id).first()
+        application = Application.query.filter_by(listing_id=listing_id, staff_id=staff_id).first()
         if application:
             return jsonify({"status": application.status, "code": 200}), 200
         else:
-            return jsonify({"error": "Application not found for the given staff_id and application_id", "code": 404}), 404
+            return jsonify({"status": "not_applied", "code": 201}), 201
 
     except Exception as e:
         return jsonify({"error": str(e), "code": 500}), 500
