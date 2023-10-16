@@ -1058,6 +1058,71 @@ def match_skills(listing_id):
         db.session.rollback()
         return jsonify({"error": str(e), "code": 500}), 500
     
+#get matching skills of each applicant    
+@app.route("/get_matching_skills/<int:listing_id>/<int:staff_id>", methods=["GET"])
+def get_matching_skills(listing_id, staff_id):
+    try:
+
+        # Check if the role exists
+        role = Role_Listing.query.filter_by(listing_id=listing_id).first()
+        if not role:
+            return jsonify({"error": "Role does not exist.", "code": "404"}), 404
+
+        # Retrieve the role_name using the listing_id
+        role_name = (
+            db.session.query(Role_Listing.role_name)
+            .filter_by(listing_id=listing_id)
+            .scalar()
+        )
+
+        # Retrieve the role's required skills
+        role_skills = set(
+            skill[0] for skill in
+            db.session.query(Role_Skill.skill_name)
+            .filter_by(role_name=role_name)
+            .all()
+        )
+
+        # Retrieve the staff's skills
+        staff_skills = set(
+            skill[0] for skill in
+            db.session.query(Staff_Skill.skill_name)
+            .filter_by(staff_id=staff_id)
+            .all()
+        )
+
+        # Debugging: Print the retrieved skills
+        print("Role Name:", role_name)
+        print("Role Skills:", role_skills)
+        print("Staff Skills:", staff_skills)
+
+        # Calculate lacking skills
+        lacking_skills = role_skills - staff_skills
+
+        # Perform skill matching logic
+        matched_skills = staff_skills.intersection(role_skills)
+
+        response_data = {
+            "listing_id": listing_id,
+            "role_name": role_name,
+            "staff_id": staff_id,
+            "matched_skills": list(matched_skills),
+            "lacking_skills": list(lacking_skills)
+        }
+
+        message = None
+        if not matched_skills:
+            message = "You have no matching skills with this role."
+        else:
+            message = "You have matching skills with this role!"
+
+        return jsonify({"response_data": response_data, "message": message, "code": 200})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e), "code": 500}), 500
+    
+    
 #Get roles, countries and departments for role creation
 @app.route("/create/get_data")
 def get_dept_and_countries():
