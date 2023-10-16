@@ -18,26 +18,26 @@ app = Flask(__name__)
 
 # Session settings
 app.secret_key = config('SECRET_KEY')
-user_ids = ['140002', '160008']
-user_dict = {'140002': {
-                'Staff_ID': '140002',
-                'Role' : 2,
-                'Staff_FName': 'Susan',
-                'Staff_LName': 'Goh',
-                'Dept': 'Sales',
-                'Country': 'Singapore',
-                'Email': 'Susan.Goh@allinone.com.sg'
-            },
+# user_ids = ['140002', '160008']
+# user_dict = {'140002': {
+#                 'Staff_ID': '140002',
+#                 'Role' : 2,
+#                 'Staff_FName': 'Susan',
+#                 'Staff_LName': 'Goh',
+#                 'Dept': 'Sales',
+#                 'Country': 'Singapore',
+#                 'Email': 'Susan.Goh@allinone.com.sg'
+#             },
             
-            '160008': {
-                'Staff_ID': '160008',
-                'Role' : 4,
-                'Staff_FName': 'Sally',
-                'Staff_LName': 'Loh',
-                'Dept': 'HR',
-                'Country': 'Singapore',
-                'Email': 'Sally.Loh@allinone.com.sg'
-            }}
+#             '160008': {
+#                 'Staff_ID': '160008',
+#                 'Role' : 4,
+#                 'Staff_FName': 'Sally',
+#                 'Staff_LName': 'Loh',
+#                 'Dept': 'HR',
+#                 'Country': 'Singapore',
+#                 'Email': 'Sally.Loh@allinone.com.sg'
+#             }}
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
@@ -450,8 +450,8 @@ def view_a_listing(listing_id):
 @app.route('/skills')
 def get_skills():
     try:
-        staff_id = 140002  # REPLACE with the actual staff_id
-
+        # staff_id = 140002  # REPLACE with the actual staff_id
+        staff_id = session.get('Staff_ID')
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id = staff_id).first()
         print(staff)
@@ -531,40 +531,72 @@ def role_search():
     print(required_skills)
     return 'role_search'
 
+# @app.route('/login', methods=["GET", "POST"])
+# def login():
+#     input_id = request.form.get('ID')
+#     print(input_id)
+#     if input_id in user_ids:
+#         #Check access control level
+#         Staff_ID = user_dict[input_id]['Staff_ID']
+#         Role = user_dict[input_id]['Role']
+#         Staff_Fname = user_dict[input_id]['Staff_FName']
+#         Staff_Lname = user_dict[input_id]['Staff_LName']
+#         Staff_Name = Staff_Fname + " " + Staff_Lname
+#         Dept = user_dict[input_id]['Dept']
+#         Country = user_dict[input_id]['Country']
+#         Email = user_dict[input_id]['Email']
+        
+#         session['Staff_ID'] = Staff_ID
+#         session['Role'] = Role
+#         session['Staff_Fname'] = Staff_Fname
+#         session['Staff_Lname'] = Staff_Lname
+#         session['Staff_Name'] = Staff_Name
+#         session['Dept'] = Dept
+#         session['Country'] = Country
+#         session['Email'] = Email
+
+       
+#         if Role == 2:
+#             return redirect(url_for('all_listings_staff'))
+#         elif Role == 4:
+#             return redirect(url_for('all_listings_HR'))
+#     else:
+#         print("User not found")
+#     dynamic_content = "This content is coming from Flask!"
+#     return render_template("login.html")
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     input_id = request.form.get('ID')
-    print(input_id)
-    if input_id in user_ids:
-        #Check access control level
-        Staff_ID = user_dict[input_id]['Staff_ID']
-        Role = user_dict[input_id]['Role']
-        Staff_Fname = user_dict[input_id]['Staff_FName']
-        Staff_Lname = user_dict[input_id]['Staff_LName']
-        Staff_Name = Staff_Fname + " " + Staff_Lname
-        Dept = user_dict[input_id]['Dept']
-        Country = user_dict[input_id]['Country']
-        Email = user_dict[input_id]['Email']
-        
-        session['Staff_ID'] = Staff_ID
-        session['Role'] = Role
-        session['Staff_Fname'] = Staff_Fname
-        session['Staff_Lname'] = Staff_Lname
-        session['Staff_Name'] = Staff_Name
-        session['Dept'] = Dept
-        session['Country'] = Country
-        session['Email'] = Email
+    if not input_id:
+        return render_template("login.html")
 
-       
-        if Role == 2:
+    try:
+        input_id = int(input_id) 
+    except ValueError:
+        return render_template("login.html")
+    
+    staff = Staff.query.filter_by(staff_id=input_id).first()
+
+    if staff:
+        session['Staff_ID'] = staff.staff_id
+        session['Role'] = staff.role
+        session['Staff_Fname'] = staff.staff_fname
+        session['Staff_Lname'] = staff.staff_lname
+        session['Staff_Name'] = f"{staff.staff_fname} {staff.staff_lname}"
+        session['Dept'] = staff.dept
+        session['Country'] = staff.country
+        session['Email'] = staff.email
+
+        if staff.role == 2:
             return redirect(url_for('all_listings_staff'))
-        elif Role == 4:
+        elif staff.role == 4:
             return redirect(url_for('all_listings_HR'))
     else:
         print("User not found")
+
     dynamic_content = "This content is coming from Flask!"
     return render_template("login.html")
-
 
 
 @app.route('/all_listings_HR', methods=["GET", "POST"])
@@ -997,7 +1029,7 @@ def get_all_skills():
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 def match_skills(listing_id):
     try:
-        staff_id = 140002  # Placeholder for staff_id (to integrate with login staff_id later on)
+        staff_id = session.get('Staff_ID')  # Placeholder for staff_id (to integrate with login staff_id later on)
 
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
