@@ -282,6 +282,23 @@
       // ];
       var applicantsData = [];
 
+      function get_matching_skills(listingId, staffId) {
+          return fetch(`/get_matching_skills/${listingId}/${staffId}`, {
+              method: "GET",
+              headers: {
+                  "Accept": "application/json",
+              },
+          })
+          .then((response) => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  throw new Error(`HTTP Error: ${response.status}`);
+              }
+          });
+      }
+
+
       function fetchAndPopulateApplicantsData(listingId) {
         // Make an AJAX request to fetch application data
         fetch(`/get_applications_by_listing/${listingId}`)
@@ -301,40 +318,47 @@
       }
 
       // Function to create applicant cards dynamically
-      function createApplicantCards(data) {
-        var container = $('#applicantCardsContainer');
-        data.forEach(function (applicant) {
-          console.log(applicant)
-          var skillsHtml = '';
-          applicant.skills.forEach(function (skill) {
-            skillsHtml += `<span class="badge rounded-pill bg-primary">${skill}</span> `;
-          });
+      async function createApplicantCards(data) {
+          var container = $('#applicantCardsContainer');
 
-          var cardHtml = `
-            <div class="card mb-3" style="height: auto;">
-              <div class="row g-0">
-                <div class="col-md-4 d-flex align-items-center">
-                  <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle img-fluid ms-3">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">${applicant.staff_name}</h5>
-                    <p class="card-text text-muted small">${applicant.role} | ${applicant.department} | ${applicant.country}</p>
-                    <div class="skills-container">${skillsHtml}</div>
-                    <div class="mt-3">
-                      <!-- "View Profile" link with data attributes -->
-                      <a href="#" class="view-profile-link text-primary" data-bs-toggle="modal"
-                          data-bs-target="#profileModal" data-applicant-id="${applicant.id}">View Profile</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          container.append(cardHtml);
-        });
+          for (const applicant of data) {
+              try {
+                  const matchingSkillsResponse = await get_matching_skills(listingId, applicant.staff_id);
+                  const matchedSkills = matchingSkillsResponse.response_data.matched_skills;
+                  console.log("matched:", matchedSkills);
+
+                  var skillsHtml = '';
+                  matchedSkills.forEach(function (skill) {
+                      skillsHtml += `<span class="badge rounded-pill bg-success">${skill}</span> `;
+                  });
+
+                  var cardHtml = `
+                      <div class="card mb-3" style="height: auto;">
+                      <div class="row g-0">
+                          <div class="col-md-4 d-flex align-items-center">
+                          <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle img-fluid ms-3">
+                          </div>
+                          <div class="col-md-8">
+                          <div class="card-body">
+                              <h5 class="card-title">${applicant.staff_name}</h5>
+                              <p class="card-text text-muted small">${applicant.role} | ${applicant.department} | ${applicant.country}</p>
+                              <div class="skills-container">${skillsHtml}</div>
+                              <div class="mt-3">
+                              <!-- "View Profile" link with data attributes -->
+                              <a href="#" class="view-profile-link text-primary" data-bs-toggle="modal"
+                                  data-bs-target="#profileModal" data-applicant-id="${applicant.id}">View Profile</a>
+                              </div>
+                          </div>
+                          </div>
+                      </div>
+                      </div>
+                  `;
+                  container.append(cardHtml);
+              } catch (error) {
+                  console.error("Error:", error);
+              }
+          }
       }
-
       // Populate applicant cards
       createApplicantCards(applicantsData);
 
@@ -350,6 +374,7 @@
 
         // Populate modal content
         var skillsHtml = applicant.skills.map(function (skill) {
+          console.log("Skill:", skill)
           return `<span class="badge rounded-pill bg-primary">${skill}</span>`;
         }).join(' ');
 
