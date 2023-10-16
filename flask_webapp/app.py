@@ -512,13 +512,10 @@ def role_creation():
     return render_template("role_creation.html")
 
 @app.route('/edit_role/<int:listing_id>')
-def edit_role():
-    user_id = session.get('user_id')
-    user_name = session.get('user_name')
-    print(user_id)
-    print(user_name)
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("edit_role.html")
+def edit_role(listing_id):
+    # Get the listing information
+    json_data =  get_listing(listing_id)
+    return render_template("edit_role.html", json_data = json_data)
 
 @app.route('/role_search', methods=["GET", "POST"])
 def role_search():
