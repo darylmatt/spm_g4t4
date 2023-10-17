@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("editListingModal")
           );
 
+          // Reset the manager box
+          document.getElementById("editManagerDropdown").value =
+            "Searching our database...";
+          document.getElementById("editManagerDropdown").disabled = true;
+
           // Retrieve the listing data from the server
           fetch("get_listing_by_id/" + this.id[7])
             .then((response) => response.json())
@@ -55,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
               var currVacancy = data.data.num_opening;
               var currStart = data.data.date_open.substring(0, 10);
               var currEnd = data.data.date_close.substring(0, 10);
+              var currManager = data.data.reporting_mng;
 
               // Set the default values for the dropdowns
               setDropdownDefault("editRoleDropdown", currName);
@@ -63,7 +69,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
               fetchRoleDescription(selected_role.value);
               fetchDefaultSkills(selected_role.value);
-              get_manager(currCountry.value, deptSelect.value);
+
+              get_manager(currCountry, deptSelect.value, currManager);
 
               setDropdownDefault("editManagerDropdown", data.data.manager_id);
 
@@ -83,6 +90,34 @@ document.addEventListener("DOMContentLoaded", function () {
           selected_role.addEventListener("change", function () {
             fetchRoleDescription(selected_role.value);
             fetchDefaultSkills(selected_role.value);
+          });
+
+          const selected_country = document.getElementById(
+            "editCountryDropdown"
+          );
+          const selected_dept = document.getElementById("editDeptDropdown");
+
+          selected_country.addEventListener("change", function () {
+            // Fetch the correct description from the database
+            has_country = true;
+            if (selected_dept.value != "Select a department") {
+              get_manager(selected_country.value, selected_dept.value, null);
+            } else {
+              document.getElementById("reportingMngError").value =
+                "Please select a department.";
+            }
+          });
+
+          // If user selected department first
+          selected_dept.addEventListener("change", function () {
+            has_dept = true;
+            // Fetch the correct description from the database
+            if (selected_country.value != "Select a country") {
+              get_manager(selected_country.value, selected_dept.value, null);
+            } else {
+              document.getElementById("reportingMngError").value =
+                "Please select a country.";
+            }
           });
         });
       });
@@ -133,8 +168,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function get_manager(country, dept) {
-    fetch("/get_manager/" + country + "/" + dept.value)
+  function get_manager(country, dept, currManager) {
+    // Make it disabled first
+    document.getElementById("editManagerDropdown").disabled = true;
+    fetch("/get_manager/" + country + "/" + dept)
       .then((response) => response.json())
       .then((data) => {
         // Populate the reporting manager box
@@ -149,12 +186,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         manager_names = data.data.name_list;
         manager_ids = data.data.id_list;
-
+        document.getElementById("editManagerDropdown").disabled = false;
         // Provide select options
         document.getElementById("reportingMngError").hidden = true;
 
         // Create select element
-        const managerOptions = document.getElementById("createManagerDropdown");
+        const managerOptions = document.getElementById("editManagerDropdown");
 
         managerOptions.innerHTML = "";
         // Create default option
@@ -166,11 +203,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         managerOptions.appendChild(defaultOption);
 
+        var mIndex = -2;
+
+        if (currManager != null) {
+          mIndex = manager_ids.indexOf(currManager);
+        }
+
         // Populate the select element with manager options
         manager_names.forEach((name, index) => {
-          const option = document.createElement("option");
+          var option = document.createElement("option");
           option.value = manager_ids[index];
           option.textContent = name;
+
+          if (mIndex >= 0 && index == mIndex) {
+            option.selected = true;
+          }
 
           managerOptions.appendChild(option);
         });
