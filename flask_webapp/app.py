@@ -10,6 +10,7 @@ from sqlalchemy import text
 from sqlalchemy import and_, or_
 import json
 import requests
+from authorisation import login_required
 # from fuzzywuzzy import fuzz
 # from sqlalchemy import or_
 
@@ -53,8 +54,17 @@ def design_reference():
     #Keep design reference untouched
     return render_template("design_reference.html")
 
+@app.route('/unauthorised')
+def unauthorised():
+    return render_template("unauthorised.html")
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 @app.route('/staff_profile')
+@login_required(allowed_roles=[1,2])
 def staff_profile():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
@@ -63,6 +73,7 @@ def staff_profile():
     return render_template("staff_profile.html")
 
 @app.route('/HR_profile')
+@login_required(allowed_roles=[1,4])
 def HR_profile():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
@@ -71,9 +82,8 @@ def HR_profile():
     return render_template("HR_profile.html")
 
 @app.route('/all_listings_staff', methods=["GET", "POST"])
+@login_required(allowed_roles=[1,2])
 def all_listings_staff():
-
-    
     Staff_ID = session.get('Staff_ID')
     Role = session.get('Role')
     Staff_Fname = session.get('Staff_Fname')
@@ -102,14 +112,21 @@ def all_listings_staff():
         required_skills = request.form.getlist('required_skills[]')
         
         print(role_search)
+
         search = False
         if( role_search or recency or country or department or required_skills):
             print("ROLE SEARCH")
             search = True
 
         staff_skills_json = requests.get('http://127.0.0.1:5500/skills')
+        print(staff_skills_json)
+        print("debug1")
+        print("bebug2")
         staff_skills_dict = staff_skills_json.json()
+        print(staff_skills_dict)
+        print("staff_skills_dict")
         staff_skills_set = set(staff_skills_dict.get('data', []))
+        print("testingg")
 
         if search:
             search_params = {"role_search": role_search, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
@@ -169,6 +186,7 @@ def all_listings_staff():
                     }
                     listings.append(listingData)
                     num_results = len(listings)
+                    
 
             return render_template("all_listings_staff.html",
                                 listings=listings,
@@ -181,12 +199,13 @@ def all_listings_staff():
                                 num_results="0",
                                 Staff_Name = Staff_Name
                                 )
-    except Exception as e:
+    except Exception as e:  
         # Handle exceptions (e.g., network errors) here
         return str(e), 500  # Return an error response with a 500 status code
 
 
 @app.route('/get_all_open_role_listings', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search):
     try:
         #Scenario where there is input search & filter
@@ -324,6 +343,7 @@ def get_all_open_role_listings(search):
         
 
 @app.route('/get_all_listings', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_all_listings(search):
     try:
         #Scenario where there is input search & filter
@@ -435,6 +455,7 @@ def get_all_listings(search):
             }), 500
 
 @app.route('/view_a_listing/<int:listing_id>', methods=['GET'])
+@login_required(allowed_roles=[1,2,3,4])
 def view_a_listing(listing_id):
     try:
         # Check if the listing exists
@@ -456,6 +477,7 @@ def view_a_listing(listing_id):
             }), 500
 
 @app.route('/skills')
+#@login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:
         # staff_id = 140002  # REPLACE with the actual staff_id
@@ -500,17 +522,20 @@ def get_skills():
 
 
 @app.route('/listings')
+@login_required(allowed_roles=[1,2,3,4])
 def listings():
     dynamic_content = "This content is coming from Flask!"
     return render_template("listings.html")
 
 @app.route('/applied_roles_staff')
+@login_required(allowed_roles=[1,2,3,4])
 def applied_roles():
     dynamic_content = "This content is coming from Flask!"
     return render_template("applied_roles.html")
 
 
 @app.route('/role_creation')
+@login_required(allowed_roles=[1,2,3,4])
 def role_creation():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
@@ -520,12 +545,14 @@ def role_creation():
     return render_template("role_creation.html")
 
 @app.route('/edit_role/<int:listing_id>')
+@login_required(allowed_roles=[1,4])
 def edit_role(listing_id):
     # Get the listing information
     json_data =  get_listing(listing_id)
     return render_template("edit_role.html", json_data = json_data)
 
 @app.route('/role_search', methods=["GET", "POST"])
+@login_required(allowed_roles=[1,2,3,4])
 def role_search():
     role_search = request.form['role_name']
     recency = request.form['recency']
@@ -575,7 +602,12 @@ def role_search():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
     input_id = request.form.get('ID')
+    print(input_id)
     if not input_id:
         return render_template("login.html")
 
@@ -584,11 +616,13 @@ def login():
     except ValueError:
         return render_template("login.html")
     
+    print("performing user ID lookup")
     staff = Staff.query.filter_by(staff_id=input_id).first()
 
     if staff:
         session['Staff_ID'] = staff.staff_id
         session['Role'] = staff.role
+        print("role is", staff.role)
         session['Staff_Fname'] = staff.staff_fname
         session['Staff_Lname'] = staff.staff_lname
         session['Staff_Name'] = f"{staff.staff_fname} {staff.staff_lname}"
@@ -596,9 +630,15 @@ def login():
         session['Country'] = staff.country
         session['Email'] = staff.email
 
+
         if staff.role == 2:
+            print("role is staff")
             return redirect(url_for('all_listings_staff'))
         elif staff.role == 4:
+            print("role is HR")
+            return redirect(url_for('all_listings_HR'))
+        elif staff.role == 1:
+            print("role is Admin")
             return redirect(url_for('all_listings_HR'))
     else:
         print("User not found")
@@ -608,6 +648,7 @@ def login():
 
 
 @app.route('/all_listings_HR', methods=["GET", "POST"])
+@login_required(allowed_roles=[1,4])
 def all_listings_HR():
     Staff_ID = session.get('Staff_ID')
     Role = session.get('Role')
@@ -716,6 +757,7 @@ def all_listings_HR():
 
 
 @app.route('/all_applicants_HR', methods=["GET", "POST"])
+@login_required(allowed_roles=[1,4])
 def all_applicants_HR():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
@@ -726,6 +768,7 @@ def all_applicants_HR():
 
 # Define a route to get the listing ID by name
 @app.route('/get_listing_id_by_name/<string:role_name>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_listing_id_by_name(role_name):
     try:
         # Query the Role_Listing table to find the listing ID by role name
@@ -739,6 +782,7 @@ def get_listing_id_by_name(role_name):
 
 # get applications of each staff
 @app.route('/get_application_history', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_application_history():
     try:
         # Fetch application data for the specified staff_id
@@ -776,6 +820,7 @@ def get_application_history():
 
 #get applications by listing id
 @app.route('/get_applications_by_listing/<int:listing_id>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_applications_by_listing(listing_id):
     try:
         # Fetch application data for the specified listing_id
@@ -827,6 +872,7 @@ def get_num_applicants_by_listing(listing_id):
     return num_applicants
 
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
+@login_required(allowed_roles=[1,2])
 def apply_role(listing_id):
     try:
         staff_id = session.get('Staff_ID')
@@ -878,6 +924,7 @@ def apply_role(listing_id):
 
 
 @app.route('/check_application_status/<int:listing_id>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def check_application_status(listing_id):
     try:
         staff_id = session.get("Staff_ID")
@@ -895,6 +942,7 @@ def check_application_status(listing_id):
 
 # Cancel application
 @app.route('/delete_application/<int:application_id>', methods=["DELETE"])
+@login_required(allowed_roles=[1,2])
 def delete_application(application_id):
     try:
         # Check if the application with the specified application_id and staff_id exists
@@ -926,6 +974,7 @@ def delete_application(application_id):
 
     
 @app.route('/get_staff_details/<int:staff_id>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_staff_details(staff_id):
     try:
         staff = Staff.query.filter_by(staff_id=staff_id).first()
@@ -952,6 +1001,7 @@ def get_staff_details(staff_id):
             }), 500
 
 @app.route('/get_role_description/<string:role_name>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_role_description(role_name):
     try:
         role = Role.query.filter_by(role_name=role_name).first()
@@ -977,6 +1027,7 @@ def get_role_description(role_name):
             }), 500
 
 @app.route('/get_skills_required/<string:role_name>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_skills_required(role_name):
     try:
         skills_required = Role_Skill.query.filter_by(role_name=role_name).all()
@@ -1006,6 +1057,7 @@ def get_skills_required(role_name):
             }), 500
 
 @app.route("/get_all_skills")
+@login_required(allowed_roles=[1,2,3,4])
 def get_all_skills():
     try:
     
@@ -1035,6 +1087,7 @@ def get_all_skills():
 
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def match_skills(listing_id):
     try:
         staff_id = session.get('Staff_ID')  # Placeholder for staff_id (to integrate with login staff_id later on)
@@ -1100,6 +1153,7 @@ def match_skills(listing_id):
     
 #get matching skills of each applicant    
 @app.route("/get_matching_skills/<int:listing_id>/<int:staff_id>", methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_matching_skills(listing_id, staff_id):
     try:
 
@@ -1165,6 +1219,7 @@ def get_matching_skills(listing_id, staff_id):
     
 #Get roles, countries and departments for role creation
 @app.route("/create/get_data")
+@login_required(allowed_roles=[1,4])
 def get_dept_and_countries():
     try:
         #Check roles
@@ -1221,6 +1276,7 @@ def get_dept_and_countries():
 
 # Get reporting manager given a selected department
 @app.route('/get_manager/<string:country>/<string:dept>', methods=["GET"])
+@login_required(allowed_roles=[1,2,3,4])
 def get_manager(country,dept):
     try:
         staff_list = Staff.query.filter_by(dept=dept,country=country).all()
@@ -1259,6 +1315,7 @@ def get_manager(country,dept):
             }), 500
 
 @app.route("/create/check_listing_exist", methods=["POST"])
+@login_required(allowed_roles=[1,2,3,4])
 def check_listing():
     # Get the JSON data from the request
     json_data = request.get_json()
@@ -1318,6 +1375,7 @@ def check_listing():
         ),201
 
 @app.route('/get_required_skills_for_role/<string:role_name>', methods=['GET'])
+@login_required(allowed_roles=[1,2,3,4])
 def get_required_skills_for_roles(role_name):
     # Assuming you have a RoleSkill model for the role_skill table
     skills = Role_Skill.query.filter_by(role_name=role_name).all()
@@ -1329,6 +1387,7 @@ def get_required_skills_for_roles(role_name):
     return jsonify({'role_name': role_name, 'skills': skill_names})
 
 @app.route("/get_listing_by_id/<int:listing_id>")
+@login_required(allowed_roles=[1,2,3,4])
 def get_listing(listing_id):
     try:
         # Check if listing if exists

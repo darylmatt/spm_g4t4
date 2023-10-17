@@ -155,7 +155,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/login">
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('logout')}}">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -452,13 +452,40 @@
 
 
           
-            <div class="tab-content pt-2" id="v-pills-tabContent">
+            <div class="tab-content" id="v-pills-tabContent">
+
               {% for listing in listings %}
               <div class="tab-pane fade active profile-overview" id="{{listing.listing_id}}" role="tabpanel">
                 <div class="d-flex justify-content-end">
+<<<<<<< Updated upstream
                   <button data-listing-id="{{ listing.listing_id }}" style="margin-right: 7px;" type="button" class="btn btn-primary view-applicants-button" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                     View Applicants
                   </button>
+=======
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
+                Edit listing
+              </button>
+              <div class="modal fade" id="modalDialogScrollable" tabindex="-1">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Edit listing</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="row mb-3">
+                          <label class="col-sm-2 col-form-label">Role</label>
+                          <div class="col-sm-10">
+                            <select class="form-select" aria-label="Default select example">
+                              <option selected></option>
+                              <option value="1">Product Designer</option>
+                              <option value="2">Software Engineer</option>
+                              <option value="3">Product Manager</option>
+                            </select>
+                          </div>
+                        </div>
+>>>>>>> Stashed changes
 
                   <button type="button" class="btn btn-primary edit-listing-btn" id="editBtn{{listing.listing_id}}">
                     Edit listing
@@ -536,39 +563,7 @@
   </div>
 </div>
 
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Skills</h5>
 
-    <!-- Progress Bars with labels-->
-
-    <div class="row">
-      <div class="col-lg-6">
-        <h6> Required Skills </h6>
-        <ul class="list-group list-group-light">
-          <li class="list-group-item">
-            <input class="form-check-input me-1" type="checkbox" value="" aria-label="..." />
-            Required Skill 1
-          </li>
-          <li class="list-group-item">
-            <input class="form-check-input me-1" type="checkbox" value="" aria-label="..." />
-            Required Skill 2
-          </li>
-          <li class="list-group-item">
-            <input class="form-check-input me-1" type="checkbox" value="" aria-label="..." />
-            Required Skill 3
-          </li>
-      
-         
-        </ul>
-        </div>
-       
-  
-        </div>
-   
-  
-  </div>
-</div>
 
 
 
@@ -969,23 +964,6 @@
 
   <!-- Template Main JS File -->
   <script src="static/assets/js/main.js"></script>
-  <script>
-    const viewApplicantsButtons = document.querySelectorAll(".view-applicants-button");
-
-    // Add a click event listener to each button
-    viewApplicantsButtons.forEach(button => {
-      button.addEventListener("click", function() {
-        // Retrieve the listing_id from the data attribute
-        const listingId = this.getAttribute("data-listing-id");
-
-        // Construct the URL with the listing_id query parameter
-        const url = `./all_applicants_HR?listing_id=${listingId}`;
-
-        // Navigate to the all_applicants_HR page with the listing_id in the URL
-        window.location.href = url;
-      });
-    });
-  </script>
 
   <!-- Add MDBootstrap JavaScript components, such as the select component -->s
 <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.19.1/js/mdb.min.js"></script>
