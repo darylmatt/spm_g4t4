@@ -142,7 +142,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="/HR_profile">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -155,7 +155,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="/login">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -192,7 +192,7 @@
       
       <li class="nav-item">
        
-        <a class="nav-link " href="index.html">
+        <a class="nav-link " href="/HR_profile">
           <i class="bi bi-grid"></i>
           <span>Profile</span>
         </a>
@@ -485,12 +485,12 @@
                 </div>
                 
                 <div class="row">
-                  <div class="col-lg-3 col-md-6 label ">No. of Openings</div>
+                  <div class="col-lg-3 col-md-6 label ">Vacancy</div>
                   <div class="col-lg-9 col-md-6">{{listing.num_opening}}</div>
                 </div>
 
                 <div class="row">
-                  <div class="col-lg-3 col-md-6 label ">No. Applied</div>
+                  <div class="col-lg-3 col-md-6 label ">No. of Applicants</div>
                   <div class="col-lg-9 col-md-6">{{listing.num_applicants}}</div>
                 </div>
 
@@ -659,7 +659,8 @@
                                   <label for="inputVacancy" class="col-sm-2 col-form-label">Vacancy</label>
                                   <div class="col-sm-10">
                                     <!-- Vacancy Input Field -->
-                                    <input type="number" class="form-control" id="editVacancyInput" min="1" required><p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;">
+                                    <input type="number" class="form-control" id="editVacancyInput" min="1" required>
+                                    <p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;">
                                       Please enter a value of at least 1.
                                     </p>
                                   </div>
@@ -695,8 +696,8 @@
                                 <div class="row my-3">
                                   <label for="inputReportingMng" class="col-sm-2 col-form-label">Reporting Manager</label>
                                   <div class="col-sm-10" id="managerOptions">
-                                    <input id="reportingMngError" type="text" class="form-control" placeholder="Please select department and country." disabled>
-                                    <select class="form-select" aria-label="createSelectManager" id = "editManagerDropdown" hidden>
+                                    <input id="reportingMngError" type="text" class="form-control" hidden disabled>
+                                    <select class="form-select" aria-label="createSelectManager" id = "editManagerDropdown">
                                     </select>                  
                                   </div>
                                 </div>
@@ -718,7 +719,7 @@
                               <!-- submit button -->
                               <div class="row mb-3 pt-3 d-flex justify-content-center">
                                   <div class="d-flex justify-content-center mt-4">
-                                    <button type="button" class="btn btn-primary" id="create_btn" data-bs-toggle="modal" data-bs-target="#createMsg" disabled>Submit</button>
+                                    <button type="button" class="btn btn-primary" id="create_btn" data-bs-toggle="modal" data-bs-target="#createMsg" disabled>Save Changes</button>
               
                                     <!-- Modal -->
                               <div class="modal fade" id="createMsg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createMsgLabel" aria-hidden="true">
