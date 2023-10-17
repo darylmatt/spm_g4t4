@@ -412,33 +412,59 @@
       createApplicantCards(applicantsData);
 
       // Function to populate skills in modal with the desired structure
-      function populateSkillsModal(applicantId) {
+      async function populateSkillsModal(applicantId) {
         var modalTitle = document.getElementById('profileModalLabel');
         var modalName = document.getElementById("modalName");
         var modalRole = document.getElementById('modalRole');
         var modalDepartment = document.getElementById('modalDepartment');
         var modalCountry = document.getElementById('modalCountry');
         var modalSkills = document.getElementById('modalSkills');
-         // Declare applicant variable with block scope using let
-        console.log("populateskills app data:",applicantsData)
+
+        // Declare applicant variable with block scope using let
+        console.log("populateskills app data:", applicantsData);
         let applicant = applicantsData.find(function (app) {
-          console.log("app:",app)
-            return app.staff_id === applicantId;
+          console.log("app:", app)
+          return app.staff_id === applicantId;
         });
 
         if (applicant) {
-        modalTitle.textContent = applicant.staff_name;
-        modalDepartment.textContent = applicant.department;
-        modalCountry.textContent = applicant.country;
-        modalSkills.textContent = applicant.skills.join(', ');
+          modalTitle.textContent = applicant.staff_name;
+          modalDepartment.textContent = applicant.department;
+          modalCountry.textContent = applicant.country;
 
-        // Show the modal
-        $('#profileModal').modal('show');
-        } else {
-            // Handle the case where the applicant is not found.
-            console.error("Applicant not found for ID: " + applicantId);
-        }
-    }
+          // Create HTML for skills with appropriate classes
+          let matchingSkillsHtml = '';
+          let nonMatchingSkillsHtml = '';
+
+          // Get matching skills for the applicant
+          const matchingSkillsResponse = await get_matching_skills(listingId, applicant.staff_id);
+          const matchedSkills = matchingSkillsResponse.response_data.matched_skills;
+
+          applicant.skills.forEach(function (skill) {
+            // Check if the skill is a matching skill and assign class accordingly
+            const isMatchingSkill = matchedSkills.includes(skill);
+            const skillClass = isMatchingSkill ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger';
+            const skillHtml = `<span class="${skillClass}">${skill}</span> `;
+
+            if (isMatchingSkill) {
+              matchingSkillsHtml += skillHtml;
+            } else {
+              nonMatchingSkillsHtml += skillHtml;
+            }
+          });
+
+        // Concatenate matching and non-matching skills
+        const skillsHtml = matchingSkillsHtml + nonMatchingSkillsHtml;
+
+        modalSkills.innerHTML = skillsHtml;
+
+    // Show the modal
+    $('#profileModal').modal('show');
+  } else {
+    // Handle the case where the applicant is not found.
+    console.error("Applicant not found for ID: " + applicantId);
+  }
+}
     
     //fill in role applied in profile card
     function getListingName(listingId) {
