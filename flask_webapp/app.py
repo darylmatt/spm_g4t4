@@ -62,6 +62,14 @@ def staff_profile():
     print(user_name)
     return render_template("staff_profile.html")
 
+@app.route('/HR_profile')
+def HR_profile():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
+    return render_template("HR_profile.html")
+
 @app.route('/all_listings_staff', methods=["GET", "POST"])
 def all_listings_staff():
 
@@ -1308,6 +1316,17 @@ def check_listing():
                 "message":"New listing created successfully!"
             }
         ),201
+
+@app.route('/get_required_skills_for_role/<string:role_name>', methods=['GET'])
+def get_required_skills_for_roles(role_name):
+    # Assuming you have a RoleSkill model for the role_skill table
+    skills = Role_Skill.query.filter_by(role_name=role_name).all()
+
+    if not skills:
+        return jsonify({'message': 'Role not found'}), 404
+
+    skill_names = [skill.skill_name for skill in skills]
+    return jsonify({'role_name': role_name, 'skills': skill_names})
 
 @app.route("/get_listing_by_id/<int:listing_id>")
 def get_listing(listing_id):
