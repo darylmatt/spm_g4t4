@@ -170,6 +170,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function get_manager(country, dept, currManager) {
     // Make it disabled first
+    //Append a loading option and set it to disabled
+    document.getElementById("editManagerDropdown").textContent = "Loading..";
     document.getElementById("editManagerDropdown").disabled = true;
     fetch("/get_manager/" + country + "/" + dept)
       .then((response) => response.json())
