@@ -231,7 +231,8 @@
             <p><strong>Role Applied:</strong> <span id="modalRole"></span></p>
             <p><strong>Department:</strong> <span id="modalDepartment"></span></p>
             <p><strong>Country:</strong> <span id="modalCountry"></span></p>
-            <p><strong>Skills:</strong> <span id="modalSkills"></span></p>
+            <p><strong>Role Skill Match:</strong> <span id="modalRoleSkills"></span></p>
+            <p><strong>Staff Skills:</strong> <span id="modalStaffSkills"></span></p>
             <div class="btn-group d-flex justify-content-center" role="group" aria-label="Basic example">
               <button type="button" class="btn btn-success">Accept</button>
               <button type="button" class="btn btn-danger">Reject</button>
@@ -411,82 +412,122 @@
       // Populate applicant cards
       createApplicantCards(applicantsData);
 
-      // Function to populate skills in modal with the desired structure
-      async function populateSkillsModal(applicantId) {
-        var modalTitle = document.getElementById('profileModalLabel');
-        var modalName = document.getElementById("modalName");
-        var modalRole = document.getElementById('modalRole');
-        var modalDepartment = document.getElementById('modalDepartment');
-        var modalCountry = document.getElementById('modalCountry');
-        var modalSkills = document.getElementById('modalSkills');
+  // Function to populate skills in modal with the desired structure
+  async function populateSkillsModal(applicantId) {
+    var modalTitle = document.getElementById('profileModalLabel');
+    var modalName = document.getElementById("modalName");
+    var modalRole = document.getElementById('modalRole');
+    var modalDepartment = document.getElementById('modalDepartment');
+    var modalCountry = document.getElementById('modalCountry');
+    var modalRoleSkills = document.getElementById('modalRoleSkills');
+    var modalStaffSkills = document.getElementById('modalStaffSkills');
 
-        // Declare applicant variable with block scope using let
-        console.log("populateskills app data:", applicantsData);
-        let applicant = applicantsData.find(function (app) {
-          console.log("app:", app)
-          return app.staff_id === applicantId;
+    // Declare applicant variable with block scope using let
+    console.log("populateskills app data:", applicantsData);
+    let applicant = applicantsData.find(function (app) {
+      console.log("app:", app)
+      return app.staff_id === applicantId;
+    });
+
+    if (applicant) {
+      modalTitle.textContent = applicant.staff_name;
+      modalDepartment.textContent = applicant.department;
+      modalCountry.textContent = applicant.country;
+
+      // Fetch the role name (listingName)
+      const listingName = await getListingName(listingId);
+      console.log("listingname:", listingName)
+
+      // Use listingName to fetch the required skills for the role
+      const requiredSkillsResponse = await fetch(`/get_required_skills_for_role/${listingName}`);
+      if (requiredSkillsResponse.ok) {
+        const requiredSkillsData = await requiredSkillsResponse.json();
+        const requiredSkills = requiredSkillsData.skills; // Assuming the response contains an array of required skills
+
+        // Create HTML for role skills with appropriate classes
+        let matchingRoleSkillsHtml = '';
+        let nonMatchingRoleSkillsHtml = '';
+
+        // Get matching skills for the applicant
+        const matchingSkillsResponse = await get_matching_skills(listingId, applicant.staff_id);
+        const matchedSkills = matchingSkillsResponse.response_data.matched_skills;
+
+        // Check if each required skill is a matching skill and assign class accordingly
+        requiredSkills.forEach(function (skill) {
+          const isMatchingSkill = matchedSkills.includes(skill);
+          const skillClass = isMatchingSkill ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger';
+          const skillHtml = `<span class="${skillClass}">${skill}</span> `;
+
+          if (isMatchingSkill) {
+            matchingRoleSkillsHtml += skillHtml;
+          } else {
+            nonMatchingRoleSkillsHtml += skillHtml;
+          }
         });
 
-        if (applicant) {
-          modalTitle.textContent = applicant.staff_name;
-          modalDepartment.textContent = applicant.department;
-          modalCountry.textContent = applicant.country;
+        // Concatenate matching and non-matching role skills
+        const roleSkillsHtml = matchingRoleSkillsHtml + nonMatchingRoleSkillsHtml;
 
-          // Create HTML for skills with appropriate classes
-          let matchingSkillsHtml = '';
-          let nonMatchingSkillsHtml = '';
+        // Get staff skills from the applicant data
+        const staffSkills = applicant.skills; // Assuming staff skills are in the 'skills' property of the applicant
 
-          // Get matching skills for the applicant
-          const matchingSkillsResponse = await get_matching_skills(listingId, applicant.staff_id);
-          const matchedSkills = matchingSkillsResponse.response_data.matched_skills;
+        // Create HTML for staff skills with a neutral color pill
+        let staffSkillsHtml = '';
+        staffSkills.forEach(function (skill) {
+          const skillHtml = `<span class="badge rounded-pill bg-primary">${skill}</span> `;
+          staffSkillsHtml += skillHtml;
+        });
 
-          applicant.skills.forEach(function (skill) {
-            // Check if the skill is a matching skill and assign class accordingly
-            const isMatchingSkill = matchedSkills.includes(skill);
-            const skillClass = isMatchingSkill ? 'badge rounded-pill bg-success' : 'badge rounded-pill bg-danger';
-            const skillHtml = `<span class="${skillClass}">${skill}</span> `;
+        // Update the role skills and staff skills in the modal
+        modalRoleSkills.innerHTML = roleSkillsHtml;
+        modalStaffSkills.innerHTML = staffSkillsHtml;
 
-            if (isMatchingSkill) {
-              matchingSkillsHtml += skillHtml;
-            } else {
-              nonMatchingSkillsHtml += skillHtml;
-            }
-          });
-
-        // Concatenate matching and non-matching skills
-        const skillsHtml = matchingSkillsHtml + nonMatchingSkillsHtml;
-
-        modalSkills.innerHTML = skillsHtml;
-
-    // Show the modal
-    $('#profileModal').modal('show');
-  } else {
-    // Handle the case where the applicant is not found.
-    console.error("Applicant not found for ID: " + applicantId);
-  }
-}
-    
-    //fill in role applied in profile card
-    function getListingName(listingId) {
-        // Make an AJAX request to fetch the listing name
-        fetch(`/get_listing_by_id/${listingId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.code === 200 && data.data && data.data.role_name) {
-              const roleName = data.data.role_name;
-              console.log("roleName:",roleName)
-              // Update the ModalRole element with the extracted role name
-              const modalRole = document.getElementById('modalRole');
-              modalRole.textContent = roleName;
-            } else {
-              console.error('Role name not found in the response data.');
-            }
-          })
-          .catch((error) => {
-            console.error('Error fetching role name:', error);
-          });
+        // Show the modal
+        $('#profileModal').modal('show');
+      } else {
+        console.error('Error fetching required skills for the role');
       }
-  
+    } else {
+      // Handle the case where the applicant is not found.
+      console.error("Applicant not found for ID: " + applicantId);
+    }
+  }
+
+    
+    async function getListingName(listingId) {
+      try {
+        const response = await fetch(`/get_listing_by_id/${listingId}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.code === 200 && data.data && data.data.role_name) {
+            const roleName = data.data.role_name;
+            console.log("roleName:", roleName);
+
+            // Update the ModalRole element with the extracted role name
+            const modalRole = document.getElementById('modalRole');
+            modalRole.textContent = roleName;
+
+            return roleName;
+          } else {
+            console.error('Role name not found in the response data.');
+            return null;
+          }
+        } else {
+          console.error(`HTTP Error: ${response.status}`);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error fetching role name:', error);
+        return null;
+      }
+    }
+
       var urlParams = new URLSearchParams(window.location.search);
       var listingId = urlParams.get('listing_id');
 
