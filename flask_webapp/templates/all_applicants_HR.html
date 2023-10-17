@@ -439,6 +439,27 @@
             console.error("Applicant not found for ID: " + applicantId);
         }
     }
+    
+    //fill in role applied in profile card
+    function getListingName(listingId) {
+        // Make an AJAX request to fetch the listing name
+        fetch(`/get_listing_by_id/${listingId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.code === 200 && data.data && data.data.role_name) {
+              const roleName = data.data.role_name;
+              console.log("roleName:",roleName)
+              // Update the ModalRole element with the extracted role name
+              const modalRole = document.getElementById('modalRole');
+              modalRole.textContent = roleName;
+            } else {
+              console.error('Role name not found in the response data.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching role name:', error);
+          });
+      }
   
       var urlParams = new URLSearchParams(window.location.search);
       var listingId = urlParams.get('listing_id');
@@ -446,6 +467,7 @@
       // Check if listingId is not null and call fetchAndPopulateApplicantsData
       if (listingId) {
         fetchAndPopulateApplicantsData(listingId);
+        getListingName(listingId);
         fetchRoleListing(listingId)
 
       }
