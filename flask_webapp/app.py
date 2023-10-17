@@ -62,6 +62,14 @@ def staff_profile():
     print(user_name)
     return render_template("staff_profile.html")
 
+@app.route('/HR_profile')
+def HR_profile():
+    user_id = session.get('user_id')
+    user_name = session.get('user_name')
+    print(user_id)
+    print(user_name)
+    return render_template("HR_profile.html")
+
 @app.route('/all_listings_staff', methods=["GET", "POST"])
 def all_listings_staff():
 
