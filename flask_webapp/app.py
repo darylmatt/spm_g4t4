@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
-from sqlalchemy import text
+from sqlalchemy import text, asc, desc
 from sqlalchemy import and_, or_
 import json
 import requests
@@ -46,6 +46,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+@app.route('/calculate_num_listings')
+def calculate_num_listings():
+    current_time = datetime.now()
+    role_listings = Role_Listing.query.filter(and_(
+        Role_Listing.date_open <= current_time,
+        Role_Listing.date_close >= current_time,
+        Role_Listing.num_opening > 0,
+        Role_Listing.date_close >= current_time
+    )).order_by(desc(Role_Listing.date_open)).limit().all()
+
+    num_role_listings = len(role_listings)
+    print(num_role_listings)
+    return num_role_listings
+
 
 
 @app.route('/design_reference')
@@ -275,6 +290,8 @@ def get_all_open_role_listings(search):
                     '''
 
             role_listings = base_query.all()
+            print("test")
+            print(len(role_listings))
             if(len(required_skills) > 0):
                 print('yes')
                 filtered_role_listings = []
@@ -316,7 +333,7 @@ def get_all_open_role_listings(search):
                 Role_Listing.date_close >= current_time,
                 Role_Listing.num_opening > 0,
                 Role_Listing.date_close >= current_time
-            )).all()
+            )).order_by(desc(Role_Listing.date_open)).limit().all()
 
             if len(role_listings) > 0:
                 return jsonify(
@@ -469,6 +486,31 @@ def view_a_listing(listing_id):
                     "data": listing.json()
                 }
             )
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
+
+@app.route('/all_skills')
+def all_skills():
+    try:
+        skills = Skill.query.filter().all()
+        if len(skills) > 0:
+            return jsonify(
+                {
+                    "code":200, 
+                    "data": [skill.json() for skill in skills]
+                }
+            )
+        else:
+            return jsonify(
+                {
+                    "code": 404,
+                    "message": "There are no skills"
+                }
+            ), 404
     except Exception as e:
         db.session.rollback()
         return jsonify({
