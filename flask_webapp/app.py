@@ -1313,6 +1313,71 @@ def get_manager(country,dept):
             "code": 500,
             "error": str(e)
             }), 500
+    
+@app.route("/update/check_listing_exist/<int:id>", methods=["POST"])
+@login_required(allowed_roles=[1,2,3,4])
+def update_check_listing(id):
+    # Get the JSON data from the request
+    json_data = request.get_json()
+    print(json_data)
+
+    name = json_data["title"]
+    department = json_data["department"]
+    country = json_data["country"]
+    start_date = json_data["startDate"]
+    end_date=json_data["endDate"]
+    manager=json_data["manager"]
+    vacancy=json_data["vacancy"]
+
+    # Query database to see if a role listing like this exists
+
+    matching_listings = Role_Listing.query.filter(
+        and_(Role_Listing.role_name == name,
+        Role_Listing.dept == department,
+        Role_Listing.country == country,
+        Role_Listing.date_close >= start_date,
+        Role_Listing.listing_id != id)
+    ).all()
+
+
+    if matching_listings:
+        # If matching listings are found, there are duplicates
+        print(matching_listings)
+        return jsonify({
+            
+            "code":400,
+            "message": "Listing failed to update. There's an active listing."
+            }), 400
+
+    else:
+        # Fetch current listing
+        currListing = Role_Listing.query.filter(listing_id = id).first()
+        try:
+            currListing.role_name = name
+            currListing.dept = department
+            currListing.country = country
+            currListing.date_open = start_date
+            currListing.date_close = end_date
+            currListing.reporting_mng = manager
+            currListing.num_opening = vacancy
+            db.session.commit()
+            
+        except Exception as e:
+            return jsonify(
+            {
+                "code": 500,
+                "error": str(e)
+            }), 500        
+    
+        return jsonify(
+            {
+                "code":201,
+                "data": currListing.json(),
+                "message":"Listing successfully edited! Refresh page to view."
+            }
+        ),201
+
+    
 
 @app.route("/create/check_listing_exist", methods=["POST"])
 @login_required(allowed_roles=[1,2,3,4])

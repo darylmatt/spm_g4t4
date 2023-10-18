@@ -446,12 +446,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var createBtn = document.getElementById("create_btn");
 
   createBtn.addEventListener("click", function () {
-    console.log(selected_skills);
     var skillList = [];
     selected_skills.childNodes.forEach((child) => {
       skillList.push(child.childNodes[0].id);
     });
-    console.log(skillList);
     var requestData = {
       title: selected_role.value,
       department: selected_dept.value,

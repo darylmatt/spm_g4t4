@@ -49,9 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("editManagerDropdown").value =
             "Searching our database...";
           document.getElementById("editManagerDropdown").disabled = true;
-
+          const id = this.id[7];
           // Retrieve the listing data from the server
-          fetch("get_listing_by_id/" + this.id[7])
+          fetch("get_listing_by_id/" + id)
             .then((response) => response.json())
             .then((data) => {
               var currName = data.data.role_name;
@@ -121,6 +121,42 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         });
       });
+
+      save_btn.addEventListener("click", function () {
+        //Get all my values from the form
+        console.log("save button clicked for id:", this.id[7]);
+        var requestData = {
+          id: this.id[7],
+          title: selected_role.value,
+          department: selected_dept.value,
+          country: selected_country.value,
+          startDate: document.getElementById("editStartDate").value,
+          endDate: document.getElementById("editEndDate").value,
+          manager: document.getElementById("editManagerDropdown").value,
+          vacancy: document.getElementById("editVacancyInput").value,
+        };
+
+        fetch("/update/check_listing_exist/", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+          body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            //Get the code
+            code = data.code;
+            if (code == 201) {
+              document.getElementById("saveEditMsg").innerHTML =
+                "Role update success! Refresh to view changes.";
+            } else {
+              document.getElementById("saveEditMsg").innerHTML =
+                "Role update failed.";
+            }
+            document.getElementById("saveEditMsg").hidden = false;
+          });
+      });
     });
   function setDropdownDefault(dropdownId, value) {
     const dropdown = document.getElementById(dropdownId);
@@ -170,8 +206,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function get_manager(country, dept, currManager) {
     // Make it disabled first
+    document.getElementById("save_btn").disabled = true;
     //Append a loading option and set it to disabled
-    document.getElementById("editManagerDropdown").textContent = "Loading..";
     document.getElementById("editManagerDropdown").disabled = true;
     fetch("/get_manager/" + country + "/" + dept)
       .then((response) => response.json())
@@ -225,6 +261,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         managerOptions.hidden = false;
+        document.getElementById("save_btn").disabled = false;
       });
   }
+
+  // Check vacancy value
+  var save_btn = document.getElementById("save_btn");
+  save_btn.disabled = true;
+  var vacancyInput = document.getElementById("editVacancyInput");
+  vacancyInput.addEventListener("change", function () {
+    if (vacancyInput.value < 1) {
+      // Show the warning
+      document.getElementById("vacancyInputWarning").hidden = false;
+      // Disable the save button
+      save_btn.disabled = true;
+    } else {
+      save_btn.disabled = true;
+      document.getElementById("vacancyInputWarning").hidden = true;
+    }
+  });
+
+  //On click save button
 });

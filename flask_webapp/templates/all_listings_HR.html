@@ -567,7 +567,9 @@
               </div>
               {% endfor %}
               <!-- Modal for edit listing -->
-              <div id="editListingModal" class="modal fade modal-lg" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div id="editListingModal" class="modal fade modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+              
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -629,7 +631,7 @@
                                   <div class="col-sm-10">
                                     <!-- Vacancy Input Field -->
                                     <input type="number" class="form-control" id="editVacancyInput" min="1" required>
-                                    <p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;">
+                                    <p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;" hidden>
                                       Please enter a value of at least 1.
                                     </p>
                                   </div>
@@ -688,24 +690,10 @@
                               <!-- submit button -->
                               <div class="row mb-3 pt-3 d-flex justify-content-center">
                                   <div class="d-flex justify-content-center mt-4">
-                                    <button type="button" class="btn btn-primary" id="create_btn" data-bs-toggle="modal" data-bs-target="#createMsg" disabled>Save Changes</button>
-              
-                                    <!-- Modal -->
-                              <div class="modal fade" id="createMsg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createMsgLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h1 class="modal-title fs-5" id="createMsgLabel"></h1>      </div>
-                                    <div class="modal-body" id="createMsgBody">
-                                      
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" id="cannotCreate" data-bs-dismiss="modal" hidden>Close</button>
-                                      <button type="button" class="btn btn-primary" id="backToListings" hidden>Back to all listings</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                                    <button type="button" class="btn btn-primary" id="save_btn">Save Changes</button>
+                                    <p id="saveEditMsg" style="font-size: 12px;" hidden>
+                                    </p>
+            
                                     </div>
                                 </div>
                 
