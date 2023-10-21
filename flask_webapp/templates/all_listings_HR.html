@@ -8,8 +8,8 @@
   <title> All-in-One SBRP portal </title>
 
     <!-- Script to fetch data from database -->
-    <script src="{{url_for('static', filename='assets/js/edit_role_listing.js')}}"></script>
-
+    <script src="{{url_for('static', filename='assets/js/edit_role_listing.js')}}">
+    </script>
 
   <meta content="" name="description">
   <meta content="" name="keywords">
@@ -64,6 +64,9 @@
        /* Make options appear vertically */
        top: 100%;
        left: 0;
+       max-height: 250px;
+       overflow-y: auto;
+       
    }
 
    .custom-dropdown-content label {
@@ -263,7 +266,7 @@
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState1" name="recency" class="form-select">
+          <select id="inputState2" name="recency" class="form-select">
             <option selected>Any time</option>
             <option >Past week</option>
             <option >Past month</option>
@@ -271,47 +274,41 @@
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" name="country" class="form-select">
-            <option selected>Country</option>
-            <option>SG</option>
-            <option>MY</option>
-            <option>ID</option>
-            <option>VN</option>
-            <option>HK</option>
+          <select id="inputState3" name="country" class="form-select">
+              <option selected>Country</option>
+              {% for country in countries %}
+                  <option value="{{ country.country }}">{{ country.country_name }}</option>
+              {% endfor %}
           </select>
         </div>
+      
         <div class="col-md-2">
-          <select id="inputState2" name="department" class="form-select">
-            <option selected>Department</option>
-            <option>Sales</option>
-            <option>Consultancy</option>
-            <option>Systems Solutioning</option>
-            <option>Engineering Operation</option>
-            <option>HR and Admin</option>
-            <option>Finance</option>
-            <option>IT</option>
+          <select id="inputState4" name="department" class="form-select">
+              <option selected>Department</option>
+              {% for department in departments %}
+                  <option value="{{ department }}">{{ department }}</option>
+              {% endfor %}
           </select>
         </div>
 
         <body>
           <div class="col md-4">
-              <div class="row">
-                  <div class="col-md-6">
-                      <div class="form-group">
-                         
-                          <div class="custom-dropdown">
-                              <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
-                              <div id="dropdownContent" class="custom-dropdown-content">
-                                  <input type="text" class="search-input" id="searchInput" placeholder="Search...">
-                                  <label><input type="checkbox" name="required_skills[]" value="Communication">Communication</label>
-                                  <label><input type="checkbox" name="required_skills[]" value="Stakeholder Management">Stakeholder Management</label>
-                            
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="custom-dropdown">
+                            <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
+                            <div id="dropdownContent" class="custom-dropdown-content">
+                                <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+                                {% for skill in skills %}
+                                <label><input type="checkbox" name="required_skills[]" value="{{ skill.skill_name }}">{{ skill.skill_name }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
       
           <!-- Include Bootstrap and jQuery JS -->
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -943,6 +940,8 @@
   $(document).ready(function () {
     $('.select').materialSelect();
   });
+  
+
 </script>
 
 </body>

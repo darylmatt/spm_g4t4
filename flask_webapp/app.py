@@ -608,40 +608,6 @@ def role_search():
     print(required_skills)
     return 'role_search'
 
-# @app.route('/login', methods=["GET", "POST"])
-# def login():
-#     input_id = request.form.get('ID')
-#     print(input_id)
-#     if input_id in user_ids:
-#         #Check access control level
-#         Staff_ID = user_dict[input_id]['Staff_ID']
-#         Role = user_dict[input_id]['Role']
-#         Staff_Fname = user_dict[input_id]['Staff_FName']
-#         Staff_Lname = user_dict[input_id]['Staff_LName']
-#         Staff_Name = Staff_Fname + " " + Staff_Lname
-#         Dept = user_dict[input_id]['Dept']
-#         Country = user_dict[input_id]['Country']
-#         Email = user_dict[input_id]['Email']
-        
-#         session['Staff_ID'] = Staff_ID
-#         session['Role'] = Role
-#         session['Staff_Fname'] = Staff_Fname
-#         session['Staff_Lname'] = Staff_Lname
-#         session['Staff_Name'] = Staff_Name
-#         session['Dept'] = Dept
-#         session['Country'] = Country
-#         session['Email'] = Email
-
-       
-#         if Role == 2:
-#             return redirect(url_for('all_listings_staff'))
-#         elif Role == 4:
-#             return redirect(url_for('all_listings_HR'))
-#     else:
-#         print("User not found")
-#     dynamic_content = "This content is coming from Flask!"
-#     return render_template("login.html")
-
 @app.route('/login', methods=["GET", "POST"])
 def login():
     user_id = session.get('user_id')
@@ -787,11 +753,31 @@ def all_listings_HR():
                 listings.append(listingData)
                 num_results = len(listings)
 
+            countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
+            if countries_response.status_code == 200:
+                countries_data = countries_response.json()
+                countries = countries_data.get("countries")
+
+            departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
+            if departments_response.status_code == 200:
+                departments_data = departments_response.json()
+                departments = departments_data.get("departments")
+
+            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
+            if skills_response.status_code == 200:
+                skills_data = skills_response.json()
+                skills = skills_data.get("skills")
+
             return render_template("all_listings_HR.html", 
-                            listings=listings,
-                            num_results=num_results,
-                            Staff_Name = Staff_Name
-                            )
+                                   listings=listings,
+                                   num_results=num_results,
+                                   Staff_Name=Staff_Name,
+                                   countries=countries,
+                                   departments=departments,
+                                   skills=skills
+                                   )
+        else:
+            return jsonify({"message": "Failed to fetch countries"}), 500
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
         return str(e), 500  # Return an error response with a 500 status code
@@ -1067,6 +1053,41 @@ def get_role_description(role_name):
             "code": 500,
             "error": str(e)
             }), 500
+    
+@app.route('/get_all_countries', methods=["GET"])
+def get_all_countries():
+    try:
+        countries = Country.query.all()
+
+        if not countries:
+            return jsonify({"message": "No countries found"}), 404
+
+        country_list = [{"country": country.country, "country_name": country.country_name} for country in countries]
+        print(country_list)
+
+        return jsonify({"countries": country_list}), 200
+    
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/get_all_departments', methods=["GET"])
+def get_all_departments():
+    try:
+        departments = Department.query.all()
+
+        if not departments:
+            return jsonify({"message": "No departments found"}), 404
+
+        department_list = [department.department for department in departments]
+
+        return jsonify({"departments": department_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 @app.route('/get_skills_required/<string:role_name>', methods=["GET"])
 @login_required(allowed_roles=[1,2,3,4])
@@ -1098,41 +1119,28 @@ def get_skills_required(role_name):
             "error": str(e)
             }), 500
 
-@app.route("/get_all_skills")
-@login_required(allowed_roles=[1,2,3,4])
+
+@app.route('/get_all_skills', methods=['GET'])
 def get_all_skills():
     try:
-    
         skills = Skill.query.all()
-
-        if len(skills) == 0:
-            return jsonify(
-                {
-                    "code": 404,
-                    "message": "No skills are found."
-                }
-            ), 404  
-        
-        else:
-            return jsonify({
-                "code": 200,
-                "data": [skill.skill_name for skill in skills]
+        skill_list = []
+        for skill in skills:
+            skill_list.append({
+                'skill_name': skill.skill_name,
+                'skill_desc': skill.skill_desc
             })
-
-
+        return jsonify({'skills': skill_list})
     except Exception as e:
         db.session.rollback()
-        return jsonify({
-            "code": 500,
-            "error": str(e)
-            }), 500 
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 @login_required(allowed_roles=[1,2,3,4])
 def match_skills(listing_id):
     try:
-        staff_id = session.get('Staff_ID')  # Placeholder for staff_id (to integrate with login staff_id later on)
+        staff_id = session.get('Staff_ID')
 
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
