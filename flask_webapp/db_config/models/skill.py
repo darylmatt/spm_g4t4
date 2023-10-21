@@ -1,10 +1,10 @@
-from db_config.db import db
+from app import db
 
 class Skill(db.Model):
 
     __tablename__ = 'skill'
 
-    skill_name = db.Column(db.String(50),primary_key=True)
+    skill_name = db.Column(db.String(50),primary_key=True, nullable=False)
     skill_desc = db.Column(db.Text(length='long'), nullable=False)
 
     role_skills = db.relationship('Role_Skill', backref='skill')
