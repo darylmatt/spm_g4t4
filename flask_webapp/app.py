@@ -1356,7 +1356,7 @@ def get_manager(country,dept):
             "error": str(e)
             }), 500
     
-@app.route("/update/check_listing_exist/<int:id>", methods=["POST"])
+@app.route("/update/check_listing_exist/<int:id>", methods=["PUT"])
 @login_required(allowed_roles=[1,2,3,4])
 def update_check_listing(id):
     # Get the JSON data from the request
@@ -1373,51 +1373,52 @@ def update_check_listing(id):
 
     # Query database to see if a role listing like this exists
 
-    matching_listings = Role_Listing.query.filter(
-        and_(Role_Listing.role_name == name,
-        Role_Listing.dept == department,
-        Role_Listing.country == country,
-        Role_Listing.date_close >= start_date,
-        Role_Listing.listing_id != id)
-    ).all()
+    # matching_listings = Role_Listing.query.filter(
+    #     and_(Role_Listing.role_name == name,
+    #     Role_Listing.dept == department,
+    #     Role_Listing.country == country,
+    #     Role_Listing.date_close >= start_date,
+    #     Role_Listing.listing_id != id)
+    # ).all()
 
 
-    if matching_listings:
-        # If matching listings are found, there are duplicates
-        print(matching_listings)
-        return jsonify({
+    # if matching_listings:
+    #     # If matching listings are found, there are duplicates
+    #     print(matching_listings)
+    #     return jsonify({
             
-            "code":400,
-            "message": "Listing failed to update. There's an active listing."
-            }), 400
+    #         "code":400,
+    #         "message": "Listing failed to update. There's an active listing."
+    #         }), 400
 
-    else:
+    # else:
         # Fetch current listing
-        currListing = Role_Listing.query.filter(listing_id = id).first()
-        try:
-            currListing.role_name = name
-            currListing.dept = department
-            currListing.country = country
-            currListing.date_open = start_date
-            currListing.date_close = end_date
-            currListing.reporting_mng = manager
-            currListing.num_opening = vacancy
-            db.session.commit()
-            
-        except Exception as e:
-            return jsonify(
-            {
-                "code": 500,
-                "error": str(e)
-            }), 500        
-    
+    currListing = Role_Listing.query.filter_by(listing_id=id).first()
+
+    try:
+        currListing.role_name = name
+        currListing.dept = department
+        currListing.country = country
+        currListing.date_open = start_date
+        currListing.date_close = end_date
+        currListing.reporting_mng = manager
+        currListing.num_opening = vacancy
+        db.session.commit()
+        
+    except Exception as e:
         return jsonify(
-            {
-                "code":201,
-                "data": currListing.json(),
-                "message":"Listing successfully edited! Refresh page to view."
-            }
-        ),201
+        {
+            "code": 500,
+            "error": str(e)
+        }), 500        
+
+    return jsonify(
+        {
+            "code":201,
+            "data": currListing.json(),
+            "message":"Listing successfully edited! Refresh page to view."
+        }
+    ),201
 
     
 

@@ -18,7 +18,8 @@ class Role_Listing(db.Model):
     reporting_mng = db.Column(db.Integer, ForeignKey('staff.staff_id'), nullable=False)
     applications = db.relationship('Application', backref='role_listing')
 
-    def __init__(self, country, dept, num_opening, date_open, date_close, role_name, reporting_mng):
+    def __init__(self, listing_id, country, dept, num_opening, date_open, date_close, role_name, reporting_mng):
+        self.listing_id = listing_id
         self.country = country
         self.dept = dept
         self.num_opening = num_opening

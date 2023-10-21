@@ -80,6 +80,41 @@ document.addEventListener("DOMContentLoaded", function () {
               document.getElementById("editEndDate").value = currEnd;
             });
 
+          save_btn.addEventListener("click", function () {
+            //Get all my values from the form
+            console.log("save button clicked for id:", id);
+            var requestData = {
+              title: selected_role.value,
+              department: selected_dept.value,
+              country: selected_country.value,
+              startDate: document.getElementById("editStartDate").value,
+              endDate: document.getElementById("editEndDate").value,
+              manager: document.getElementById("editManagerDropdown").value,
+              vacancy: document.getElementById("editVacancyInput").value,
+            };
+
+            fetch("/update/check_listing_exist/" + id, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json", // Set the content type to JSON
+              },
+              body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                //Get the code
+                code = data.code;
+                if (code == 201) {
+                  document.getElementById("saveEditMsg").innerHTML =
+                    "Role update success! Refresh to view changes.";
+                } else {
+                  document.getElementById("saveEditMsg").innerHTML =
+                    "Role update failed.";
+                }
+                document.getElementById("saveEditMsg").hidden = false;
+              });
+          });
+
           // Show the modal
           modal.show();
 
@@ -120,42 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           });
         });
-      });
-
-      save_btn.addEventListener("click", function () {
-        //Get all my values from the form
-        console.log("save button clicked for id:", this.id[7]);
-        var requestData = {
-          id: this.id[7],
-          title: selected_role.value,
-          department: selected_dept.value,
-          country: selected_country.value,
-          startDate: document.getElementById("editStartDate").value,
-          endDate: document.getElementById("editEndDate").value,
-          manager: document.getElementById("editManagerDropdown").value,
-          vacancy: document.getElementById("editVacancyInput").value,
-        };
-
-        fetch("/update/check_listing_exist/", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
-          },
-          body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            //Get the code
-            code = data.code;
-            if (code == 201) {
-              document.getElementById("saveEditMsg").innerHTML =
-                "Role update success! Refresh to view changes.";
-            } else {
-              document.getElementById("saveEditMsg").innerHTML =
-                "Role update failed.";
-            }
-            document.getElementById("saveEditMsg").hidden = false;
-          });
       });
     });
   function setDropdownDefault(dropdownId, value) {
@@ -276,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Disable the save button
       save_btn.disabled = true;
     } else {
-      save_btn.disabled = true;
+      save_btn.disabled = false;
       document.getElementById("vacancyInputWarning").hidden = true;
     }
   });
