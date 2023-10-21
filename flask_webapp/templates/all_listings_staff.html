@@ -53,6 +53,8 @@
             /* Make options appear vertically */
             top: 100%;
             left: 0;
+            max-height: 250px;
+            overflow-y: auto;
         }
 
         .custom-dropdown-content label {
@@ -257,23 +259,17 @@
         <div class="col-md-2">
           <select id="inputState2" name="country" class="form-select">
             <option selected>Country</option>
-            <option>SG</option>
-            <option>MY</option>
-            <option>ID</option>
-            <option>VN</option>
-            <option>HK</option>
+            {% for country in countries %}
+              <option value="{{ country.country }}">{{ country.country_name }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="col-md-2">
-          <select id="inputState2" name="department" class="form-select">
+          <select id="inputState3" name="department" class="form-select">
             <option selected>Department</option>
-            <option>Sales</option>
-            <option>Consultancy</option>
-            <option>Systems Solutioning</option>
-            <option>Engineering Operation</option>
-            <option>HR and Admin</option>
-            <option>Finance</option>
-            <option>IT</option>
+            {% for department in departments %}
+              <option value="{{ department }}">{{ department }}</option>
+            {% endfor %}
           </select>
         </div>
 
@@ -282,14 +278,13 @@
               <div class="row">
                   <div class="col-md-6">
                       <div class="form-group">
-                         
                           <div class="custom-dropdown">
                               <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
                               <div id="dropdownContent" class="custom-dropdown-content">
                                   <input type="text" class="search-input" id="searchInput" placeholder="Search...">
-                                  <label><input type="checkbox" name="required_skills[]" value="Communication">Communication</label>
-                                  <label><input type="checkbox" name="required_skills[]" value="Stakeholder Management">Stakeholder Management</label>
-                            
+                                  {% for skill in skills %}
+                                  <label><input type="checkbox" name="required_skills[]" value="{{ skill.skill_name }}">{{ skill.skill_name }}</label>
+                                  {% endfor %}
                               </div>
                           </div>
                       </div>

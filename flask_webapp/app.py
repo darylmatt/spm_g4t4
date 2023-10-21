@@ -201,12 +201,29 @@ def all_listings_staff():
                     }
                     listings.append(listingData)
                     num_results = len(listings)
-                    
+
+            countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
+            if countries_response.status_code == 200:
+                countries_data = countries_response.json()
+                countries = countries_data.get("countries")
+
+            departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
+            if departments_response.status_code == 200:
+                departments_data = departments_response.json()
+                departments = departments_data.get("departments")
+
+            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
+            if skills_response.status_code == 200:
+                skills_data = skills_response.json()
+                skills = skills_data.get("skills")
 
             return render_template("all_listings_staff.html",
                                 listings=listings,
                                 num_results=num_results,
-                                Staff_Name = Staff_Name
+                                Staff_Name = Staff_Name,
+                                countries=countries,
+                                departments=departments,
+                                skills=skills
                                 )
         except:
             print("reached here")
