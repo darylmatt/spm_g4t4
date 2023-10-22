@@ -808,7 +808,21 @@ def all_applicants_HR():
     user_name = session.get('user_name')
     print(user_id)
     print(user_name)
-    return render_template("all_applicants_HR.html")
+
+    countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
+    if countries_response.status_code == 200:
+        countries_data = countries_response.json()
+        countries = countries_data.get("countries")
+
+    departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
+    if departments_response.status_code == 200:
+        departments_data = departments_response.json()
+        departments = departments_data.get("departments")
+
+    return render_template("all_applicants_HR.html",
+                        countries=countries,
+                        departments=departments
+                        )
 
 
 # Define a route to get the listing ID by name
@@ -1545,9 +1559,18 @@ def get_listing(listing_id):
             "code": 500,
             "error": str(e)
             }), 500
-    
 
+# @app.route('/filtered_data', methods=["POST"])
+# @login_required(allowed_roles=[1, 4])
+# def filtered_data():
+#     country = request.form['country']
+#     department = request.form['department']
 
+#     # Use the selected country and department to filter data from the database
+#     # Perform the necessary filtering operations here
+
+#     # Return the filtered data as a JSON response
+#     return jsonify(filtered_data)
     
 
 if __name__ == '__main__':
