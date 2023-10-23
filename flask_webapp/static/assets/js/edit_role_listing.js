@@ -3,36 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch("/create/get_data")
     .then((response) => response.json())
     .then((data) => {
-      const roleList = data.data.roles;
       var roleSelect = document.getElementById("editRoleDropdown");
-      const countryList = data.data.countries;
       var countrySelect = document.getElementById("editCountryDropdown");
-      const deptList = data.data.departments;
       var deptSelect = document.getElementById("editDeptDropdown");
-
-      // Populate the role dropdown
-      roleList.forEach((role) => {
-        const selectOption = document.createElement("option");
-        selectOption.value = role;
-        selectOption.textContent = role;
-        roleSelect.appendChild(selectOption);
-      });
-
-      // Populate the country dropdown
-      countryList.forEach((country) => {
-        const selectOption = document.createElement("option");
-        selectOption.value = country;
-        selectOption.textContent = country;
-        countrySelect.appendChild(selectOption);
-      });
-
-      // Populate the department dropdown
-      deptList.forEach((dept) => {
-        const selectOption = document.createElement("option");
-        selectOption.value = dept;
-        selectOption.textContent = dept;
-        deptSelect.appendChild(selectOption);
-      });
 
       const editButtons = document.querySelectorAll("button.edit-listing-btn");
 
@@ -63,12 +36,28 @@ document.addEventListener("DOMContentLoaded", function () {
               var currManager = data.data.reporting_mng;
 
               // Set the default values for the dropdowns
-              setDropdownDefault("editRoleDropdown", currName);
-              setDropdownDefault("editCountryDropdown", currCountry);
-              setDropdownDefault("editDeptDropdown", currDept);
 
-              fetchRoleDescription(selected_role.value);
-              fetchDefaultSkills(selected_role.value);
+              //Create an option for the name, country and dept
+              const roleSelectOption = document.createElement("option");
+              roleSelectOption.value = currName;
+              roleSelectOption.textContent = currName;
+              roleSelect.appendChild(roleSelectOption);
+              roleSelectOption.selected = true;
+
+              const countrySelectOption = document.createElement("option");
+              countrySelectOption.value = currCountry;
+              countrySelectOption.textContent = currCountry;
+              countrySelect.appendChild(countrySelectOption);
+              countrySelectOption.selected = true;
+
+              const deptSelectOption = document.createElement("option");
+              deptSelectOption.value = currDept;
+              deptSelectOption.textContent = currDept;
+              deptSelect.appendChild(deptSelectOption);
+              deptSelectOption.selected = true;
+
+              fetchRoleDescription(roleSelect.value);
+              fetchDefaultSkills(roleSelect.value);
 
               get_manager(currCountry, deptSelect.value, currManager);
 
