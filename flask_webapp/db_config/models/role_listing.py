@@ -6,7 +6,7 @@ class Role_Listing(db.Model):
 
     __tablename__ = 'role_listing'
 
-    listing_id = db.Column(db.Integer, primary_key=True)
+    listing_id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     country= db.Column(db.String(50),nullable=False)
     dept= db.Column(db.String(50),nullable=False)
     num_opening= db.Column(db.Integer,nullable=False)
@@ -18,8 +18,7 @@ class Role_Listing(db.Model):
     reporting_mng = db.Column(db.Integer, ForeignKey('staff.staff_id'), nullable=False)
     applications = db.relationship('Application', backref='role_listing')
 
-    def __init__(self, listing_id, country, dept, num_opening, date_open, date_close, role_name, reporting_mng):
-        self.listing_id = listing_id
+    def __init__(self, country, dept, num_opening, date_open, date_close, role_name, reporting_mng):
         self.country = country
         self.dept = dept
         self.num_opening = num_opening

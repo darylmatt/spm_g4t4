@@ -67,6 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
               document.getElementById("editVacancyInput").value = currVacancy;
               document.getElementById("editStartDate").value = currStart;
               document.getElementById("editEndDate").value = currEnd;
+
+              document
+                .getElementById("editEndDate")
+                .setAttribute("min", startDate.value);
             });
 
           save_btn.addEventListener("click", function () {
@@ -267,6 +271,16 @@ document.addEventListener("DOMContentLoaded", function () {
       save_btn.disabled = false;
       document.getElementById("vacancyInputWarning").hidden = true;
     }
+  });
+
+  var startDate = document.getElementById("editStartDate");
+  var endDate = document.getElementById("editEndDate");
+  endDate.addEventListener("change", function () {
+    if (endDate.value < startDate.value) {
+      endDate.setAttribute("min", startDate.value);
+      endDate.value = startDate.value;
+    }
+    checkFields();
   });
 
   //On click save button

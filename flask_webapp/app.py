@@ -1339,9 +1339,8 @@ def get_dept_and_countries():
                 },404
             )
         
-        # skills = [skill.get('skill_name') for skill in staff_skills]
         roles = [r.json().get('role_name') for r in role_list]
-        countries  = [c.json() for c in country_list]
+        countries  = [c.json().get('country_name') for c in country_list]
         departments = [j.json() for j in department_list]
 
         #Return both departments and countries
