@@ -287,11 +287,51 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Your Custom JavaScript -->
-<!-- <script>
-      $(document).ready(function () { -->
 
 <script>
       document.addEventListener('DOMContentLoaded', function () {
+        var selectedCountry = null;
+        var selectedDepartment = null;
+
+        // Event listener for country filter
+        $('#inputState1').change(function () {
+          selectedCountry = $(this).val();
+          filterApplicants();
+        });
+
+        // Event listener for department filter
+        $('#inputState2').change(function () {
+          selectedDepartment = $(this).val();
+          filterApplicants();
+        });
+
+        // Function to filter applicants based on selected filters
+        function filterApplicants() {
+          var filteredApplicants = applicantsData;
+
+          if (selectedCountry && selectedCountry !== 'Country') {
+            filteredApplicants = filteredApplicants.filter(function (applicant) {
+              return applicant.country === selectedCountry;
+            });
+          }
+
+          if (selectedDepartment && selectedDepartment !== 'Department') {
+            filteredApplicants = filteredApplicants.filter(function (applicant) {
+              return applicant.department === selectedDepartment;
+            });
+          }
+
+          $('#applicantCardsContainer').empty();
+
+          if (filteredApplicants.length === 0) {
+            $('#applicantCardsContainer').text('No applicants found.');
+          } else {
+            createApplicantCards(filteredApplicants);
+          }
+        }
+
+
+
         // Event delegation for view profile links
         $(document).on('click', '.view-profile-link', function (event) {
             event.preventDefault();
