@@ -350,7 +350,7 @@ def get_all_open_role_listings(search):
                 Role_Listing.date_close >= current_time,
                 Role_Listing.num_opening > 0,
                 Role_Listing.date_close >= current_time
-            )).order_by(desc(Role_Listing.date_open)).limit().all()
+            )).order_by(desc(Role_Listing.date_open)).all()
 
             if len(role_listings) > 0:
                 return jsonify(
