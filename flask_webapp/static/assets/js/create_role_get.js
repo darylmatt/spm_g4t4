@@ -145,21 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
           skillText.className = "non-clickable-text text-success";
           skillText.textContent = skill;
 
-          // To remove the closebtn in the next sprint
-          // ------------------ start ------------------
-          const skillCloseBtn = document.createElement("button");
-          skillCloseBtn.type = "button";
-          skillCloseBtn.className = "btn-close";
-          skillCloseBtn.setAttribute("aria-label", "Close");
-
-          skillCloseBtn.addEventListener("click", function () {
-            // Remove the entire container when the close button is clicked
-            skillDiv.remove();
-            // ------------------ end ------------------
-          });
-
           skillContainer.appendChild(skillText);
-          skillContainer.appendChild(skillCloseBtn);
           skillDiv.appendChild(skillContainer);
           selected_skills.appendChild(skillDiv);
         });
@@ -197,9 +183,9 @@ document.addEventListener("DOMContentLoaded", function () {
     skillsError.hidden = true;
 
     //Enable select skills button
-    skillsSelectBtn.disabled = false;
-    document.getElementById("defaultSkillBtn").innerHTML =
-      "Default skills for " + selected_role.value;
+    // skillsSelectBtn.disabled = false;
+    // document.getElementById("defaultSkillBtn").innerHTML =
+    //   "Default skills for " + selected_role.value;
 
     checkFields();
   });
@@ -457,8 +443,6 @@ document.addEventListener("DOMContentLoaded", function () {
       startDate: startDate.value,
       endDate: endDate.value,
       manager: selected_manager.value,
-      description: desc.value,
-      skills: skillList,
       vacancy: vacancy.value,
     };
 
