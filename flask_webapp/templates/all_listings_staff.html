@@ -446,9 +446,14 @@
                 </div>
 
             <br>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}" >
+            <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}" >
+              Apply
+            </button> -->
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modal{{listing.listing_id}}" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}">
               Apply
             </button>
+            
+
 
             <br>
             <br>
@@ -534,7 +539,8 @@
 </div>
 
 
-<div class="modal fade" id="verticalycentered" tabindex="-1">
+<!-- <div class="modal fade" id="verticalycentered" tabindex="-1"> -->
+<div class="modal fade" id="modal{{listing.listing_id}}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
