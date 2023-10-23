@@ -350,7 +350,7 @@ def get_all_open_role_listings(search):
                 Role_Listing.date_close >= current_time,
                 Role_Listing.num_opening > 0,
                 Role_Listing.date_close >= current_time
-            )).order_by(desc(Role_Listing.date_open)).limit().all()
+            )).order_by(desc(Role_Listing.date_open)).all()
 
             if len(role_listings) > 0:
                 return jsonify(
@@ -675,6 +675,7 @@ def login():
 @app.route('/all_listings_HR', methods=["GET", "POST"])
 @login_required(allowed_roles=[1,4])
 def all_listings_HR():
+    print("inside")
     Staff_ID = session.get('Staff_ID')
     Role = session.get('Role')
     Staff_Fname = session.get('Staff_Fname')
@@ -704,12 +705,13 @@ def all_listings_HR():
         # print(user_id)
         # print(user_name)
 
-        print(status)
-        print(role_search)
-        print(recency)
-        print(country)
-        print(department)
-        print(required_skills)
+        # print(status)
+        # print(role_search)
+        # print(recency)
+        # print(country)
+        # print(department)
+        # print(required_skills)
+    
         search = False
         if( status or role_search or recency or country or department or required_skills):
             print("ROLE SEARCH")
@@ -721,12 +723,11 @@ def all_listings_HR():
         else:
             print("no search")
             listings_json = get_all_listings(False)
-            print(listings_json)
 
         listings_dict = json.loads(listings_json.data)
         listings=[]
-        if listings_dict:
-            data = listings_dict['data']
+        if listings_dict['code'] == 200:
+            data = listings_dict["data"]
             for listing in data:
                 num_applicants = get_num_applicants_by_listing(listing['listing_id'])
                 date_open = listing['date_open']
@@ -769,21 +770,25 @@ def all_listings_HR():
                 }
                 listings.append(listingData)
                 num_results = len(listings)
-
+            
+    
             countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
             if countries_response.status_code == 200:
                 countries_data = countries_response.json()
                 countries = countries_data.get("countries")
+            
 
             departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
             if departments_response.status_code == 200:
                 departments_data = departments_response.json()
                 departments = departments_data.get("departments")
+            
 
             skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
             if skills_response.status_code == 200:
                 skills_data = skills_response.json()
                 skills = skills_data.get("skills")
+            
 
             return render_template("all_listings_HR.html", 
                                    listings=listings,
@@ -797,6 +802,7 @@ def all_listings_HR():
             return jsonify({"message": "Failed to fetch countries"}), 500
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
+        print("here error")
         return str(e), 500  # Return an error response with a 500 status code
 
 
@@ -1333,9 +1339,8 @@ def get_dept_and_countries():
                 },404
             )
         
-        # skills = [skill.get('skill_name') for skill in staff_skills]
         roles = [r.json().get('role_name') for r in role_list]
-        countries  = [c.json() for c in country_list]
+        countries  = [c.json().get('country_name') for c in country_list]
         departments = [j.json() for j in department_list]
 
         #Return both departments and countries
@@ -1360,22 +1365,23 @@ def get_dept_and_countries():
 @login_required(allowed_roles=[1,2,3,4])
 def get_manager(country,dept):
     try:
-        staff_list = Staff.query.filter_by(dept=dept,country=country).all()
-        if len(staff_list) > 0:
-            manager_list = []
-            manager_id = []
-            for s in staff_list:
-                if (s.json().get('role')) >= 3:
-                    fname = s.json().get('staff_fname')
-                    lname = s.json().get('staff_lname')
-                    manager_list.append(fname+ " " + lname)
-                    manager_id.append(s.json().get('staff_id'))
+        managers = Staff.query.filter(
+            and_(Staff.dept == dept, Staff.country == country, Staff.role >= 3)).all()
+        
+        manager_id = []
+        manager_name=[]
+        if managers:
+            for m in managers:
+                fname = m.json().get('staff_fname')
+                lname = m.json().get('staff_lname')
+                manager_name.append(fname+ " " + lname)
+                manager_id.append(m.json().get('staff_id'))
 
             return jsonify(
                 {
                     "code":200, 
                     "data": {
-                        "name_list": manager_list,
+                        "name_list": manager_name,
                         "id_list": manager_id
                 }
                 }
