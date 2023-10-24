@@ -783,10 +783,27 @@
   <!-- Template Main JS File -->
   <script src="static/assets/js/main.js"></script>
   
-
+  <script>
+    // Function to close the modal
+    function closeModal(modalId) {
+      var modal = document.getElementById(modalId);
+      var bsModal = bootstrap.Modal.getInstance(modal);
+      bsModal.hide();
+    }
+  
+    // Add event listener to the Confirm button
+    document.querySelectorAll('.confirm-button').forEach(function(button) {
+      button.addEventListener('click', function() {
+        var listingId = this.getAttribute('data-listing-id');
+        // Close the modal
+        closeModal('modal' + listingId);
+        // Perform other actions if needed
+      });
+    });
+  </script>
 
   <!-- match_staff_skills js file -->
-  <script src="static/assets/js/match_staff_skills.js"></script>
+  <!-- <script src="static/assets/js/match_staff_skills.js"></script>
   <script>
     $(document).ready(function () {
         // Find all "Apply" buttons
@@ -808,7 +825,33 @@
             });
         });
     });
+</script> -->
+<script src="static/assets/js/match_staff_skills.js"></script>
+<script>
+  $(document).ready(function () {
+    // Find all "Apply" buttons
+    const applyButtons = $('.apply-button');
+
+    // Loop through each button to check and disable if necessary
+    applyButtons.each(function () {
+      const button = $(this);
+      const listingId = button.data('listing-id');
+
+      // Send a request to check the application status
+      $.get(`/check_application_status/${listingId}`, function (data) {
+        console.log("Listing ID:", listingId);
+        console.log("Application Status:", data.status);
+        if (data.status === "Pending") {
+          // User has already applied, disable the button
+          button.prop('disabled', true);
+          // Change button style to green with white text and update label to "Applied"
+          button.removeClass('btn-primary').addClass('btn-success').text('Applied');
+        }
+      });
+    });
+  });
 </script>
+
 
   <script>
     $(document).ready(function () {
