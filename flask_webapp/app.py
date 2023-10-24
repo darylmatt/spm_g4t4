@@ -955,7 +955,7 @@ def apply_role(listing_id):
         # Check if the listing is closed (past the application deadline)
         current_datetime = datetime.now()
         if role_listing.date_open > current_datetime or role_listing.date_close < current_datetime:
-            return jsonify({"error": "Role listing is closed or not yet open for applications"}), 400
+            return jsonify({"error": "Role listing is closed or not yet open for applications"}), 411
 
         # Check if the staff member has already applied to this listing
         existing_application = Application.query.filter_by(listing_id=listing_id, staff_id=staff_id).first()
