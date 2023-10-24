@@ -47,6 +47,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+@app.route('/pagination_counter')
+def pagination_counter():
+    listings_json = get_all_open_role_listings(False)
+    listings_dict = json.loads(listings_json.data)
+    listings = listings_dict['data']
+    num_results = len(listings)
+    pages_required = 1
+    if num_results == 0:
+        pages_required
+    else:
+        pages_required = (num_results + 10 - 1) // 10
+    return str(pages_required)
+
 @app.route('/calculate_num_listings')
 def calculate_num_listings():
     current_time = datetime.now()
@@ -149,6 +162,7 @@ def all_listings_staff():
         else:
             listings_json = get_all_open_role_listings(False)
 
+        print("debug6")
         try:
             listings_dict = json.loads(listings_json.data)
             listings = []
@@ -203,6 +217,7 @@ def all_listings_staff():
                     num_results = len(listings)
 
             countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
+            print("debug7")
             if countries_response.status_code == 200:
                 countries_data = countries_response.json()
                 countries = countries_data.get("countries")
@@ -240,6 +255,7 @@ def all_listings_staff():
 @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search):
     try:
+    
         #Scenario where there is input search & filter
         if search:
             print("there is input search")
@@ -344,13 +360,15 @@ def get_all_open_role_listings(search):
         #Scenario where there isn't input search & filter
         else:
             print("there is no input search")
+            print("debug4")
             current_time = datetime.now()
             role_listings = Role_Listing.query.filter(and_(
                 Role_Listing.date_open <= current_time,
                 Role_Listing.date_close >= current_time,
                 Role_Listing.num_opening > 0,
                 Role_Listing.date_close >= current_time
-            )).order_by(desc(Role_Listing.date_open)).all()
+            )).order_by(desc(Role_Listing.date_open)).limit(10).all()
+            print("debug5")
 
             if len(role_listings) > 0:
                 return jsonify(
