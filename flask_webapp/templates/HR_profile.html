@@ -81,13 +81,25 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2">
+              {% if Staff_Name %}
+              {{ Staff_Name }}
+            {% else %}
+              Unknown
+            {% endif %}
+            </span>
           </a><!-- End Profile Iamge Icon -->
 
         <!-- Profile Dropdown Menu -->
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li class="dropdown-header">
-            <h6>Kevin Anderson</h6>
+            <h6>
+              {% if Staff_Name %}
+              {{ Staff_Name }}
+            {% else %}
+              Unknown
+            {% endif %}
+            </h6>
           </li>
           <li>
             <hr class="dropdown-divider">
@@ -121,9 +133,15 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
 
-      <a class="nav-item justify-content-center" href="#" data-bs-toggle="dropdown">
+      <a class="nav-item d-flex flex-column align-items-center justify-content-center" href="#" data-bs-toggle="dropdown">
         <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-        <span class="d-none d-md-block ps-2">K. Anderson</span>
+        <span class="d-none d-md-block ps-2">
+          {% if Staff_Name %}
+          {{ Staff_Name }}
+        {% else %}
+          Unknown
+        {% endif %}
+        </span>
       </a><!-- End Profile Iamge Icon -->
 
       <li class="nav-item">
@@ -184,7 +202,13 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
               <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-              <h2>Kevin Anderson</h2>
+              <h2>
+                {% if Staff_Name %}
+                {{ Staff_Name }}
+              {% else %}
+                Unknown
+              {% endif %}
+              </h2>
       
               <div class="social-links mt-2">
                 <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
@@ -226,32 +250,57 @@
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">First Name</div>
-                    <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if Staff_Fname %}
+                      {{ Staff_Fname }}
+                    {% else %}
+                      Unknown
+                    {% endif %}
+                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Last Name</div>
-                    <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if Staff_Lname %}
+                      {{ Staff_Lname }}
+                    {% else %}
+                      Unknown
+                    {% endif %}
+                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
-                    <div class="col-lg-9 col-md-8">k.anderson@example.com</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if Email %}
+                      {{ Email }}
+                    {% else %}
+                      Unknown
+                    {% endif %}
+                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Department</div>
-                    <div class="col-lg-9 col-md-8">Technology</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Role</div>
-                    <div class="col-lg-9 col-md-8">Product Designer</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if Dept %}
+                      {{ Dept }}
+                    {% else %}
+                      Unknown
+                    {% endif %}
+                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Country</div>
-                    <div class="col-lg-9 col-md-8">USA</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if Country %}
+                      {{ Country }}
+                    {% else %}
+                      Unknown
+                    {% endif %}
+                    </div>
                   </div>
 
                   
@@ -275,7 +324,12 @@
                     <div class="row mb-3">
                       <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value=
+                        {% if Staff_Fname %}
+                        {{ Staff_Fname }}
+                      {% else %}
+                        Unknown
+                      {% endif %}>
                       </div>
                     </div>
 
@@ -283,35 +337,49 @@
                     <div class="row mb-3">
                       <label for="company" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
+                        <input name="company" type="text" class="form-control" id="company" value=
+                        {% if Staff_Lname %}
+                        {{ Staff_Lname }}
+                      {% else %}
+                        Unknown
+                      {% endif %}>
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Job" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
+                        <input name="job" type="text" class="form-control" id="Job" value=
+                        {% if Email %}
+                        {{ Email }}
+                      {% else %}
+                        Unknown
+                      {% endif %}>
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Country" class="col-md-4 col-lg-3 col-form-label">Department</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="country" disabled type="text" class="form-control" id="Country" value="USA">
+                        <input name="country" disabled type="text" class="form-control" id="Country" value=
+                        {% if Dept %}
+                        {{ Dept }}
+                      {% else %}
+                        Unknown
+                      {% endif %}>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Role</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="address" disabled type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
-                      </div>
-                    </div>
 
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Country</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="phone" disabled type="text" class="form-control" id="Phone" value="(436) 486-3538 x29071">
+                        <input name="phone" disabled type="text" class="form-control" id="Phone" value=
+                        {% if Country %}
+                        {{ Country }}
+                      {% else %}
+                        Unknown
+                      {% endif %}>
                       </div>
                     </div>
 

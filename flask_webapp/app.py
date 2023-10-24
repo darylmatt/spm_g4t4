@@ -94,20 +94,38 @@ def logout():
 @app.route('/staff_profile')
 @login_required(allowed_roles=[1,2])
 def staff_profile():
-    user_id = session.get('user_id')
-    user_name = session.get('user_name')
-    print(user_id)
-    print(user_name)
-    return render_template("staff_profile.html")
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
+
+    # user_name = session.get('user_name')
+    print(Staff_ID)
+    print(Staff_Name)
+    return render_template("staff_profile.html", 
+    Staff_Name=Staff_Name, Email = Email, Role=Role, Staff_Fname = Staff_Fname, Staff_Lname=Staff_Lname, Dept=Dept, Country=Country )
 
 @app.route('/HR_profile')
 @login_required(allowed_roles=[1,4])
 def HR_profile():
-    user_id = session.get('user_id')
-    user_name = session.get('user_name')
-    print(user_id)
-    print(user_name)
-    return render_template("HR_profile.html")
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
+
+    # user_name = session.get('user_name')
+    print(Staff_ID)
+    print(Staff_Name)
+    return render_template("HR_profile.html", 
+    Staff_Name=Staff_Name, Email = Email, Role=Role, Staff_Fname = Staff_Fname, Staff_Lname=Staff_Lname, Dept=Dept, Country=Country )
 
 @app.route('/all_listings_staff', methods=["GET", "POST"])
 @login_required(allowed_roles=[1,2])
@@ -607,8 +625,23 @@ def listings():
 @app.route('/applied_roles_staff')
 @login_required(allowed_roles=[1,2,3,4])
 def applied_roles():
-    dynamic_content = "This content is coming from Flask!"
-    return render_template("applied_roles.html")
+    # dynamic_content = "This content is coming from Flask!"
+    # return render_template("applied_roles.html")
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
+
+    # user_name = session.get('user_name')
+    print(Staff_ID)
+    print(Staff_Name)
+    return render_template("applied_roles.html", 
+    Staff_Name=Staff_Name, Email = Email, Role=Role, Staff_Fname = Staff_Fname, Staff_Lname=Staff_Lname, Dept=Dept, Country=Country )
+    
 
 
 @app.route('/role_creation')
@@ -616,10 +649,18 @@ def applied_roles():
 def role_creation():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
     print(user_id)
     print(user_name)
     dynamic_content = "This content is coming from Flask!"
-    return render_template("role_creation.html")
+    return render_template("role_creation.html", Staff_Name=Staff_Name, Email = Email, Role=Role, Staff_Fname = Staff_Fname, Staff_Lname=Staff_Lname, Dept=Dept, Country=Country)
 
 @app.route('/edit_role/<int:listing_id>')
 @login_required(allowed_roles=[1,4])
@@ -830,6 +871,14 @@ def all_listings_HR():
 def all_applicants_HR():
     user_id = session.get('user_id')
     user_name = session.get('user_name')
+    Staff_ID = session.get('Staff_ID')
+    Role = session.get('Role')
+    Staff_Fname = session.get('Staff_Fname')
+    Staff_Lname = session.get('Staff_Lname')
+    Staff_Name = session.get('Staff_Name')
+    Dept = session.get('Dept')
+    Country = session.get('Country')
+    Email = session.get('Email')
     print(user_id)
     print(user_name)
 
@@ -845,8 +894,10 @@ def all_applicants_HR():
 
     return render_template("all_applicants_HR.html",
                         countries=countries,
-                        departments=departments
-                        )
+                        departments=departments,Staff_Name=Staff_Name, Email = Email, Role=Role, Staff_Fname = Staff_Fname, Staff_Lname=Staff_Lname, Dept=Dept, Country=Country)
+                        
+
+    
 
 
 # Define a route to get the listing ID by name
