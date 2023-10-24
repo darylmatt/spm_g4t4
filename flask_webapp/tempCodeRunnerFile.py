@@ -1,6 +1,15 @@
-
-@app.route('/all_listings_staff', methods=["GET", "POST"])
-@login_required(allowed_roles=[1,2])
-def all_listings_staff():
-    Staff_ID = session.get('Staff_ID')
-    Role = session.get('Role')
+ return render_template("all_listings_staff.html",
+                                listings=listings,
+                                num_results=num_results,
+                                Staff_Name = Staff_Name,
+                                countries=countries,
+                                departments=departments,
+                                skills=skills, 
+                                pages_required=int(pages_required),
+                                current_page=page,
+                                session_search=session['role_search'],
+                                session_recency=session['recency'],
+                                session_country=session['country'],
+                                session_department=session['department'],
+                                session_required_skills=session['required_skills']
+                                )
