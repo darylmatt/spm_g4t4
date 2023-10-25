@@ -47,6 +47,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+@app.route('/')
+def index():
+    return render_template("login.html")
+
 @app.route('/pagination_counter')
 def pagination_counter():
     listings_json = get_all_open_role_listings(False)
