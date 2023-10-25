@@ -30,7 +30,7 @@ def test_apply_role(client, cleanup_application):
     global application_id
     # Define your test data
     test_data = {
-        "listing_id": 1
+        "listing_id": 23
     }
 
     with client.session_transaction() as sess:
@@ -42,7 +42,7 @@ def test_apply_role(client, cleanup_application):
     }
 
     # Make a POST request to the route with test data
-    response = client.post('/apply_role/1', data=json.dumps(test_data), headers=headers, follow_redirects=True)
+    response = client.post('/apply_role/23', data=json.dumps(test_data), headers=headers, follow_redirects=True)
 
     # Check the response status code
     assert response.status_code == 201  # You can adjust this based on your actual implementation
