@@ -262,13 +262,14 @@ document.addEventListener("DOMContentLoaded", function () {
   save_btn.disabled = true;
   var vacancyInput = document.getElementById("editVacancyInput");
   vacancyInput.addEventListener("change", function () {
+    console.log(vacancyInput.value);
     if (vacancyInput.value < 1) {
       // Show the warning
       document.getElementById("vacancyInputWarning").hidden = false;
       // Disable the save button
-      save_btn.disabled = true;
+      document.getElementById("save_btn").disabled = true;
     } else {
-      save_btn.disabled = false;
+      document.getElementById("save_btn").disabled = false;
       document.getElementById("vacancyInputWarning").hidden = true;
     }
   });
