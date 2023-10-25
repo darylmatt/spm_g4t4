@@ -40,7 +40,6 @@ class TestAllListingsHR(unittest.TestCase):
         # Test with filters
         response = self.client.post('/all_listings_HR', data={
             'status': 'Open',
-            'role_name': 'Example Role',
             'recency': 'Past month',
             'country': 'Singapore',
             'department': 'Engineering',
@@ -54,25 +53,24 @@ class TestAllListingsHR(unittest.TestCase):
         self.assertEqual(len(listing_divs), 1)  # Should have only one listing
 
         # Example of assertions for specific elements within a listing
-        role_name = listing_divs[0].find('span', class_='role-name').text
-        date_open = listing_divs[0].find('span', class_='date-open').text
-        date_close = listing_divs[0].find('span', class_='date-close').text
-        status = listing_divs[0].find('span', class_='status').text
+        role_name = listing_divs[0].find('h5', class_='card-title').text
+        date_open = listing_divs[0].find('div', class_='date-open').text
+        date_close = listing_divs[0].find('div', class_='date-close').text
+        status = listing_divs[0].find('div', class_='status').text
 
+        self.assertEqual(role_name, 'Senior Engineer')
+        self.assertEqual(date_open, '10/10/2023')
+        self.assertEqual(date_close, '06/11/2023')
+        self.assertEqual(status, 'Open')
         # Add more assertions based on the structure of your HTML template
 
     def test_all_listings_HR_without_filters(self):
         # Test without filters
         response = self.client.post('/all_listings_HR', data={
-            'status': 'Open',
-            'role_name': 'Example Role',
-            'recency': 'Past month',
-            'country': 'Singapore',
-            'department': 'Engineering',
         })
 
         self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.data, 'html.parser')
+        # soup = BeautifulSoup(response.data, 'html.parser')
 
         # Assert elements within the rendered HTML template when no filters are applied
 
