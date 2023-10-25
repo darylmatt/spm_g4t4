@@ -807,31 +807,7 @@
     });
   </script>
 
-  <!-- match_staff_skills js file -->
 
-  <script src="{{ url_for('static', filename='assets/js/match_staff_skills.js') }}"></script>
-  <script>
-    $(document).ready(function () {
-        // Find all "Apply" buttons
-        const applyButtons = $('.apply-button');
-
-        // Loop through each button to check and disable if necessary
-        applyButtons.each(function () {
-            const button = $(this);
-            const listingId = button.data('listing-id');
-
-            // Send a request to check the application status
-            $.get(`/check_application_status/${listingId}`, function (data) {
-                console.log("Listing ID:", listingId);
-                console.log("Application Status:", data.status);
-                if (data.status === "Pending") {
-                    // User has already applied, disable the button
-                    button.prop('disabled', true);
-                }
-            });
-        });
-    });
-</script> -->
 <script src="static/assets/js/match_staff_skills.js"></script>
 <script>
   $(document).ready(function () {
