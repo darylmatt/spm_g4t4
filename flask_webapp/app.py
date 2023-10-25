@@ -397,6 +397,7 @@ def all_listings_staff(page):
 
             print("reached here")
             return render_template("all_listings_staff.html",
+                                
                                 num_results="0",
                                 countries=countries,
                                 departments=departments,
@@ -441,6 +442,8 @@ def get_all_open_role_listings(search, offset, limit):
             Role_Listing.num_opening > 0
         )
         ).order_by(desc(Role_Listing.date_open))
+            
+            print(base_query.all())
 
             if role_name:
                 print('filtering by name')
@@ -451,12 +454,15 @@ def get_all_open_role_listings(search, offset, limit):
             if department != "Department":
                 print('filtering by department')
                 base_query = base_query.filter(Role_Listing.dept == department)
+
+            print(base_query.all())
             
             if country != "Country":
                 print("Filtering by country")
                 base_query = base_query.filter(Role_Listing.country == country)
+            
+            print(base_query.all())
 
-    
             if recency != "Any time":
                 print("Filtering by recency")
                 if recency == "Past 24 hours":
@@ -485,7 +491,7 @@ def get_all_open_role_listings(search, offset, limit):
                     pass
                     '''
             
-
+            print(base_query.all())
 
             role_listings = base_query.all()
             print("testxxx")
@@ -906,7 +912,6 @@ def all_listings_HR():
     print(Email)
     try:
         #Checking if there is input search/filter
-        
 
         status = request.form.get('status')
         role_search = request.form.get('role_name')
