@@ -133,7 +133,8 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">{% if Staff_Name %}
+            <span class="d-none d-md-block dropdown-toggle ps-2">
+              {% if Staff_Name %}
               {{ Staff_Name }}
             {% else %}
               Unknown
@@ -142,7 +143,13 @@
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Kevin Anderson</h6>
+              <h6>
+                {% if Staff_Name %}
+                {{ Staff_Name }}
+              {% else %}
+                Unknown
+              {% endif %}
+              </h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -214,11 +221,11 @@
                 <i class="bi bi-circle"></i><span>All roles</span>
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a href="/applied_roles_staff">
                 <i class="bi bi-circle"></i><span>My applied roles</span>
               </a>
-            </li>
+            </li> -->
             
             
           </ul>
