@@ -413,7 +413,7 @@ def get_all_open_role_listings(search):
         
 
 @app.route('/get_all_listings', methods=["GET"])
-@login_required(allowed_roles=[1,2,3,4])
+@login_required(allowed_roles=[3,4])
 def get_all_listings(search):
     try:
         #Scenario where there is input search & filter
