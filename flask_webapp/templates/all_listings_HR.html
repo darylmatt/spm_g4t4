@@ -452,7 +452,7 @@
             <div class="tab-content" id="v-pills-tabContent">
 
               {% for listing in listings %}
-              <div class="tab-pane fade profile-overview" id="{{listing.listing_id}}" role="tabpanel">
+              <div class="tab-pane fade profile-overview listing" id="{{listing.listing_id}}" role="tabpanel">
                 <div class="d-flex justify-content-end">
                   <button data-listing-id="{{ listing.listing_id }}" style="margin-right: 7px;" type="button" class="btn btn-primary view-applicants-button" data-bs-toggle="modal" data-bs-target="#modalDialogScrollable">
                     View Applicants
@@ -469,17 +469,17 @@
                 
                 <div class="row">
                   <div class="col-lg-3 col-md-6 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-6">{{listing.date_open}}</div>
+                  <div class="col-lg-9 col-md-6 date-open">{{listing.date_open}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-6 label ">Application deadline</div>
-                  <div class="col-lg-9 col-md-6">{{listing.date_close}}</div>
+                  <div class="col-lg-9 col-md-6 date-close">{{listing.date_close}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-6 label ">Status</div>
-                  <div class="col-lg-9 col-md-6">{{listing.status}}</div>
+                  <div class="col-lg-9 col-md-6 status">{{listing.status}}</div>
                 </div>
                 
                 <div class="row">
