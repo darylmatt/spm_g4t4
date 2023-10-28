@@ -12,7 +12,6 @@ import json
 import requests
 from authorisation import login_required
 # from fuzzywuzzy import fuzz
-# from sqlalchemy import or_
 
 app = Flask(__name__)
 
@@ -1631,7 +1630,8 @@ def get_manager(country,dept):
             "code": 500,
             "error": str(e)
             }), 500
-    
+
+#
 @app.route("/update/check_listing_exist/<int:id>", methods=["PUT"])
 @login_required(allowed_roles=[1,2,3,4])
 def update_check_listing(id):
