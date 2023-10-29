@@ -4,3 +4,5 @@ Flask-SQLAlchemy==3.0.5
 Flask-Testing==0.8.1
 mysql-connector-python==8.1.0
 SQLAlchemy==2.0.19
+python-decouple==3.5
+requests==2.26.0
