@@ -588,13 +588,16 @@ def get_all_listings(search):
             country = search["country"]
             department = search["department"]
             required_skills = search["required_skills"]
-
+            
+            print("checkpoint1")
             base_query = Role_Listing.query.filter()
+            print("checkpoint2")
             current_time = datetime.now()
 
             if status != "Status":
                 print("Filtering by status")
                 if status == "Open":
+                    print("checkpoint3")
                     base_query = Role_Listing.query.filter(
                         and_(
                             Role_Listing.date_open <= current_time,
