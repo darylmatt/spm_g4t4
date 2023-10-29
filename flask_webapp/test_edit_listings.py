@@ -23,15 +23,15 @@ class TestUpdateCheckListing(unittest.TestCase):
         self.listing = Role_Listing("Singapore", "Finance", 4, "2023-10-30 00:00:00", "2023-11-15 00:00:00", "Finance Manager", 171029)
 
 
-    def tearDown(self):
-        with app.app_context():
-            db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
-            db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
+    # def tearDown(self):
+    #     with app.app_context():
+    #         db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
+    #         db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
+    #         db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
+    #         db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
 
 
-            db.session.commit()
+    #         db.session.commit()
     
     def test_update_check_listing(self):
         # Create a test Role_Listing
