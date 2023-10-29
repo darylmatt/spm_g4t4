@@ -574,8 +574,8 @@ def get_all_open_role_listings(search, offset, limit):
 
         
 
-@app.route('/get_all_listings', methods=["GET"])
-@login_required(allowed_roles=[3,4])
+# @app.route('/get_all_listings', methods=["GET"])
+# @login_required(allowed_roles=[3,4])
 def get_all_listings(search):
     try:
         #Scenario where there is input search & filter
@@ -657,7 +657,7 @@ def get_all_listings(search):
                 return jsonify(
                     {
                         "code": 404,
-                        "message": "There are no role listings",
+                        "data": "There are no role listings",
                     }
                 ), 404
         else:
@@ -675,15 +675,16 @@ def get_all_listings(search):
                 return jsonify(
                     {
                         "code": 404,
-                        "message": "There are no role listings"
+                        "data": "There are no role listings"
                     }
                 ), 404
 
     except Exception as e:
+        print(f"Exception occurred: {str(e)}")
         db.session.rollback()
         return jsonify({
             "code": 500,
-            "error": str(e)
+            "data": str(e)
             }), 500
 
 @app.route('/view_a_listing/<int:listing_id>', methods=['GET'])
