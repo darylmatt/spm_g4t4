@@ -1,22 +1,23 @@
 import json
 import unittest
-from app import app
+from app import app  # Replace with the actual import path to your Flask app
+from flask import session
 from bs4 import BeautifulSoup
 
-class TestAllListingsHR(unittest.TestCase):
+class TestOpenListingsStaff(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         self.client = app.test_client()
 
         # Replace the following with your session data
-        self.staff_id = 160008  # staff ID for Sally Loh HR Singapore
-        self.role = 4  # HR
-        self.staff_fname = "Sally"
-        self.staff_lname = "Loh"
+        self.staff_id = 140002 
+        self.role = 2  
+        self.staff_fname = "Susan"
+        self.staff_lname = "Goh"
         self.staff_name = self.staff_fname + " " + self.staff_lname
-        self.dept = "HR"
+        self.dept = "Sales"
         self.country = "Singapore"
-        self.email = "Sally.Loh@allinone.com.sg"
+        self.email = "Susan.Goh@allinone.com.sg"
 
         with self.client:
             with self.client.session_transaction() as sess:
@@ -35,10 +36,9 @@ class TestAllListingsHR(unittest.TestCase):
             # You may need to define a /logout route
             self.client.get('/logout')
 
-    def test_all_listings_HR_with_filters(self):
+    def test_all_listings_staff_with_filters(self):
         # Test with filters
-        response = self.client.post('/all_listings_HR/1', data={
-            'status': 'Open',
+        response = self.client.post('/all_listings_staff/1', data={
             'recency': 'Past month',
             'country': 'Singapore',
             'department': 'Engineering',
@@ -63,9 +63,9 @@ class TestAllListingsHR(unittest.TestCase):
         self.assertEqual(status, 'Open')
         # Add more assertions based on the structure of your HTML template
 
-    def test_all_listings_HR_without_filters(self):
+    def test_all_listings_staff_without_filters(self):
         # Test without filters
-        response = self.client.post('/all_listings_HR/1', data={
+        response = self.client.post('/all_listings_staff/1', data={
         })
 
         self.assertEqual(response.status_code, 200)

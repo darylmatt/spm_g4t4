@@ -261,7 +261,7 @@
         </div>
         <div class="col-md-2">
           <select id="inputState2" name="country" class="form-select">
-            <option value="" {% if not session_country %}selected{% endif %}>Country</option>
+            <option value="Country" {% if not session_country %}selected{% endif %}>Country</option>
             {% for country in countries %}
               <option value="{{ country.country }}" {% if session_country == country.country %}selected{% endif %}>
                 {{ country.country_name }}
@@ -367,7 +367,7 @@
 
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title"> Search Results<span> | Showing {{offset}} - {{offset_end}} of {{num_role_listings}} </span></h5>
+            <h5 class="card-title"> Search Results<span> | Showing {{offset}}-{{offset_end}} of {{num_role_listings}} results</span></h5>
 
             
 
@@ -421,17 +421,17 @@
             <div class="tab-content pt-2" id="v-pills-tabContent">
               {% if listings %}
               {% for listing in listings %}
-              <div class="tab-pane fade profile-overview" id="{{listing.listing_id}}" role="tabpanel">
+              <div class="tab-pane fade profile-overview listing" id="{{listing.listing_id}}" role="tabpanel">
                 <h5 class="card-title">{{listing.role_name}}</h5>
                 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-8 date-posted">{{listing.date_open}}</div>
+                  <div class="col-lg-9 col-md-8 date-open">{{listing.date_open}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Application deadline</div>
-                  <div class="col-lg-9 col-md-8 deadline">{{listing.date_close}}</div>
+                  <div class="col-lg-9 col-md-8 date-close">{{listing.date_close}}</div>
                 </div>
 
                 <div class="row">
@@ -783,9 +783,10 @@
   <script src="{{ url_for('static', filename='assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
-  
+  <script src="{{ url_for('static', filename='assets/js/match_staff_skills.js') }}"></script>
 
   <!-- Template Main JS File -->
+  
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
   
   <script>
@@ -808,7 +809,7 @@
   </script>
 
 
-<script src="static/assets/js/match_staff_skills.js"></script>
+<!-- <script src="static/assets/js/match_staff_skills.js"></script> -->
 <script>
   $(document).ready(function () {
     // Find all "Apply" buttons
