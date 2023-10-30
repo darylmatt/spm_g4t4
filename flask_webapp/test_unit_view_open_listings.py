@@ -2,7 +2,7 @@ import json
 import unittest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app import app, get_all_listings # Import your Flask app and db
+from app import app, get_all_open_role_listings # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 from test_config import TestConfig  # Import your TestConfig
@@ -14,21 +14,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-class TestGetAllListings(unittest.TestCase):
+class TestGetOpenListings(unittest.TestCase):
     def setUp(self):
         self.app_context = app.app_context()
         self.app_context.push()
         self.client = app.test_client()
 
         # Replace the following with your session data
-        self.staff_id = 160008  # staff ID for Sally Loh HR Singapore
-        self.role = 4  # HR
-        self.staff_fname = "Sally"
-        self.staff_lname = "Loh"
+        self.staff_id = 140002  # staff ID for Sally Loh HR Singapore
+        self.role = 2  # HR
+        self.staff_fname = "Susan"
+        self.staff_lname = "Goh"
         self.staff_name = self.staff_fname + " " + self.staff_lname
-        self.dept = "HR"
+        self.dept = "Sales"
         self.country = "Singapore"
-        self.email = "Sally.Loh@allinone.com.sg"
+        self.email = "Susan.Goh@allinone.com.sg"
 
         with self.client:
             with self.client.session_transaction() as sess:
@@ -47,11 +47,10 @@ class TestGetAllListings(unittest.TestCase):
             # You may need to define a /logout route
             self.client.get('/logout')
 
-    def test_get_all_listings_with_filters(self):
+    def test_get_open_listings_with_filters(self):
         with app.app_context():
             # Now you can call your Flask functions safely within the app context
             search_filters = {
-                'status': 'Open',
                 'recency': 'Any time',
                 'country': 'Singapore',
                 'department': 'Engineering',
@@ -60,7 +59,7 @@ class TestGetAllListings(unittest.TestCase):
             }
             offset = 0
             limit = 10
-            response = get_all_listings(search_filters, offset, limit)
+            response = get_all_open_role_listings(search_filters, offset, limit)
 
             # Assuming you return a JSON response, you can access the JSON data as follows:
             data = response[0].get_json()
@@ -80,12 +79,12 @@ class TestGetAllListings(unittest.TestCase):
             self.assertEqual(first_listing['country'], 'Singapore')
             self.assertEqual(first_listing['dept'], 'Engineering')
 
-    def test_get_all_listings_without_filters(self):
+    def test_get_open_listings_without_filters(self):
         with app.app_context():
             search_filters = {}
             offset = 0
             limit = 10
-            response = get_all_listings(search_filters, offset, limit)
+            response = get_all_open_role_listings(search_filters, offset, limit)
 
             data = response[0].get_json()
             self.assertEqual(data['code'], 200)
