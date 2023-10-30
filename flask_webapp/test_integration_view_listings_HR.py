@@ -38,7 +38,7 @@ class TestAllListingsHR(unittest.TestCase):
 
     def test_all_listings_HR_with_filters(self):
         # Test with filters
-        response = self.client.post('/all_listings_HR#1', data={
+        response = self.client.post('/all_listings_HR/1', data={
             'status': 'Open',
             'recency': 'Past month',
             'country': 'Singapore',
@@ -66,7 +66,7 @@ class TestAllListingsHR(unittest.TestCase):
 
     def test_all_listings_HR_without_filters(self):
         # Test without filters
-        response = self.client.post('/all_listings_HR', data={
+        response = self.client.post('/all_listings_HR/1', data={
         })
 
         self.assertEqual(response.status_code, 200)

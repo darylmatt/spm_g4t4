@@ -988,35 +988,42 @@ def all_listings_HR(page):
             results = calculate_pages_required_all_HR()
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
-            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)
+            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)[0]
+            print("checkpoint 1")
         else:
             print("no search")
             results = calculate_pages_required_all_HR()
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
-            listings_json = get_all_listings(False, offset=offset, limit=results_per_page)
+            listings_json = get_all_listings(False, offset=offset, limit=results_per_page)[0]
+            print("checkpoint 2")
 
-        listings_dict = json.loads(listings_json.data)
+        listings_dict = listings_json.get_json()
+        print("checkpoint 3")
         listings=[]
         if listings_dict['code'] == 200:
+            print("checkpoint 4")
             data = listings_dict["data"]
             for listing in data:
+                print("checkpoint 5")
                 num_applicants = get_num_applicants_by_listing(listing['listing_id'])
                 date_open = listing['date_open']
                 input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
                 date_close = listing['date_close']
                 input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
 
+                print("checkpoint 6")
                 if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
                     status = "Open"
                 else:
                     status = "Closed"
-
+                print("checkpoint 7")
                 manager_json=  get_staff_details(listing['reporting_mng'])
                 manager_dict = json.loads(manager_json.data)
                 manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
                 manager_dept = manager_dict['data']['dept']
 
+                print("checkpoint 8")
                 role_desc_json = get_role_description(listing['role_name'])
                 role_desc_dict = json.loads(role_desc_json.data)
                 role_desc = role_desc_dict['data']
@@ -1025,6 +1032,7 @@ def all_listings_HR(page):
                 skills_required_dict = json.loads(skills_required_json.data)
                 skills_required_list = skills_required_dict['data']['skills_required']
 
+                print("checkpoint 9")
                 listingData = {
                     'role_name': listing['role_name'],
                     'date_open': input_open_datetime.strftime("%d/%m/%Y"),
@@ -1042,24 +1050,22 @@ def all_listings_HR(page):
                 }
                 listings.append(listingData)
                 num_results = len(listings)
+                print("num_results", num_results)
             
-    
-            countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
-            if countries_response.status_code == 200:
-                countries_data = countries_response.json()
-                countries = countries_data.get("countries")
+            print("checkpoint 10")
+            countries_response = get_all_countries()[0].get_json()
+            if countries_response['code'] == 200:
+                countries = countries_response['data']
             
-
-            departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
-            if departments_response.status_code == 200:
-                departments_data = departments_response.json()
-                departments = departments_data.get("departments")
+            print("checkpoint 11")
+            departments_response = get_all_departments()[0].get_json()
+            if departments_response['code'] == 200:
+                departments = departments_response['data']
             
-
-            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
-            if skills_response.status_code == 200:
-                skills_data = skills_response.json()
-                skills = skills_data.get("skills")
+            print("checkpoint 12")
+            skills_response = get_all_skills()[0].get_json()
+            if skills_response['code'] == 200:
+                skills = skills_response['data']
             
             return render_template("all_listings_HR.html", 
                                    listings=listings,
@@ -1377,38 +1383,50 @@ def get_role_description(role_name):
             "error": str(e)
             }), 500
     
-@app.route('/get_all_countries', methods=["GET"])
+# @app.route('/get_all_countries', methods=["GET"])
 def get_all_countries():
     try:
         countries = Country.query.all()
 
         if not countries:
-            return jsonify({"message": "No countries found"}), 404
+            return jsonify({"code":404,
+                            "data": "No countries found"}
+                            ), 404
 
         country_list = [{"country": country.country, "country_name": country.country_name} for country in countries]
         print(country_list)
 
-        return jsonify({"countries": country_list}), 200
+        return jsonify({"code":200,
+                        "data": country_list}
+                        ), 200
     
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"code":500,
+                        "data": str(e)}
+                        ), 500
 
 
-@app.route('/get_all_departments', methods=["GET"])
+# @app.route('/get_all_departments', methods=["GET"])
 def get_all_departments():
     try:
         departments = Department.query.all()
 
         if not departments:
-            return jsonify({"message": "No departments found"}), 404
+            return jsonify({"code":404,
+                            "data": "No departments found"}
+                            ), 404
 
         department_list = [department.department for department in departments]
 
-        return jsonify({"departments": department_list}), 200
+        return jsonify({"code":200,
+                        "data": department_list}
+                        ), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"code":500,
+                        "data": str(e)}
+                        ), 500
 
 
 
@@ -1443,20 +1461,27 @@ def get_skills_required(role_name):
             }), 500
 
 
-@app.route('/get_all_skills', methods=['GET'])
+# @app.route('/get_all_skills', methods=['GET'])
 def get_all_skills():
     try:
         skills = Skill.query.all()
+        if not skills:
+            return jsonify({"code":404,
+                            "data": "No skills found"}
+                            ), 404
         skill_list = []
         for skill in skills:
             skill_list.append({
                 'skill_name': skill.skill_name,
                 'skill_desc': skill.skill_desc
             })
-        return jsonify({'skills': skill_list})
+        return jsonify({"code":200,
+                        "data": skill_list}
+                        ), 200
     except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"code":500,
+                        "data": str(e)}
+                        ), 500
 
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
