@@ -261,7 +261,7 @@
         </div>
         <div class="col-md-2">
           <select id="inputState2" name="country" class="form-select">
-            <option value="" {% if not session_country %}selected{% endif %}>Country</option>
+            <option value="Country" {% if not session_country %}selected{% endif %}>Country</option>
             {% for country in countries %}
               <option value="{{ country.country }}" {% if session_country == country.country %}selected{% endif %}>
                 {{ country.country_name }}
@@ -367,7 +367,7 @@
 
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title"> Search Results<span> | Showing {{offset}} - {{offset_end}} of {{num_role_listings}} </span></h5>
+            <h5 class="card-title"> Search Results<span> | Showing {{offset}}-{{offset_end}} of {{num_role_listings}} results</span></h5>
 
             
 

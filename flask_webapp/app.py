@@ -66,25 +66,125 @@ def pagination_counter():
     return str(pages_required)
 
 @app.route('/calculate_pages_required')
-def calculate_num_listings():
+def calculate_num_listings(search):
+    if search == None:
+        current_time = datetime.now()
+        role_listings = Role_Listing.query.filter(and_(
+            Role_Listing.date_open <= current_time,
+            Role_Listing.date_close >= current_time,
+            Role_Listing.num_opening > 0,
+            Role_Listing.date_close >= current_time
+        )).order_by(desc(Role_Listing.date_open)).all()
+        print(role_listings)
+        num_role_listings = len(role_listings)
+        print(f"Number of role listings: {num_role_listings}")
 
-    current_time = datetime.now()
-    role_listings = Role_Listing.query.filter(and_(
-        Role_Listing.date_open <= current_time,
-        Role_Listing.date_close >= current_time,
-        Role_Listing.num_opening > 0,
-        Role_Listing.date_close >= current_time
-    )).order_by(desc(Role_Listing.date_open)).all()
-    print(role_listings)
-    num_role_listings = len(role_listings)
-    print(f"Number of role listings: {num_role_listings}")
+        listings_per_page = 5
 
-    listings_per_page = 5
+        pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
+        print(f"Number of pages required ({listings_per_page} listings per page): {pages_required}")
+        result = {"pages_required": pages_required, "num_role_listings": num_role_listings}
+        return result
+    else:
+        if search:
+            print("there is input search")
+            print(search)
+            role_name = search["role_search"]
+            recency = search["recency"]
+            country = search["country"]
+            department = search["department"]
+            required_skills = search["required_skills"]
+            print(department)
+            print(required_skills)
+            print("test here")
 
-    pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
-    print(f"Number of pages required ({listings_per_page} listings per page): {pages_required}")
-    result = {"pages_required": pages_required, "num_role_listings": num_role_listings}
-    return result
+            current_time = datetime.now()
+            base_query = Role_Listing.query.filter(
+        and_(
+            Role_Listing.date_open <= current_time,
+            Role_Listing.date_close >= current_time,
+            Role_Listing.num_opening > 0
+        )
+        ).order_by(desc(Role_Listing.date_open))
+            
+            print(base_query.all())
+
+            if role_name:
+                print('filtering by name')
+                #Setting a similarity threshold for search and role matching
+                # Set a threshold for matching similarity
+                base_query = base_query.filter(Role_Listing.role_name.like(f"%{role_name}%"))
+                
+            if department != "Department":
+                print('filtering by department')
+                base_query = base_query.filter(Role_Listing.dept == department)
+
+            print(base_query.all())
+            
+            if country != "Country":
+                print("Filtering by country")
+                base_query = base_query.filter(Role_Listing.country == country)
+            
+            print(base_query.all())
+
+            if recency != "Any time":
+                print("Filtering by recency")
+                if recency == "Past 24 hours":
+                    print("Filtering by past 24 hours")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=1))
+                elif recency == "Past week":
+                    print("Filtering by past week")
+                    print(Role_Listing.date_open)
+                    print(current_time)
+                    print(current_time - timedelta(days=7))
+                    print(Role_Listing.date_open >= current_time - timedelta(days=7))
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=7))
+                elif recency == "Past month":
+                    print("Filtering by past month")
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=30))
+                else:
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+
+            '''
+            if required_skills:
+                try:
+                    role_required_skills = get_skills_required()
+                    for skill in required_skills:
+
+                except:
+                    pass
+                    '''
+            
+            
+            
+            print(base_query.all())
+
+            role_listings = base_query.all()
+            if(len(required_skills) > 0):
+                print("checking if roles match required skills")
+                print('yes')
+                filtered_role_listings = []
+                for listing in role_listings:
+                    skills_required_json = get_skills_required(listing.role_name)
+                    skills_required_dict = json.loads(skills_required_json.data)
+                    skills_required_list = skills_required_dict['data']['skills_required']
+                    
+                    # Check if 'required_skills' is a subset of 'skills_required_list'
+                    if set(required_skills).issubset(set(skills_required_list)):
+                        filtered_role_listings.append(listing)
+
+                role_listings = filtered_role_listings
+                    
+            num_role_listings = len(role_listings)
+            
+            print(f"Number of role listings: {num_role_listings}")
+
+            listings_per_page = 5
+
+            pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
+            print(f"Number of pages required ({listings_per_page} listings per page): {pages_required}")
+            result = {"pages_required": pages_required, "num_role_listings": num_role_listings}
+            return result
 
 
 
@@ -207,6 +307,13 @@ def all_listings_staff(page):
         print("Checkpoint 2")
 
         if search:
+            page = 1
+            num_open_listings = 0
+            results_per_page = 5
+
+            offset = (page - 1) * results_per_page
+            offset_end = offset + results_per_page
+            print(f"Offset tst: {offset}")
             print("There is input search")
             search_params = {"role_search": role_search, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
 
@@ -244,8 +351,7 @@ def all_listings_staff(page):
             
             
             listings_json = get_all_open_role_listings(search_params, offset=offset, limit=results_per_page)
-            print(len(listings_json[0].get_json()['data']))
-            results = calculate_num_listings()
+            results = calculate_num_listings(search_params)
             print(f"results: {results}")
             pages_required = results["pages_required"]
             num_open_listings = results['num_role_listings']
@@ -254,7 +360,7 @@ def all_listings_staff(page):
             listings_json = get_all_open_role_listings(False, offset=offset, limit=results_per_page)
             print(len(listings_json[0].get_json()['data']))
             print("debugy")
-            results = calculate_num_listings()
+            results = calculate_num_listings(None)
             pages_required = results["pages_required"]
             num_open_listings = results['num_role_listings']
             print(num_open_listings)
@@ -429,7 +535,9 @@ def all_listings_staff(page):
             if skills_response['code'] == 200:
                 skills = skills_response['data']
 
-            
+            if offset_end >= num_open_listings:
+                print("offset_end greater than total")
+                offset_end = num_open_listings
 
             print("reached here")
             return render_template("all_listings_staff.html",
@@ -445,8 +553,9 @@ def all_listings_staff(page):
                                 session_country=session_country,
                                 session_department=session_department,
                                 session_required_skills=session_required_skills,
-                                offset = offset
-                            
+                                offset = offset,
+                                offset_end = offset_end,
+                                num_role_listings = num_open_listings
                                 )
     except Exception as e:  
         # Handle exceptions (e.g., network errors) here
@@ -608,16 +717,88 @@ def get_all_open_role_listings(search, offset, limit):
 
 
 @app.route('/calculate_pages_required_all_HR')
-def calculate_pages_required_all_HR():
-    listings_per_page = 5
-    role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).all()
-    print(role_listings)
-    num_role_listings = len(role_listings)
+def calculate_pages_required_all_HR(search):
+    if search == None:
+        listings_per_page = 5
+        role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).all()
+        print(role_listings)
+        num_role_listings = len(role_listings)
 
-    pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
-    print(num_role_listings)
-    print(pages_required)
-    return {"pages_required": pages_required, "num_role_listings": num_role_listings}
+        pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
+        print(num_role_listings)
+        print(pages_required)
+        return {"pages_required": pages_required, "num_role_listings": num_role_listings}
+    else:
+        listings_per_page = 5
+        status = search["status"]
+        role_name = search["role_search"]
+        recency = search["recency"]
+        country = search["country"]
+        department = search["department"]
+        required_skills = search["required_skills"]
+
+        base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open))
+
+        current_time = datetime.now()
+
+        if status != "Status":
+            print("Filtering by status")
+            if status == "Open":
+                base_query = Role_Listing.query.filter(
+                    and_(
+                        Role_Listing.date_open <= current_time,
+                        Role_Listing.date_close >= current_time,
+                        Role_Listing.num_opening > 0
+                    )
+                )
+            elif status == "Closed":
+                base_query = Role_Listing.query.filter(
+                    or_(
+                        Role_Listing.date_open > current_time,
+                        Role_Listing.date_close < current_time,
+                        Role_Listing.num_opening == 0
+                    )
+                )
+    
+        if role_name:
+            print('filtering by name')
+            #Setting a similarity threshold for search and role matching
+            # Set a threshold for matching similarity
+            base_query = base_query.filter(Role_Listing.role_name.like(f"%{role_name}%"))
+
+        if department != "Department":
+            print('filtering by department')
+            base_query = base_query.filter(Role_Listing.dept == department)
+
+        if country != "Country":
+            print("Filtering by country")
+            base_query = base_query.filter(Role_Listing.country == country)
+        
+        if recency != "Any time":
+            print("Filtering by recency")
+            if recency == "Past 24 hours":
+                print("Filtering by past 24 hours")
+                base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=1))
+            elif recency == "Past week":
+                print("Filtering by past week")
+                print(Role_Listing.date_open)
+                print(current_time)
+                print(current_time - timedelta(days=7))
+                print(Role_Listing.date_open >= current_time - timedelta(days=7))
+                base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=7))
+            elif recency == "Past month":
+                print("Filtering by past month")
+                base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=30))
+            else:
+                base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+
+        role_listings = base_query.all()
+        num_role_listings = len(role_listings)
+
+        pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
+        print(num_role_listings)
+        print(pages_required)
+        return {"pages_required": pages_required, "num_role_listings": num_role_listings}
 
         
 
@@ -636,9 +817,9 @@ def get_all_listings(search, offset, limit):
             department = search["department"]
             required_skills = search["required_skills"]
 
-            print("checkpoint1")
-            base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open)).limit(10)
-            print("checkpoint2")
+            base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open))
+
+
             current_time = datetime.now()
 
             if status != "Status":
@@ -666,14 +847,24 @@ def get_all_listings(search, offset, limit):
                 #Setting a similarity threshold for search and role matching
                 # Set a threshold for matching similarity
                 base_query = base_query.filter(Role_Listing.role_name.like(f"%{role_name}%"))
+            
+            print("results after query by name")
+            print(base_query.all())
 
             if department != "Department":
                 print('filtering by department')
                 base_query = base_query.filter(Role_Listing.dept == department)
 
+            print("results after query by department")
+            print(base_query.all())
+
             if country != "Country":
                 print("Filtering by country")
+                print(country)
                 base_query = base_query.filter(Role_Listing.country == country)
+
+            print("results after query by country")
+            print(base_query.all())
             
             if recency != "Any time":
                 print("Filtering by recency")
@@ -693,9 +884,8 @@ def get_all_listings(search, offset, limit):
                 else:
                     base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
 
-            print("checkpoint4")
-            role_listings = base_query.all()
-            print("checkpoint5")
+            role_listings = base_query.offset(offset).limit(limit).all()
+
             if len(role_listings) > 0:
                 print("checkpoint6")
                 print(len(role_listings))
@@ -953,6 +1143,9 @@ def login():
     return render_template("login.html")
 
 
+
+
+
 @app.route('/all_listings_HR/<int:page>', methods=["GET", "POST"])
 @login_required(allowed_roles=[1,4])
 def all_listings_HR(page):
@@ -1006,16 +1199,95 @@ def all_listings_HR(page):
             print("ROLE SEARCH")
             search = True
         
+        session_role_search = None
+        session_status = None
+        session_recency = None
+        session_country = None
+        session_department = None
+        session_required_skills=None
+
         if search:
+            page = 1
+            print("There is input search")
+            session["existing_search"] = True
             search_params = {"role_search": role_search, "status": status, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
-            results = calculate_pages_required_all_HR()
+
+            if role_search == None:
+                session["role_search"] = None
+            else:
+                session["role_search"] = role_search
+                session_role_search = role_search
+
+            if status == "Status":
+                session["status"] = None
+            else:
+                session["status"] = status
+                session_status = status
+            
+            if recency == "Any time":
+                session["recency"] = None
+            else:
+                session["recency"] = recency
+                session_recency = recency
+
+            if country == "Country":
+                session["country"] = None
+            else:
+                session["country"] = country
+                session_country = country
+
+            if department == "Department":
+                session["department"] = None
+            else:
+                session["department"] = department
+                session_department = department
+
+            if required_skills == []:
+                session["required_skills"] = None
+            else:
+                session["required_skills"] = required_skills
+                session_required_skills = required_skills
+
+            print(f"role search session: {session['role_search']}")
+            print(f"recency session: {session['recency']}")
+            print(f"country session: {session['country']}")
+            print(f"department session: {session['department']}")
+            print(f"required_skills session: {session['required_skills']}")
+            
+        
+            search_params = {"role_search": role_search, "status": status, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
+            print(f"search param: {search_params}")
+            results = calculate_pages_required_all_HR(search_params)
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
-            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)[0]
-            print("checkpoint 1")
+            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)
+
+        elif session.get("existing_search"):
+            role_search = session["role_search"]
+            status = session["status"]
+            recency = session["recency"]
+            country = session["country"]
+            department = session["department"]
+            required_skills = session["required_skills"]
+
+            session_role_search = role_search
+            session_status = status
+            session_recency = recency
+            session_country = country
+            session_department = department
+            session_required_skills = required_skills
+
+            search_params = {"role_search": role_search, "status": status, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
+
+            results = calculate_pages_required_all_HR(search_params)
+            pages_required = results["pages_required"]
+            num_role_listings = results["num_role_listings"]
+            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)
+            
         else:
             print("no search")
-            results = calculate_pages_required_all_HR()
+            session["preexisting_search"] = False
+            results = calculate_pages_required_all_HR(None)
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
             listings_json = get_all_listings(False, offset=offset, limit=results_per_page)[0]
@@ -1085,10 +1357,12 @@ def all_listings_HR(page):
             if departments_response['code'] == 200:
                 departments = departments_response['data']
             
-            print("checkpoint 12")
-            skills_response = get_all_skills()[0].get_json()
-            if skills_response['code'] == 200:
-                skills = skills_response['data']
+
+            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
+            if skills_response.status_code == 200:
+                skills_data = skills_response.json()
+                skills = skills_data.get("skills")
+                
             
             return render_template("all_listings_HR.html", 
                                    listings=listings,
@@ -1101,7 +1375,13 @@ def all_listings_HR(page):
                                    num_role_listings=num_role_listings,
                                    offset = offset + 1,
                                    offset_end = offset_end,
-                                   current_page = page
+                                   current_page = page,
+                                   session_role_search = session_role_search,
+                                   session_recency = session_recency,
+                                   session_status = session_status,
+                                   session_country = session_country,
+                                   session_department = session_department,
+                                   session_required_skills = session_required_skills
                                    )
         else:
             return jsonify({"message": "Failed to fetch countries"}), 500
