@@ -37,9 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Define colors based on the match percentage
           let progressBarColor = "";
-          if (matchPercentage <= 40) {
+          if (matchPercentage < 20) {
             progressBarColor = "bg-danger"; // Red
-          } else if (matchPercentage >= 70) {
+          } else if (matchPercentage >= 40) {
             progressBarColor = "bg-success"; // Green
           } else {
             progressBarColor = "bg-warning"; // Orange
