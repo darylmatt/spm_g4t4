@@ -3,7 +3,7 @@ from app import app # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 import json
-from test_config import TestConfig  # Import your TestConfig
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spmg4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test'
 
@@ -11,11 +11,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-class TestUpdateCheckListing(unittest.TestCase):
+class TestEditListing(unittest.TestCase):
     def setUp(self):
 
         self.app = app.test_client()
-        app.config.from_object(TestConfig)
 
         self.role = Role("Finance Manager", "The Finance Manager is the lead finance business partner for the organisation and has responsibilities covering all aspects of financial management, performance management, financial accounting, budgeting, corporate reporting etc. He/she has sound technical as well as management skills and be able to lead a team consisting of finance professionals with varied, in-depth or niche technical knowledge and abilities; consolidating their work and ensuring its quality and accuracy, especially for reporting purposes. The Finance Manager is expected to provide sound financial advice and counsel on working capital, financing or the financial position of the organisation by synthesising internal and external data and studying the economic environment. He often has a key role in implementing best practices in order to identify and manage all financial and business risks and to meet the organisation's desired business and fiscal goals. He is expected to have a firm grasp of economic and business trends and to implement work improvement projects that are geared towards quality, compliance and efficiency in finance.")
         self.manager1 = Staff(171029,"Somchai", "Kong", "Finance", "Singapore", "Somchai.Kong@allinone.com.sg", 3)
@@ -23,17 +22,19 @@ class TestUpdateCheckListing(unittest.TestCase):
         self.listing = Role_Listing("Singapore", "Finance", 4, "2023-10-30 00:00:00", "2023-11-15 00:00:00", "Finance Manager", 171029)
 
 
-    # def tearDown(self):
-    #     with app.app_context():
-    #         db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
-    #         db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
-    #         db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
-    #         db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
+    def tearDown(self):
+        with app.app_context():
+            db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
+            db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
+            db.session.query(Staff).filter(Staff.staff_id == 160008).delete()
+            db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
+            db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
 
 
-    #         db.session.commit()
+            db.session.commit()
     
     def test_update_check_listing(self):
+       
         # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.role)
@@ -41,6 +42,7 @@ class TestUpdateCheckListing(unittest.TestCase):
             db.session.add(self.manager2)
             db.session.add(self.listing)
             db.session.commit()
+        
 
         new_data = {
             "title": "Finance Manager",
@@ -53,7 +55,7 @@ class TestUpdateCheckListing(unittest.TestCase):
         }
 
         response = self.app.put('/update/check_listing_exist/0', json=new_data)
-        print(response)
+        # print(response.data)
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 201)  # Check if the response status code is 201 (Created)

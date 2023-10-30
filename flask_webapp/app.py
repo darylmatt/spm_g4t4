@@ -141,8 +141,6 @@ def HR_profile():
 @app.route('/all_listings_staff/<int:page>', methods=["GET", "POST"])
 @login_required(allowed_roles=[1,2])
 def all_listings_staff(page):
-
-
     print(f"Page index requested is: {page}")
     Staff_ID = session.get('Staff_ID')
     Role = session.get('Role')
@@ -160,6 +158,15 @@ def all_listings_staff(page):
     print(Dept)
     print(Country)
     print(Email)
+
+
+    pages_required = 1
+    num_open_listings = 0
+    results_per_page = 5
+
+    offset = (page - 1) * results_per_page
+    offset_end = offset + results_per_page
+    print(f"Offset tst: {offset}")
 
     try:
         # Fetch staff skills using the existing route
@@ -193,12 +200,6 @@ def all_listings_staff(page):
         staff_skills_set = set(staff_skills_dict.get('data', []))
         print("testingg")
 
-        pages_required = 1
-        num_open_listings = 0
-        results_per_page = 5
-
-        offset = (page - 1) * results_per_page
-        print(f"Offset tst: {offset}")
 
         if search:
             print("There is input search")
@@ -341,6 +342,11 @@ def all_listings_staff(page):
             print(f"session_department: {session_department}")
             print(f"session_required_skills: {session_required_skills}")
 
+            if offset_end >= num_open_listings:
+                print("offset_end greater than total")
+                offset_end = num_open_listings
+
+
             pages_required = int(pages_required)
             return render_template("all_listings_staff.html",
                                 listings=listings,
@@ -355,7 +361,10 @@ def all_listings_staff(page):
                                 session_recency=session_recency,
                                 session_country=session_country,
                                 session_department=session_department,
-                                session_required_skills=session_required_skills
+                                session_required_skills=session_required_skills,
+                                offset = offset + 1,
+                                offset_end = offset_end,
+                                num_role_listings = num_open_listings
                                 )
         except:
 
@@ -400,7 +409,6 @@ def all_listings_staff(page):
 
             print("reached here")
             return render_template("all_listings_staff.html",
-                                
                                 num_results="0",
                                 countries=countries,
                                 departments=departments,
@@ -412,7 +420,9 @@ def all_listings_staff(page):
                                 session_recency=session_recency,
                                 session_country=session_country,
                                 session_department=session_department,
-                                session_required_skills=session_required_skills
+                                session_required_skills=session_required_skills,
+                                offset = offset
+                            
                                 )
     except Exception as e:  
         # Handle exceptions (e.g., network errors) here
@@ -422,8 +432,6 @@ def all_listings_staff(page):
 @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search, offset, limit):
     try:
-        
-
         #Scenario where there is input search & filter
         if search:
             print("there is input search")
@@ -572,11 +580,24 @@ def get_all_open_role_listings(search, offset, limit):
             "error": str(e)
             }), 500
 
+
+@app.route('/calculate_pages_required_all_HR')
+def calculate_pages_required_all_HR():
+    listings_per_page = 5
+    role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).all()
+    print(role_listings)
+    num_role_listings = len(role_listings)
+
+    pages_required = (num_role_listings + listings_per_page - 1) // listings_per_page
+    print(num_role_listings)
+    print(pages_required)
+    return {"pages_required": pages_required, "num_role_listings": num_role_listings}
+
         
 
 @app.route('/get_all_listings', methods=["GET"])
 @login_required(allowed_roles=[3,4])
-def get_all_listings(search):
+def get_all_listings(search, offset, limit):
     try:
         #Scenario where there is input search & filter
         if search:
@@ -589,7 +610,7 @@ def get_all_listings(search):
             department = search["department"]
             required_skills = search["required_skills"]
 
-            base_query = Role_Listing.query.filter()
+            base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open)).limit(10)
             current_time = datetime.now()
 
             if status != "Status":
@@ -662,7 +683,11 @@ def get_all_listings(search):
                 ), 404
         else:
             print("there is no input search")
-            role_listings = Role_Listing.query.filter().all()
+
+            print(f"Requested offset: {offset}")
+            print(f"Requested limit: {limit}")
+
+            role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).offset(offset).limit(limit).all()
 
             if len(role_listings) > 0:
                 return jsonify(
@@ -882,10 +907,10 @@ def login():
             return redirect(url_for('all_listings_staff', page=1))
         elif staff.role == 4:
             print("role is HR")
-            return redirect(url_for('all_listings_HR'))
+            return redirect(url_for('all_listings_HR', page=1))
         elif staff.role == 1:
             print("role is Admin")
-            return redirect(url_for('all_listings_HR'))
+            return redirect(url_for('all_listings_HR', page=1))
     else:
         print("User not found")
 
@@ -893,10 +918,11 @@ def login():
     return render_template("login.html")
 
 
-@app.route('/all_listings_HR', methods=["GET", "POST"])
+@app.route('/all_listings_HR/<int:page>', methods=["GET", "POST"])
 @login_required(allowed_roles=[1,4])
-def all_listings_HR():
-    print("inside")
+def all_listings_HR(page):
+    print(f"page requested {page}") 
+    
     Staff_ID = session.get('Staff_ID')
     Role = session.get('Role')
     Staff_Fname = session.get('Staff_Fname')
@@ -913,9 +939,17 @@ def all_listings_HR():
     print(Dept)
     print(Country)
     print(Email)
+
+    pages_required = 1
+    num_open_listings = 0
+    results_per_page = 5
+
+    offset = (page - 1) * results_per_page
+    offset_end = offset + results_per_page
+    print(f"Offset tst: {offset}")
+
     try:
         #Checking if there is input search/filter
-
         status = request.form.get('status')
         role_search = request.form.get('role_name')
         recency = request.form.get('recency')
@@ -939,10 +973,16 @@ def all_listings_HR():
         
         if search:
             search_params = {"role_search": role_search, "status": status, "recency": recency, "country": country, "department": department, "required_skills": required_skills}
-            listings_json = get_all_listings(search_params)
+            results = calculate_pages_required_all_HR()
+            pages_required = results["pages_required"]
+            num_role_listings = results["num_role_listings"]
+            listings_json = get_all_listings(search_params, offset=offset, limit=results_per_page)
         else:
             print("no search")
-            listings_json = get_all_listings(False)
+            results = calculate_pages_required_all_HR()
+            pages_required = results["pages_required"]
+            num_role_listings = results["num_role_listings"]
+            listings_json = get_all_listings(False, offset=offset, limit=results_per_page)
 
         listings_dict = json.loads(listings_json.data)
         listings=[]
@@ -1009,14 +1049,18 @@ def all_listings_HR():
                 skills_data = skills_response.json()
                 skills = skills_data.get("skills")
             
-
             return render_template("all_listings_HR.html", 
                                    listings=listings,
                                    num_results=num_results,
                                    Staff_Name=Staff_Name,
                                    countries=countries,
                                    departments=departments,
-                                   skills=skills
+                                   skills=skills,
+                                   pages_required=pages_required,   
+                                   num_role_listings=num_role_listings,
+                                   offset = offset + 1,
+                                   offset_end = offset_end,
+                                   current_page = page
                                    )
         else:
             return jsonify({"message": "Failed to fetch countries"}), 500
@@ -1633,7 +1677,7 @@ def get_manager(country,dept):
 
 #
 @app.route("/update/check_listing_exist/<int:id>", methods=["PUT"])
-@login_required(allowed_roles=[1,2,3,4])
+# @login_required(allowed_roles=[1,2,3,4])
 def update_check_listing(id):
     # Get the JSON data from the request
     json_data = request.get_json()
@@ -1714,10 +1758,9 @@ def check_listing():
     vacancy=json_data["vacancy"]
     # skills=json_data["skills"]
     # desc = json_data["description"]
-    
 
-    print("Printing manager...")
-    print(manager)
+    # print("Printing manager...")
+    # print(manager)
 
     # Query database to see if a role listing like this exists
 
