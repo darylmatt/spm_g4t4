@@ -1633,7 +1633,7 @@ def get_manager(country,dept):
 
 #
 @app.route("/update/check_listing_exist/<int:id>", methods=["PUT"])
-@login_required(allowed_roles=[1,2,3,4])
+# @login_required(allowed_roles=[1,2,3,4])
 def update_check_listing(id):
     # Get the JSON data from the request
     json_data = request.get_json()
@@ -1714,10 +1714,9 @@ def check_listing():
     vacancy=json_data["vacancy"]
     # skills=json_data["skills"]
     # desc = json_data["description"]
-    
 
-    print("Printing manager...")
-    print(manager)
+    # print("Printing manager...")
+    # print(manager)
 
     # Query database to see if a role listing like this exists
 
