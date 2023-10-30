@@ -983,11 +983,10 @@ def all_skills():
             "error": str(e)
             }), 500
 
-# @app.route('/skills')
+@app.route('/skills')
 #@login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:
-        # staff_id = 140002  # REPLACE with the actual staff_id
         staff_id = session.get('Staff_ID')
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id = staff_id).first()
