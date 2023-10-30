@@ -1,7 +1,6 @@
 import json
 import unittest
-from app import app  # Replace with the actual import path to your Flask app
-from flask import session
+from app import app
 from bs4 import BeautifulSoup
 
 class TestAllListingsHR(unittest.TestCase):
