@@ -23,18 +23,24 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
 
+  <!-- Include jQuery (required for Select2) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="static/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="static/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="static/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  <!-- Include Select2 CSS and JS files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
   <!-- Template Main CSS File -->
-  <link href="static/assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/style.css') }}">
 
 <!-- Font Awesome -->
 <link
@@ -112,7 +118,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="/all_listings_HR" class="logo d-flex align-items-center">
-        <img src="static/assets/img/logologo.png" alt="">
+        <img src="{{ url_for('static', filename='assets/img/logologo.png') }}" alt="">
         <span class="d-none d-lg-block">SBRP(Admin)</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -132,7 +138,7 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <img src="{{ url_for('static', filename='assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
             <span class="d-none d-md-block dropdown-toggle ps-2">
               {% if Staff_Name %}
               {{ Staff_Name }}
@@ -190,7 +196,7 @@
 
       
       <a class="nav-item d-flex flex-column align-items-center justify-content-center" href="#" data-bs-toggle="dropdown">
-        <img src="static/assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+        <img src="{{ url_for('static', filename='assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
         <div class="text-center">
           <span class="d-none d-md-block">
             {% if Staff_Name %}
@@ -388,13 +394,13 @@
           
 
           <div class="card-body pb-0" style="height: 950px;">
-            <h5 class="card-title">All Listings <span>| {{num_results}} results</span></h5>
+            <h5 class="card-title">All Listings <span>| Showing {{offset}} - {{offset_end}} of {{num_role_listings}} </span></h5>
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               {% for listing in listings %}
                 <div class="post-item clearfix">
                   <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#{{listing.listing_id}}" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false" class="list-group-item list-group-item-action" data-listing-id="{{ listing.listing_id }}">
-                    <img src="static/assets/img/news-1.jpg" alt="">
+                    <img src="{{ url_for('static', filename='assets/img/news-1.jpg') }}" alt="">
                     <h4><a href="#{{listing.listing_id}}">{{listing.role_name }}</a></h4>
                     <p> Posted: {{ listing.date_open }} | {{ listing.dept }} | {{ listing.country }} | </p>
                   </div>
@@ -407,21 +413,21 @@
           <nav aria-label="...">
             <ul class="pagination justify-content-center">
               <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
               </li>
-              <li class="page-item"><a class="page-link" href="#">1</a></li>
-              <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">2</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              {% for page in range(1, pages_required + 1) %}
+                <li class="page-item {% if current_page == page %} active {% endif %}">
+                  <a class="page-link" href="/all_listings_HR/{{page}}">{{ page }}</a>
+                </li>
+              {% endfor %}
               <li class="page-item">
-                <a class="page-link" href="#">Next</a>
               </li>
             </ul>
-          </nav><!-- End Disabled and active states -->
+          </nav>
         </div><!-- End News & Updates -->
       </div>
 
+
+      
     
 
   
@@ -715,7 +721,7 @@
                   <div class="row mb-3">
                     <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                     <div class="col-md-8 col-lg-9">
-                      <img src="assets/img/profile-img.jpg" alt="Profile">
+                      <img src="{{ url_for('static', filename='assets/img/profile-img.jpg') }}" alt="Profile">
                       <div class="pt-2">
                         <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
                         <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
@@ -910,22 +916,18 @@
 
 
   <!-- Vendor JS Files -->
-  <!-- Add MDBootstrap JavaScript (including Popper.js and Bootstrap JavaScript) after Bootstrap CSS -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
-
-
-  <script src="static/assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="static/assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="static/assets/vendor/echarts/echarts.min.js"></script>
-  <script src="static/assets/vendor/quill/quill.min.js"></script>
-  <script src="static/assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="static/assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="static/assets/vendor/php-email-form/validate.js"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/quill/quill.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  
 
   <!-- Template Main JS File -->
-  <script src="static/assets/js/main.js"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
   <script>
     const viewApplicantsButtons = document.querySelectorAll(".view-applicants-button");
 
