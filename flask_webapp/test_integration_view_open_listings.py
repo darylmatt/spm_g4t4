@@ -4,7 +4,7 @@ from app import app  # Replace with the actual import path to your Flask app
 from flask import session
 from bs4 import BeautifulSoup
 
-class TestAllListingsStaff(unittest.TestCase):
+class TestOpenListingsStaff(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         self.client = app.test_client()

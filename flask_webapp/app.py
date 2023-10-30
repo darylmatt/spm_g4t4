@@ -195,10 +195,14 @@ def all_listings_staff(page):
         print(staff_skills_json)
         print("debug1")
         print("bebug2")
-        staff_skills_dict = staff_skills_json['data']
+        staff_skills_dict = staff_skills_json.get('data', {})
         print(staff_skills_dict)
         print("staff_skills_dict")
-        staff_skills_set = set(staff_skills_json.get('data', []))
+        skill_names = staff_skills_dict.get('skill_names', [])
+        descriptions = staff_skills_dict.get('descriptions', [])
+        # staff_skills_set = set(staff_skills_json.get('data', []))
+        paired_skills = list(zip(skill_names, descriptions))
+        print(paired_skills)
         print("testingg")
         print("Checkpoint 2")
 
@@ -240,22 +244,24 @@ def all_listings_staff(page):
             
             
             listings_json = get_all_open_role_listings(search_params, offset=offset, limit=results_per_page)
+            print(len(listings_json[0].get_json()['data']))
             results = calculate_num_listings()
             print(f"results: {results}")
             pages_required = results["pages_required"]
-            num_open_listings = results["num_role_listings"]
+            num_open_listings = results['num_role_listings']
             print(num_open_listings)
         else:
             listings_json = get_all_open_role_listings(False, offset=offset, limit=results_per_page)
+            print(len(listings_json[0].get_json()['data']))
             print("debugy")
             results = calculate_num_listings()
             pages_required = results["pages_required"]
-            num_open_listings = results["num_role_listings"]
+            num_open_listings = results['num_role_listings']
             print(num_open_listings)
         
         print("debug6")
         try:
-            listings_dict = json.loads(listings_json.data)
+            listings_dict = listings_json[0].get_json()
             print("testtttt")
             listings = []
             print("testttttttt")
@@ -263,33 +269,35 @@ def all_listings_staff(page):
                 print("debug8")
                 data = listings_dict['data']
                 for listing in data:
+                    print("debug10")
                     date_open = listing['date_open']
+                    print("debug11")
                     input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
                     date_close = listing['date_close']
                     input_close_datetime = datetime.strptime(date_close, "%Y-%m-%dT%H:%M:%S")
-
+                    print("debug12")
                     if (input_open_datetime < datetime.now() and input_close_datetime > datetime.now() and listing['num_opening'] > 0):
                         status = "Open"
                     else:
                         status = "Closed"
-
+                    print("debug13")
                     manager_json = get_staff_details(listing['reporting_mng'])
                     manager_dict = json.loads(manager_json.data)
                     manager_name = manager_dict['data']['staff_fname'] + " " + manager_dict['data']['staff_lname']
                     manager_dept = manager_dict['data']['dept']
-
+                    print("debug14")
                     role_desc_json = get_role_description(listing['role_name'])
                     role_desc_dict = json.loads(role_desc_json.data)
                     role_desc = role_desc_dict['data']
-
+                    print("debug15")
                     skills_required_json = get_skills_required(listing['role_name'])
                     skills_required_dict = json.loads(skills_required_json.data)
                     skills_required_list = skills_required_dict['data']['skills_required']
-
+                    print("debug16")
                     # Calculate matched and unmatched skills for each listing
-                    matched_skills = set(skills_required_list) & staff_skills_set
+                    matched_skills = set(skills_required_list) & set(paired_skills)
                     unmatched_skills = set(skills_required_list) - matched_skills
-
+                    print("debug17")
                     listingData = {
                         'role_name': listing['role_name'],
                         'date_open': input_open_datetime.strftime("%d/%m/%Y"),
@@ -306,8 +314,10 @@ def all_listings_staff(page):
                         'matched_skills': list(matched_skills),  # Include matched skills
                         'unmatched_skills': list(unmatched_skills)  # Include unmatched skills
                     }
+                    print(listingData)
                     listings.append(listingData)
                     num_results = len(listings)
+                    print("num_results"+str(num_results))
 
             else:
                 print("0 results")
@@ -346,8 +356,9 @@ def all_listings_staff(page):
                 print("offset_end greater than total")
                 offset_end = num_open_listings
 
-
+            print("gonna print listings")
             pages_required = int(pages_required)
+            print(pages_required)
             return render_template("all_listings_staff.html",
                                 listings=listings,
                                 num_results=num_results,
@@ -367,7 +378,7 @@ def all_listings_staff(page):
                                 num_role_listings = num_open_listings
                                 )
         except:
-
+            print("reached exception")
             session_role_search = session.get('role_search')
             session_recency = session.get('recency')
             session_country = session.get('country')
@@ -548,7 +559,7 @@ def get_all_open_role_listings(search, offset, limit):
                 return jsonify(
                     {
                         "code": 404,
-                        "message": "There are no role listings",
+                        "data": "There are no role listings",
                     }
                 ), 404
         
@@ -584,7 +595,7 @@ def get_all_open_role_listings(search, offset, limit):
                 return jsonify(
                     {
                         "code": 404,
-                        "message": "There are no role listings"
+                        "data": "There are no role listings"
                     }
                 ), 404
     
@@ -592,7 +603,7 @@ def get_all_open_role_listings(search, offset, limit):
         db.session.rollback()
         return jsonify({
             "code": 500,
-            "error": str(e)
+            "data": str(e)
             }), 500
 
 
@@ -782,7 +793,7 @@ def all_skills():
             "error": str(e)
             }), 500
 
-@app.route('/skills')
+# @app.route('/skills')
 #@login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:

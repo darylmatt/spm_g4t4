@@ -421,17 +421,17 @@
             <div class="tab-content pt-2" id="v-pills-tabContent">
               {% if listings %}
               {% for listing in listings %}
-              <div class="tab-pane fade profile-overview" id="{{listing.listing_id}}" role="tabpanel">
+              <div class="tab-pane fade profile-overview listing" id="{{listing.listing_id}}" role="tabpanel">
                 <h5 class="card-title">{{listing.role_name}}</h5>
                 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Date Posted</div>
-                  <div class="col-lg-9 col-md-8 date-posted">{{listing.date_open}}</div>
+                  <div class="col-lg-9 col-md-8 date-open">{{listing.date_open}}</div>
                 </div>
 
                 <div class="row">
                   <div class="col-lg-3 col-md-4 label ">Application deadline</div>
-                  <div class="col-lg-9 col-md-8 deadline">{{listing.date_close}}</div>
+                  <div class="col-lg-9 col-md-8 date-close">{{listing.date_close}}</div>
                 </div>
 
                 <div class="row">
