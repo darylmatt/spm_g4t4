@@ -190,17 +190,17 @@ def all_listings_staff(page):
         if( role_search or recency or country or department or required_skills):
             print("ROLE SEARCH")
             search = True
-
-        staff_skills_json = requests.get('http://127.0.0.1:5500/skills')
+        print("Checkpoint 1")
+        staff_skills_json = get_skills()[0].get_json()
         print(staff_skills_json)
         print("debug1")
         print("bebug2")
-        staff_skills_dict = staff_skills_json.json()
+        staff_skills_dict = staff_skills_json['data']
         print(staff_skills_dict)
         print("staff_skills_dict")
-        staff_skills_set = set(staff_skills_dict.get('data', []))
+        staff_skills_set = set(staff_skills_json.get('data', []))
         print("testingg")
-
+        print("Checkpoint 2")
 
         if search:
             print("There is input search")
@@ -313,21 +313,20 @@ def all_listings_staff(page):
                 print("0 results")
                 pass
 
-            countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
-            print("debug7")
-            if countries_response.status_code == 200:
-                countries_data = countries_response.json()
-                countries = countries_data.get("countries")
+            countries_response = get_all_countries()[0].get_json()
+            if countries_response['code'] == 200:
+                countries = countries_response['data']
+            
+            print("checkpoint 11")
+            departments_response = get_all_departments()[0].get_json()
+            if departments_response['code'] == 200:
+                departments = departments_response['data']
+            
+            print("checkpoint 12")
+            skills_response = get_all_skills()[0].get_json()
+            if skills_response['code'] == 200:
+                skills = skills_response['data']
 
-            departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
-            if departments_response.status_code == 200:
-                departments_data = departments_response.json()
-                departments = departments_data.get("departments")
-
-            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
-            if skills_response.status_code == 200:
-                skills_data = skills_response.json()
-                skills = skills_data.get("skills")
             print("debug9")
             print(f"pages required: {pages_required}")
 
@@ -390,21 +389,34 @@ def all_listings_staff(page):
             print(pages_required)
             print(page)
 
-            countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
-            print("debug7")
-            if countries_response.status_code == 200:
-                countries_data = countries_response.json()
-                countries = countries_data.get("countries")
+            # countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
+            # print("debug7")
+            # if countries_response.status_code == 200:
+            #     countries_data = countries_response.json()
+            #     countries = countries_data.get("countries")
 
-            departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
-            if departments_response.status_code == 200:
-                departments_data = departments_response.json()
-                departments = departments_data.get("departments")
+            # departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
+            # if departments_response.status_code == 200:
+            #     departments_data = departments_response.json()
+            #     departments = departments_data.get("departments")
 
-            skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
-            if skills_response.status_code == 200:
-                skills_data = skills_response.json()
-                skills = skills_data.get("skills")
+            # skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
+            # if skills_response.status_code == 200:
+            #     skills_data = skills_response.json()
+            #     skills = skills_data.get("skills")
+            countries_response = get_all_countries()[0].get_json()
+            if countries_response['code'] == 200:
+                countries = countries_response['data']
+            
+            print("checkpoint 11")
+            departments_response = get_all_departments()[0].get_json()
+            if departments_response['code'] == 200:
+                departments = departments_response['data']
+            
+            print("checkpoint 12")
+            skills_response = get_all_skills()[0].get_json()
+            if skills_response['code'] == 200:
+                skills = skills_response['data']
 
             
 
@@ -780,34 +792,34 @@ def get_skills():
         staff = Staff.query.filter_by(staff_id = staff_id).first()
         print(staff)
         if not staff:
-            return{
+            return jsonify({
                 "code":404,
-                "message":"Staff does not exist"            
-            },404
+                "data":"Staff does not exist"            
+            }),404
 
         # Staff is found, get staff_skills
         staff_details = staff.json()
         staff_skills = staff_details.get('staff_skills', [])
 
         if (len(staff_skills)== 0):
-            return{
+            return jsonify({
                 "code":404,
-                "message": "You do not possess any skills."
-            },404
+                "data": "You do not possess any skills."
+            }),404
         
         skills = [skill.get('skill_name') for skill in staff_skills]
 
         #Get skill description
         desc_list = [Skill.query.filter_by(skill_name=name).first().json().get('skill_desc',[]) for name in skills]
 
-        return{
+        return jsonify({
            "code":200,
            "data":{
                 "skill_names":skills,
                 "descriptions": desc_list 
            }
           
-        },200
+        }),200
 
 
     except Exception as e:
