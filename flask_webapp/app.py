@@ -11,6 +11,7 @@ from sqlalchemy import and_, or_
 import json
 import requests
 from authorisation import login_required
+import traceback
 # from fuzzywuzzy import fuzz
 
 app = Flask(__name__)
@@ -48,7 +49,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template("login.html")
+    return redirect(url_for('login'))
 
 @app.route('/pagination_counter')
 def pagination_counter():
@@ -595,8 +596,8 @@ def calculate_pages_required_all_HR():
 
         
 
-@app.route('/get_all_listings', methods=["GET"])
-@login_required(allowed_roles=[3,4])
+# @app.route('/get_all_listings', methods=["GET"])
+# @login_required(allowed_roles=[3,4])
 def get_all_listings(search, offset, limit):
     try:
         #Scenario where there is input search & filter
@@ -610,7 +611,9 @@ def get_all_listings(search, offset, limit):
             department = search["department"]
             required_skills = search["required_skills"]
 
+            print("checkpoint1")
             base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open)).limit(10)
+            print("checkpoint2")
             current_time = datetime.now()
 
             if status != "Status":
@@ -665,8 +668,11 @@ def get_all_listings(search, offset, limit):
                 else:
                     base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
 
+            print("checkpoint4")
             role_listings = base_query.all()
+            print("checkpoint5")
             if len(role_listings) > 0:
+                print("checkpoint6")
                 return jsonify(
                     {
                         "code":200, 
@@ -688,8 +694,9 @@ def get_all_listings(search, offset, limit):
             print(f"Requested limit: {limit}")
 
             role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).offset(offset).limit(limit).all()
-
+            print("checkpoint7")
             if len(role_listings) > 0:
+                print("checkpoint8")
                 return jsonify(
                     {
                         "code":200, 
@@ -697,6 +704,7 @@ def get_all_listings(search, offset, limit):
                     }
                 )
             else:
+                print("checkpoint9")
                 return jsonify(
                     {
                         "code": 404,
