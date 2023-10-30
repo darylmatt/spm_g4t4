@@ -1383,7 +1383,7 @@ def get_role_description(role_name):
             "error": str(e)
             }), 500
     
-# @app.route('/get_all_countries', methods=["GET"])
+@app.route('/get_all_countries', methods=["GET"])
 def get_all_countries():
     try:
         countries = Country.query.all()
@@ -1407,7 +1407,7 @@ def get_all_countries():
                         ), 500
 
 
-# @app.route('/get_all_departments', methods=["GET"])
+@app.route('/get_all_departments', methods=["GET"])
 def get_all_departments():
     try:
         departments = Department.query.all()
@@ -1461,7 +1461,7 @@ def get_skills_required(role_name):
             }), 500
 
 
-# @app.route('/get_all_skills', methods=['GET'])
+@app.route('/get_all_skills', methods=['GET'])
 def get_all_skills():
     try:
         skills = Skill.query.all()
