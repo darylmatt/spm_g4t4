@@ -1,20 +1,25 @@
 import json
 import unittest
-from app import app, db # Replace with the actual import path to your Flask app
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from app import app, get_all_open_role_listings # Import your Flask app and db
+from db_config.db import db
+from db_config.models import *  # Import your Role_Listing model
+from test_config import TestConfig  # Import your TestConfig
+from decouple import config
 from flask import session
 from bs4 import BeautifulSoup
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+# LIVE database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spmg4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_new'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-from db_config.db import db
-from db_config.models import *  # Import your Role_Listing model
-from decouple import config
 
 class TestAllOpenListings(unittest.TestCase):
 
     def setUp(self):
-        app.config['TESTING'] = True
+        self.app_context = app.app_context()
+        self.app_context.push()
         self.client = app.test_client()
 
         # Session data
@@ -39,50 +44,57 @@ class TestAllOpenListings(unittest.TestCase):
                 sess['Email'] = self.email
 
     def tearDown(self):
+        self.app_context.pop()
         # Clean up session data (log out if necessary)
         with self.client:
             # You may need to define a /logout route
             self.client.get('/logout')
 
+    ######################################################################################################################
 
 
+    def test_get_open_listings_with_filters(self):
+        with app.app_context():
+            # Now you can call your Flask functions safely within the app context
+            search_filters = {
+                'recency': 'Any time',
+                'country': 'Singapore',
+                'department': 'Engineering',
+                'role_search': "",
+                'required_skills': []
+            }
+            offset = 0
+            limit = 10
+            response = get_all_open_role_listings(search_filters, offset, limit)
 
-    def test_view_open_listings_with_filters(self):
-        # Test with filters
-        response = self.client.get('/all_listings_staff#1', data={
-            'status': 'Open',
-            'recency': 'Past month',
-            'country': 'Singapore',
-            'department': 'Engineering',
-        })
+            # Assuming you return a JSON response, you can access the JSON data as follows:
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 200)
+            print(data)
 
-        self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.data, 'html.parser')
+            listings = data['data']
+            self.assertEqual(len(listings), 1)  # Should have only one listing
 
-        # Assert elements within the rendered HTML template
-        listing_divs = soup.find_all('div', class_='listing')
-        self.assertEqual(len(listing_divs), 1)  # Should have only one listing
+            first_listing = listings[0]
+            self.assertEqual(first_listing['listing_id'], 2)
+            self.assertEqual(first_listing['num_opening'], 2)
+            self.assertEqual(first_listing['reporting_mng'], 151408)
+            self.assertEqual(first_listing['role_name'], 'Senior Engineer')
+            self.assertEqual(first_listing['date_open'], '2023-10-10T00:00:00')
+            self.assertEqual(first_listing['date_close'], '2023-11-06T00:00:00')
+            self.assertEqual(first_listing['country'], 'Singapore')
+            self.assertEqual(first_listing['dept'], 'Engineering')
 
-        # Example of assertions for specific elements within a listing
-        role_name = listing_divs[0].find('h5', class_='card-title').text
-        date_open = listing_divs[0].find('div', class_='date-open').text
-        date_close = listing_divs[0].find('div', class_='date-close').text
-        status = listing_divs[0].find('div', class_='status').text
+    def test_get_open_listings_without_filters(self):
+        with app.app_context():
+            search_filters = {}
+            offset = 0
+            limit = 10
+            response = get_all_open_role_listings(search_filters, offset, limit)
 
-        self.assertEqual(role_name, 'Senior Engineer')
-        self.assertEqual(date_open, '10/10/2023')
-        self.assertEqual(date_close, '06/11/2023')
-        self.assertEqual(status, 'Open')
-        # Add more assertions based on the structure of your HTML template
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 200)
 
-
-
-    def test_view_open_listings_without_filters(self):
-        # Test without filters
-        response = self.client.post('/all_listings_staff#1', data={
-        })
-
-        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
