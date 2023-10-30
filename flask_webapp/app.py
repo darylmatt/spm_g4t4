@@ -429,8 +429,8 @@ def all_listings_staff(page):
         # Handle exceptions (e.g., network errors) here
         return str(e), 500  # Return an error response with a 500 status code
 
-@app.route('/get_all_open_role_listings', methods=["GET"])
-@login_required(allowed_roles=[1,2,3,4])
+# @app.route('/get_all_open_role_listings', methods=["GET"])
+# @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search, offset, limit):
     try:
         #Scenario where there is input search & filter
@@ -524,6 +524,7 @@ def get_all_open_role_listings(search, offset, limit):
                     
                         
             if len(role_listings) > 0:
+                print(len(role_listings))
                 return jsonify(
                     {
                         "code":200, 
@@ -560,6 +561,7 @@ def get_all_open_role_listings(search, offset, limit):
             print("debug5")
 
             if len(role_listings) > 0:
+                print(len(role_listings))
                 return jsonify(
                     {
                         "code":200, 

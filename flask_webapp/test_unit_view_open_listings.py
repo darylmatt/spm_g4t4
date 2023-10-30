@@ -62,11 +62,11 @@ class TestGetOpenListings(unittest.TestCase):
             response = get_all_open_role_listings(search_filters, offset, limit)
 
             # Assuming you return a JSON response, you can access the JSON data as follows:
-            data = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 200)
             print(data)
 
-            listings = data[0]['data']
+            listings = data['data']
             self.assertEqual(len(listings), 1)  # Should have only one listing
 
             first_listing = listings[0]
@@ -86,8 +86,8 @@ class TestGetOpenListings(unittest.TestCase):
             limit = 10
             response = get_all_open_role_listings(search_filters, offset, limit)
 
-            data = json.loads(response.data)
-            self.assertEqual(response.status_code, 200)
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 200)
 
 
 
