@@ -46,7 +46,7 @@ class TestApplyRole(unittest.TestCase):
             "listing_id": 1
         }
 
-        response = self.app.put('/apply_role/1', json=new_data)
+        response = self.app.post('/apply_role/1', json=new_data)
         print(response)
         data = json.loads(response.data)
 

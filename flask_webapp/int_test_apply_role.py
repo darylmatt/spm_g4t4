@@ -24,7 +24,7 @@ class TestApplyRole(unittest.TestCase):
         global application_id
         # Define your test data
         test_data = {
-            "listing_id": 23
+            "listing_id": 17
         }
 
         with self.client.session_transaction() as sess:
@@ -36,7 +36,7 @@ class TestApplyRole(unittest.TestCase):
         }
 
         # Make a POST request to the route with test data
-        response = self.client.post('/apply_role/23', data=json.dumps(test_data), headers=headers, follow_redirects=True)
+        response = self.client.post('/apply_role/17', data=json.dumps(test_data), headers=headers, follow_redirects=True)
 
         # Check the response status code
         self.assertEqual(response.status_code, 201)  # You can adjust this based on your actual implementation
