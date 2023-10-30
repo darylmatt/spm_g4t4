@@ -11,6 +11,7 @@ from sqlalchemy import and_, or_
 import json
 import requests
 from authorisation import login_required
+import traceback
 # from fuzzywuzzy import fuzz
 
 app = Flask(__name__)
@@ -48,7 +49,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template("login.html")
+    return redirect(url_for('login'))
 
 @app.route('/pagination_counter')
 def pagination_counter():
@@ -629,6 +630,7 @@ def get_all_listings(search):
                 print("Filtering by country")
                 base_query = base_query.filter(Role_Listing.country == country)
             
+            print("checkpoint3")
             if recency != "Any time":
                 print("Filtering by recency")
                 if recency == "Past 24 hours":
@@ -646,9 +648,14 @@ def get_all_listings(search):
                     base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=30))
                 else:
                     base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+            print("checkpoint4")
 
+            # with app.app_context():
             role_listings = base_query.all()
+
+            print("checkpoint5")
             if len(role_listings) > 0:
+                print("checkpoint6")
                 return jsonify(
                     {
                         "code":200, 
@@ -666,8 +673,9 @@ def get_all_listings(search):
         else:
             print("there is no input search")
             role_listings = Role_Listing.query.filter().all()
-
+            print("checkpoint7")
             if len(role_listings) > 0:
+                print("checkpoint8")
                 return jsonify(
                     {
                         "code":200, 
@@ -675,6 +683,7 @@ def get_all_listings(search):
                     }
                 )
             else:
+                print("checkpoint9")
                 return jsonify(
                     {
                         "code": 404,
@@ -684,6 +693,7 @@ def get_all_listings(search):
 
     except Exception as e:
         print(f"Exception occurred: {str(e)}")
+        print(traceback.format_exc())  # This will print the traceback
         db.session.rollback()
         return jsonify({
             "code": 500,

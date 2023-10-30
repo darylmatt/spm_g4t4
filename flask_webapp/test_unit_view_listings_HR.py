@@ -1,15 +1,21 @@
 import unittest
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from app import app, get_all_listings # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 from test_config import TestConfig  # Import your TestConfig
+from decouple import config
 
 class TestGetAllListings(unittest.TestCase):
     def setUp(self):
         self.app = Flask(__name__)
         app.config.from_object(TestConfig)
+        # app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
+        db = SQLAlchemy(app)
         self.app_context = self.app.app_context()
+        # db.init_app(self.app)
+        # db.create_all(app=self.app)
         self.app_context.push()
         self.client = app.test_client()
 
@@ -46,7 +52,7 @@ class TestGetAllListings(unittest.TestCase):
             search_filters = {
                 'status': 'Closed',
                 'recency': 'Any time',
-                'country': 'Country',
+                'country': 'Singapore',
                 'department': 'Consultancy',
                 'role_search': "",
                 'required_skills': []
