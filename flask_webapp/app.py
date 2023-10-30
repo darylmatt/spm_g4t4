@@ -529,7 +529,7 @@ def get_all_open_role_listings(search, offset, limit):
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
                     }
-                )
+                ),200
             else:
                 print('no such listing')
                 return jsonify(
@@ -565,7 +565,7 @@ def get_all_open_role_listings(search, offset, limit):
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
                     }
-                )
+                ),200
             else:
                 return jsonify(
                     {
@@ -678,8 +678,8 @@ def get_all_listings(search, offset, limit):
                     {
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
-                    }, 200
-                )
+                    }
+                ),200
             else:
                 print('no such listing')
                 return jsonify(
@@ -703,8 +703,8 @@ def get_all_listings(search, offset, limit):
                     {
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
-                    },200
-                )
+                    }
+                ),200
             else:
                 print("checkpoint9")
                 return jsonify(
