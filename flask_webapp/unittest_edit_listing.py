@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-class TestCreateListing(unittest.TestCase):
+class TestEditListing(unittest.TestCase):
     def setUp(self):
 
         self.app = app.test_client()
@@ -20,7 +20,6 @@ class TestCreateListing(unittest.TestCase):
         self.manager1 = Staff(171029,"Somchai", "Kong", "Finance", "Singapore", "Somchai.Kong@allinone.com.sg", 3)
         self.manager2 = Staff(171014,"Kumari", "Pillai", "Finance", "Singapore", "Kumari.Pillai@allinone.com.sg", 3)
         self.listing = Role_Listing("Singapore", "Finance", 4, "2023-10-30 00:00:00", "2023-11-15 00:00:00", "Finance Manager", 171029)
-        self.hr_staff = Staff(160008, "Sally", "Loh", "HR", "Singapore", "Sally.Loh@allione.com.sg",4)
 
 
     def tearDown(self):
@@ -41,7 +40,6 @@ class TestCreateListing(unittest.TestCase):
             db.session.add(self.role)
             db.session.add(self.manager1)
             db.session.add(self.manager2)
-            db.session.add(self.hr_staff)
             db.session.add(self.listing)
             db.session.commit()
         
