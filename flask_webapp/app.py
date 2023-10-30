@@ -673,11 +673,12 @@ def get_all_listings(search, offset, limit):
             print("checkpoint5")
             if len(role_listings) > 0:
                 print("checkpoint6")
+                print(len(role_listings))
                 return jsonify(
                     {
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
-                    }
+                    }, 200
                 )
             else:
                 print('no such listing')
@@ -697,11 +698,12 @@ def get_all_listings(search, offset, limit):
             print("checkpoint7")
             if len(role_listings) > 0:
                 print("checkpoint8")
+                print(len(role_listings))
                 return jsonify(
                     {
                         "code":200, 
                         "data": [listing.json() for listing in role_listings]
-                    }
+                    },200
                 )
             else:
                 print("checkpoint9")
