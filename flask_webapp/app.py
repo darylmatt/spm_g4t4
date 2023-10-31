@@ -1455,8 +1455,9 @@ def get_application_history():
         for application in applications:
             # Fetch role_listing data based on the listing_id in each application
             role_listing = Role_Listing.query.filter_by(listing_id=application.listing_id).first()
-
+            
             if role_listing:
+
                 # Fetch staff data based on staff_id
                 staff = Staff.query.get(staff_id)
 
@@ -1531,12 +1532,15 @@ def get_num_applicants_by_listing(listing_id):
     return num_applicants
 
 @app.route('/apply_role/<int:listing_id>', methods=["POST"])
-@login_required(allowed_roles=[1,2])
+@login_required(allowed_roles=[1, 2])
 def apply_role(listing_id):
     try:
         staff_id = session.get('Staff_ID')
         if staff_id is None:
-            return jsonify({"error": "User not authenticated"}), 401
+            app.logger.error("User not authenticated")
+            return jsonify({"error": "User not authenticated"}, 401)
+
+        app.logger.info("User authenticated")
 
         status = "Pending"
         applied_date = datetime.now()
@@ -1544,17 +1548,26 @@ def apply_role(listing_id):
         # Check if the listing exists
         role_listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
         if not role_listing:
-            return jsonify({"error": "Role listing not found"}), 404
+            app.logger.error("Role listing not found")
+            return jsonify({"error": "Role listing not found"}, 404)
+
+        app.logger.info("Role listing found")
 
         # Check if the listing is closed (past the application deadline)
         current_datetime = datetime.now()
         if role_listing.date_open > current_datetime or role_listing.date_close < current_datetime:
-            return jsonify({"error": "Role listing is closed or not yet open for applications"}), 411
+            app.logger.error("Role listing is closed or not yet open for applications")
+            return jsonify({"error": "Role listing is closed or not yet open for applications"}, 411)
+
+        app.logger.info("Role listing is open")
 
         # Check if the staff member has already applied to this listing
         existing_application = Application.query.filter_by(listing_id=listing_id, staff_id=staff_id).first()
         if existing_application:
-            return jsonify({"error": "You have already applied to this role"}), 400
+            app.logger.error("User has already applied to this role")
+            return jsonify({"error": "You have already applied to this role"}, 400)
+
+        app.logger.info("User has not applied to this role")
 
         # Insert application details
         insert_sql = text("""
@@ -1575,10 +1588,12 @@ def apply_role(listing_id):
         # Fetch the last inserted ID using SQLAlchemy's execute method
         application_id = result.lastrowid
 
+        app.logger.info("Application submitted successfully")
         return jsonify({"message": "Application submitted successfully", "application_id": application_id, "code": 201}), 201
 
     except Exception as e:
         db.session.rollback()
+        app.logger.error("An error occurred while processing the application: %s", str(e))
         return jsonify({"error": "An error occurred while processing your application", "code": 500}), 500
 
 
