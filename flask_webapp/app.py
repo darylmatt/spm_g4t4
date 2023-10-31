@@ -1733,10 +1733,11 @@ def apply_role(listing_id):
 
         # Check if the listing is closed (past the application deadline)
         current_datetime = datetime.now()
-        print(type(role_listing.date_open))
-        print(role_listing.date_open)
+        print(type(role_listing.date_close))
+        print(role_listing.date_close)
         print(current_datetime)
         print(type(current_datetime))
+
         if (
             role_listing.date_open > current_datetime
             or role_listing.date_close < current_datetime

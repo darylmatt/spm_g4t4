@@ -45,7 +45,7 @@ class TestApplyRole(unittest.TestCase):
             dept="Finance",
             num_opening=4,
             date_open="2023-10-30 00:00:00",
-            date_close="2023-11-31 00:00:00",
+            date_close="2023-11-30 00:00:00",
             role_name="Finance Manager",
             reporting_mng=171029,
         )
