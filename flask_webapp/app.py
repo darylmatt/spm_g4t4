@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
-from db_config.models import Role_Listing
+# from db_config.models import Role_Listing, Application, Country, Department, Skill, Staff, Access_Control, Role, Role_Skill, Staff_Skill
 from sqlalchemy import text, asc, desc
 from sqlalchemy import and_, or_
 import json
@@ -645,6 +645,7 @@ def all_listings_staff(page):
 # @app.route('/get_all_open_role_listings', methods=["GET"])
 # @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search, offset, limit):
+    from db_config.models import Role_Listing
     try:
         # Scenario where there is input search & filter
         if search:
@@ -922,6 +923,7 @@ def calculate_pages_required_all_HR(search):
 # @app.route('/get_all_listings', methods=["GET"])
 # @login_required(allowed_roles=[3,4])
 def get_all_listings(search, offset, limit):
+    from db_config.models import Role_Listing
     try:
         # Scenario where there is input search & filter
         if search:
