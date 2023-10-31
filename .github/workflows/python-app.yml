@@ -28,8 +28,7 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Set up environment variables
-      run: |
-        echo "SECRET_KEY=Our_secret_key" >> $GITHUB_ENV
+      run: echo "SECRET_KEY=Our_secret_key" >> $GITHUB_ENV
     - name: Lint with flake8
       # ... (rest of your workflow steps)
     - name: Run unit tests
