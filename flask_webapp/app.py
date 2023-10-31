@@ -832,6 +832,8 @@ def calculate_pages_required_all_HR(search):
         role_name = search["role_search"]
         recency = search["recency"]
         country = search["country"]
+        if country == None:
+            country = "Country"
         department = search["department"]
         required_skills = search["required_skills"]
 
@@ -926,6 +928,8 @@ def get_all_listings(search, offset, limit):
             role_name = search["role_search"]
             recency = search["recency"]
             country = search["country"]
+            if country == None:
+                country = "Country"
             department = search["department"]
             required_skills = search["required_skills"]
             print("checkpoint1")
