@@ -36,7 +36,7 @@ class TestOpenListingsStaff(unittest.TestCase):
             # You may need to define a /logout route
             self.client.get('/logout')
 
-    def test_all_listings_staff_with_filters(self):
+    def test_open_listings_staff_with_filters(self):
         # Test with filters
         response = self.client.post('/all_listings_staff/1', data={
             'recency': 'Past month',
@@ -63,7 +63,7 @@ class TestOpenListingsStaff(unittest.TestCase):
         self.assertEqual(status, 'Open')
         # Add more assertions based on the structure of your HTML template
 
-    def test_all_listings_staff_without_filters(self):
+    def test_open_listings_staff_without_filters(self):
         # Test without filters
         response = self.client.post('/all_listings_staff/1', data={
         })

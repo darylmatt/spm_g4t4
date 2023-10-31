@@ -72,6 +72,7 @@ def pagination_counter():
 
 @app.route("/calculate_pages_required")
 def calculate_num_listings(search):
+    from db_config.models import Role_Listing
     if search == None:
         current_time = datetime.now()
         role_listings = (
@@ -639,6 +640,7 @@ def all_listings_staff(page):
             )
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
+        print(traceback.format_exc())
         return str(e), 500  # Return an error response with a 500 status code
 
 
@@ -815,6 +817,7 @@ def get_all_open_role_listings(search, offset, limit):
 
 @app.route("/calculate_pages_required_all_HR")
 def calculate_pages_required_all_HR(search):
+    from db_config.models import Role_Listing
     if search == None:
         listings_per_page = 5
         role_listings = Role_Listing.query.order_by(desc(Role_Listing.date_open)).all()
@@ -1721,6 +1724,7 @@ def get_applications_by_listing(listing_id):
 
 
 def get_num_applicants_by_listing(listing_id):
+    from db_config.models import Application
     # Query your database to count the number of applications for the given listing_id
     num_applicants = Application.query.filter_by(listing_id=listing_id).count()
     return num_applicants
@@ -1862,6 +1866,7 @@ def delete_application(application_id):
 @app.route("/get_staff_details/<int:staff_id>", methods=["GET"])
 @login_required(allowed_roles=[1, 2, 3, 4])
 def get_staff_details(staff_id):
+    from db_config.models import Staff
     try:
         staff = Staff.query.filter_by(staff_id=staff_id).first()
         if staff:
@@ -1877,6 +1882,7 @@ def get_staff_details(staff_id):
 @app.route("/get_role_description/<string:role_name>", methods=["GET"])
 @login_required(allowed_roles=[1, 2, 3, 4])
 def get_role_description(role_name):
+    from db_config.models import Role
     try:
         role = Role.query.filter_by(role_name=role_name).first()
         if role:
@@ -1890,6 +1896,7 @@ def get_role_description(role_name):
 
 @app.route("/get_all_countries", methods=["GET"])
 def get_all_countries():
+    from db_config.models import Country
     try:
         countries = Country.query.all()
 
@@ -1910,6 +1917,7 @@ def get_all_countries():
 
 @app.route("/get_all_departments", methods=["GET"])
 def get_all_departments():
+    from db_config.models import Department
     try:
         departments = Department.query.all()
 
@@ -1927,6 +1935,7 @@ def get_all_departments():
 @app.route("/get_skills_required/<string:role_name>", methods=["GET"])
 @login_required(allowed_roles=[1, 2, 3, 4])
 def get_skills_required(role_name):
+    from db_config.models import Role_Skill
     try:
         skills_required = Role_Skill.query.filter_by(role_name=role_name).all()
         if len(skills_required) > 0:
@@ -1951,6 +1960,7 @@ def get_skills_required(role_name):
 
 @app.route("/get_all_skills", methods=["GET"])
 def get_all_skills():
+    from db_config.models import Skill
     try:
         skills = Skill.query.all()
         if not skills:
