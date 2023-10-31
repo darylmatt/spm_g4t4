@@ -3,11 +3,11 @@ from app import app  # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 import json
+import os
+from decouple import config
 
 
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://g4t4:password@spmg4t4.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test"
+app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -51,15 +51,15 @@ class TestEditListing(unittest.TestCase):
             171029,
         )
 
-    def tearDown(self):
-        with app.app_context():
-            db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 160008).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
-            db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
+    # def tearDown(self):
+    #     with app.app_context():
+    #         db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
+    #         db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
+    #         db.session.query(Staff).filter(Staff.staff_id == 160008).delete()
+    #         db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
+    #         db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
 
-            db.session.commit()
+    #         db.session.commit()
 
     def test_update_check_listing(self):
 
@@ -69,7 +69,12 @@ class TestEditListing(unittest.TestCase):
             db.session.add(self.manager1)
             db.session.add(self.manager2)
             db.session.add(self.listing)
+            # db.session.add(self.hr_staff)
             db.session.commit()
+
+        # with self.client.session_transaction() as sess:
+        #     sess["staff_ID"] = 160008
+        #     sess["role"] = 4
 
         new_data = {
             "title": "Finance Manager",
@@ -82,7 +87,7 @@ class TestEditListing(unittest.TestCase):
         }
 
         response = self.app.put("/update/check_listing_exist/0", json=new_data)
-        # print(response.data)
+        print(response.data)
         data = json.loads(response.data)
 
         self.assertEqual(
