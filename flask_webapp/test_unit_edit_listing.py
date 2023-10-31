@@ -5,17 +5,20 @@ from db_config.models import *  # Import your Role_Listing model
 import json
 import os
 from decouple import config
-
-
-app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db.init_app(app)
+from app_factory import create_app
 
 
 class TestEditListing(unittest.TestCase):
     def setUp(self):
+        self.app = create_app("testing")
+
+        test_database_url = config("TEST_DATABASE_URL")
+        print("Test Database URL:", test_database_url)
+
+        app.config["SQLALCHEMY_DATABASE_URI"] = test_database_url
+        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+        db.init_app(app)
 
         self.app = app.test_client()
 
@@ -51,15 +54,14 @@ class TestEditListing(unittest.TestCase):
             171029,
         )
 
-    # def tearDown(self):
-    #     with app.app_context():
-    #         db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
-    #         db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
-    #         db.session.query(Staff).filter(Staff.staff_id == 160008).delete()
-    #         db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
-    #         db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
+    def tearDown(self):
+        with app.app_context():
+            db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
+            db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
+            db.session.query(Staff).filter(Staff.staff_id == 171014).delete()
+            db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
 
-    #         db.session.commit()
+            db.session.commit()
 
     def test_update_check_listing(self):
 
@@ -69,12 +71,7 @@ class TestEditListing(unittest.TestCase):
             db.session.add(self.manager1)
             db.session.add(self.manager2)
             db.session.add(self.listing)
-            # db.session.add(self.hr_staff)
             db.session.commit()
-
-        # with self.client.session_transaction() as sess:
-        #     sess["staff_ID"] = 160008
-        #     sess["role"] = 4
 
         new_data = {
             "title": "Finance Manager",
@@ -87,14 +84,11 @@ class TestEditListing(unittest.TestCase):
         }
 
         response = self.app.put("/update/check_listing_exist/0", json=new_data)
+        print(response)
         print(response.data)
         data = json.loads(response.data)
 
-        self.assertEqual(
-            response.status_code, 201
-        )  # Check if the response status code is 201 (Created)
-
-        # You can add more assertions to check the response data or database state if needed
+        self.assertEqual(response.status_code, 201)
 
 
 if __name__ == "__main__":
