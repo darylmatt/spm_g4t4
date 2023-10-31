@@ -5,18 +5,17 @@ import json
 
 from decouple import config
 
-app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db.init_app(app)
-
 
 class TestApplyRole(unittest.TestCase):
     def setUp(self):
 
         app.config["TESTING"] = True
         self.client = app.test_client()
+        app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
+
+        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+        db.init_app(app)
 
         self.role = Role(
             "Finance Manager",
