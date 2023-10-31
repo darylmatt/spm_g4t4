@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
+# from db_config.models import Role_Listing, Application, Country, Department, Skill, Staff, Access_Control, Role, Role_Skill, Staff_Skill
 from sqlalchemy import text, asc, desc
 from sqlalchemy import and_, or_
 import json
@@ -644,6 +645,7 @@ def all_listings_staff(page):
 # @app.route('/get_all_open_role_listings', methods=["GET"])
 # @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search, offset, limit):
+    from db_config.models import Role_Listing
     try:
         # Scenario where there is input search & filter
         if search:
@@ -659,6 +661,7 @@ def get_all_open_role_listings(search, offset, limit):
             print("test here")
 
             current_time = datetime.now()
+            print("checkpoint1")
             base_query = Role_Listing.query.filter(
                 and_(
                     Role_Listing.date_open <= current_time,
@@ -666,9 +669,9 @@ def get_all_open_role_listings(search, offset, limit):
                     Role_Listing.num_opening > 0,
                 )
             ).order_by(desc(Role_Listing.date_open))
-
+            print("checkpoint2")
             print(base_query.all())
-
+            print("checkpoint3")
             if role_name:
                 print("filtering by name")
                 # Setting a similarity threshold for search and role matching
@@ -789,7 +792,7 @@ def get_all_open_role_listings(search, offset, limit):
             )
 
             print("debug5")
-
+            print(len(role_listings))
             if len(role_listings) > 0:
                 print(len(role_listings))
                 return (
@@ -806,6 +809,7 @@ def get_all_open_role_listings(search, offset, limit):
 
     except Exception as e:
         db.session.rollback()
+        print(traceback.format_exc())
         return jsonify({"code": 500, "data": str(e)}), 500
 
 
@@ -832,6 +836,8 @@ def calculate_pages_required_all_HR(search):
         role_name = search["role_search"]
         recency = search["recency"]
         country = search["country"]
+        if country == None:
+            country = "Country"
         department = search["department"]
         required_skills = search["required_skills"]
 
@@ -917,6 +923,7 @@ def calculate_pages_required_all_HR(search):
 # @app.route('/get_all_listings', methods=["GET"])
 # @login_required(allowed_roles=[3,4])
 def get_all_listings(search, offset, limit):
+    from db_config.models import Role_Listing
     try:
         # Scenario where there is input search & filter
         if search:
@@ -926,6 +933,8 @@ def get_all_listings(search, offset, limit):
             role_name = search["role_search"]
             recency = search["recency"]
             country = search["country"]
+            if country == None:
+                country = "Country"
             department = search["department"]
             required_skills = search["required_skills"]
             print("checkpoint1")

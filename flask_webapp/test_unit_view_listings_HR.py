@@ -9,7 +9,7 @@ from decouple import config
 from sqlalchemy import desc
 from datetime import datetime, timedelta
 
-app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_TEST_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)

@@ -8,7 +8,7 @@ from db_config.models import *  # Import your Role_Listing model
 from test_config import TestConfig  # Import your TestConfig
 from decouple import config
 
-app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_TEST_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
