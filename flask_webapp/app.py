@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 from flask_sqlalchemy import SQLAlchemy
 from db_config.models import *
+from db_config.models import Role_Listing
 from sqlalchemy import text, asc, desc
 from sqlalchemy import and_, or_
 import json
@@ -659,6 +660,7 @@ def get_all_open_role_listings(search, offset, limit):
             print("test here")
 
             current_time = datetime.now()
+            print("checkpoint1")
             base_query = Role_Listing.query.filter(
                 and_(
                     Role_Listing.date_open <= current_time,
@@ -666,9 +668,9 @@ def get_all_open_role_listings(search, offset, limit):
                     Role_Listing.num_opening > 0,
                 )
             ).order_by(desc(Role_Listing.date_open))
-
+            print("checkpoint2")
             print(base_query.all())
-
+            print("checkpoint3")
             if role_name:
                 print("filtering by name")
                 # Setting a similarity threshold for search and role matching
@@ -789,7 +791,7 @@ def get_all_open_role_listings(search, offset, limit):
             )
 
             print("debug5")
-
+            print(len(role_listings))
             if len(role_listings) > 0:
                 print(len(role_listings))
                 return (
@@ -806,6 +808,7 @@ def get_all_open_role_listings(search, offset, limit):
 
     except Exception as e:
         db.session.rollback()
+        print(traceback.format_exc())
         return jsonify({"code": 500, "data": str(e)}), 500
 
 
