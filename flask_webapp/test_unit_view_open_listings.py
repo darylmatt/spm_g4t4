@@ -8,7 +8,7 @@ from db_config.models import *  # Import your Role_Listing model
 from test_config import TestConfig  # Import your TestConfig
 from decouple import config
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4-sbrp.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test'
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_TEST_URL')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

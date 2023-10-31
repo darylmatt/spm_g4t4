@@ -2,17 +2,18 @@ import json
 import unittest
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app import app, get_all_listings # Import your Flask app and db
+from app import app, get_all_listings  # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
-from test_config import TestConfig  # Import your TestConfig
 from decouple import config
+from sqlalchemy import desc
+from datetime import datetime, timedelta
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://g4t4:password@spm-g4t4-sbrp.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_TEST_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
 
 class TestGetAllListings(unittest.TestCase):
     def setUp(self):
