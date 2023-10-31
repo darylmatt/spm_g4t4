@@ -928,13 +928,11 @@ def get_all_listings(search, offset, limit):
             country = search["country"]
             department = search["department"]
             required_skills = search["required_skills"]
+            print("checkpoint1")
+            base_query = Role_Listing.query.filter().order_by(desc(Role_Listing.date_open))
 
-            base_query = Role_Listing.query.filter().order_by(
-                desc(Role_Listing.date_open)
-            )
-
+            print("checkpoint2")
             current_time = datetime.now()
-
             if status != "Status":
                 print("Filtering by status")
                 if status == "Open":
@@ -972,10 +970,13 @@ def get_all_listings(search, offset, limit):
             print("results after query by department")
             print(base_query.all())
 
+            
             if country != "Country":
                 print("Filtering by country")
                 print(country)
+                print(Role_Listing.country)
                 base_query = base_query.filter(Role_Listing.country == country)
+                
 
             print("results after query by country")
             print(base_query.all())
@@ -1002,14 +1003,13 @@ def get_all_listings(search, offset, limit):
                         Role_Listing.date_open >= current_time - timedelta(days=30)
                     )
                 else:
-                    base_query = base_query.filter(
-                        Role_Listing.date_open >= current_time - timedelta(days=3650)
-                    )
-
+                    base_query = base_query.filter(Role_Listing.date_open >= current_time - timedelta(days=3650))
+            
+            print("checkpoint3")
             role_listings = base_query.offset(offset).limit(limit).all()
-
+            print("checkpoint4")
             if len(role_listings) > 0:
-                print("checkpoint6")
+                print("checkpoint5")
                 print(len(role_listings))
                 return (
                     jsonify(
@@ -1060,7 +1060,11 @@ def get_all_listings(search, offset, limit):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"code": 500, "error": str(e)}), 500
+        print(traceback.format_exc())
+        return jsonify({
+            "code": 500,
+            "error": str(e)
+            }), 500
 
 
 @app.route("/view_a_listing/<int:listing_id>", methods=["GET"])
@@ -1398,6 +1402,7 @@ def all_listings_HR(page):
             )
 
         elif session.get("existing_search"):
+            print("Existing search in session")
             role_search = session["role_search"]
             status = session["status"]
             recency = session["recency"]
@@ -1421,6 +1426,8 @@ def all_listings_HR(page):
                 "required_skills": required_skills,
             }
 
+            print(search_params)
+
             results = calculate_pages_required_all_HR(search_params)
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
@@ -1434,12 +1441,10 @@ def all_listings_HR(page):
             results = calculate_pages_required_all_HR(None)
             pages_required = results["pages_required"]
             num_role_listings = results["num_role_listings"]
-            listings_json = get_all_listings(
-                False, offset=offset, limit=results_per_page
-            )[0]
+            listings_json = get_all_listings(False, offset=offset, limit=results_per_page)
             print("checkpoint 2")
 
-        listings_dict = listings_json.get_json()
+        listings_dict = listings_json[0].get_json()
         print("checkpoint 3")
         listings = []
         if listings_dict["code"] == 200:
@@ -1447,8 +1452,10 @@ def all_listings_HR(page):
             data = listings_dict["data"]
             for listing in data:
                 print("checkpoint 5")
-                num_applicants = get_num_applicants_by_listing(listing["listing_id"])
-                date_open = listing["date_open"]
+                print(listing['listing_id'])
+                num_applicants = get_num_applicants_by_listing(listing['listing_id'])
+                print("checkpoint 5.1")
+                date_open = listing['date_open']
                 input_open_datetime = datetime.strptime(date_open, "%Y-%m-%dT%H:%M:%S")
                 date_close = listing["date_close"]
                 input_close_datetime = datetime.strptime(
@@ -1513,35 +1520,36 @@ def all_listings_HR(page):
             if departments_response["code"] == 200:
                 departments = departments_response["data"]
 
-            skills_response = requests.get("http://127.0.0.1:5500/get_all_skills")
-            if skills_response.status_code == 200:
-                skills_data = skills_response.json()
-                skills = skills_data.get("skills")
-
-            return render_template(
-                "all_listings_HR.html",
-                listings=listings,
-                num_results=num_results,
-                Staff_Name=Staff_Name,
-                countries=countries,
-                departments=departments,
-                skills=skills,
-                pages_required=pages_required,
-                num_role_listings=num_role_listings,
-                offset=offset + 1,
-                offset_end=offset_end,
-                current_page=page,
-                session_role_search=session_role_search,
-                session_recency=session_recency,
-                session_status=session_status,
-                session_country=session_country,
-                session_department=session_department,
-                session_required_skills=session_required_skills,
-            )
+            print("checkpoint 12")
+            skills_response = get_all_skills()[0].get_json()
+            if skills_response['code'] == 200:
+                skills = skills_response['data']
+                
+            
+            return render_template("all_listings_HR.html", 
+                                   listings=listings,
+                                   num_results=num_results,
+                                   Staff_Name=Staff_Name,
+                                   countries=countries,
+                                   departments=departments,
+                                   skills=skills,
+                                   pages_required=pages_required,   
+                                   num_role_listings=num_role_listings,
+                                   offset = offset + 1,
+                                   offset_end = offset_end,
+                                   current_page = page,
+                                   session_role_search = session_role_search,
+                                   session_recency = session_recency,
+                                   session_status = session_status,
+                                   session_country = session_country,
+                                   session_department = session_department,
+                                   session_required_skills = session_required_skills
+                                   )
         else:
             return jsonify({"message": "Failed to fetch countries"}), 500
     except Exception as e:
         # Handle exceptions (e.g., network errors) here
+        print(traceback.format_exc())
         print("here error")
         return str(e), 500  # Return an error response with a 500 status code
 
