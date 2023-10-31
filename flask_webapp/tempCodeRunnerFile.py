@@ -1,1 +1,1 @@
-get_all_open_role_listings
+on.add(self.role)

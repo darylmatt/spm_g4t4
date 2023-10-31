@@ -26,32 +26,32 @@ def cleanup_application(request, client):
     request.addfinalizer(lambda: clean_up_application(client))
 
 # Test creating a new application
-def test_apply_role(client, cleanup_application):
-    global application_id
-    # Define your test data
-    test_data = {
-        "listing_id": 23
-    }
+def test_apply_role(self):
+        global application_id
+        # Define your test data
+        test_data = {
+            "listing_id": 17
+        }
 
-    with client.session_transaction() as sess:
-        sess['Staff_ID'] = 140002
-        sess['Role'] = 2
+        with self.client.session_transaction() as sess:
+            sess['Staff_ID'] = 140002
+            sess['Role'] = 2
 
-    headers = {
-        "Content-Type": "application/json"
-    }
+        headers = {
+            "Content-Type": "application/json"
+        }
 
-    # Make a POST request to the route with test data
-    response = client.post('/apply_role/23', data=json.dumps(test_data), headers=headers, follow_redirects=True)
+        # Make a POST request to the route with test data
+        response = self.client.post('/apply_role/17', data=json.dumps(test_data), headers=headers, follow_redirects=True)
 
-    # Check the response status code
-    assert response.status_code == 201  # You can adjust this based on your actual implementation
+        # Check the response status code
+        self.assertEqual(response.status_code, 201)  # You can adjust this based on your actual implementation
 
-    # Check the response content
-    data = json.loads(response.data.decode('utf-8'))
-    application_id = data.get("application_id")
-    logging.info(f"Application ID in application: {application_id}")
-
+        # Check the response content
+        data = json.loads(response.data.decode('utf-8'))
+        application_id = data.get("application_id")
+        logging.info(f"Application ID in application: {application_id}")
+        
 # Test trying to apply to same role again
 def test_apply_existing_role(client):
     global application_id

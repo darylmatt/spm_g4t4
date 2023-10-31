@@ -1,9 +1,8 @@
 import unittest
-from app import app  # Import your Flask app and db
-from db_config.db import db
+from app import app, db  # Import your Flask app and db
 from db_config.models import *  # Import your Role_Listing model
 import json
-from test_config import TestConfig  # Import your TestConfig
+
 from decouple import config
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
@@ -16,8 +15,8 @@ db.init_app(app)
 class TestApplyRole(unittest.TestCase):
     def setUp(self):
 
-        self.app = app.test_client()
-        app.config.from_object(TestConfig)
+        app.config["TESTING"] = True
+        self.client = app.test_client()
 
         self.role = Role(
             "Finance Manager",
@@ -42,13 +41,13 @@ class TestApplyRole(unittest.TestCase):
             3,
         )
         self.listing = Role_Listing(
-            "Singapore",
-            "Finance",
-            4,
-            "2023-10-30 00:00:00",
-            "2023-11-31 00:00:00",
-            "Finance Manager",
-            171029,
+            country="Singapore",
+            dept="Finance",
+            num_opening=4,
+            date_open="2023-10-30 00:00:00",
+            date_close="2023-11-31 00:00:00",
+            role_name="Finance Manager",
+            reporting_mng=171029,
         )
 
     def tearDown(self):
@@ -69,9 +68,13 @@ class TestApplyRole(unittest.TestCase):
             db.session.add(self.listing)
             db.session.commit()
 
-        new_data = {"listing_id": 1}
+        with self.client.session_transaction() as sess:
+            sess["Staff_ID"] = 140002
+            sess["Role"] = 2
 
-        response = self.app.put("/apply_role/1", json=new_data)
+        # new_data = {"listing_id": 0}
+
+        response = self.client.post("/apply_role/0")
         print(response)
         data = json.loads(response.data)
 
