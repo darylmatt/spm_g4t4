@@ -1,29 +1,25 @@
 import unittest
-from app import app
+from app import app,db
+from db_config.models import Application
 import json
 import logging
-
-application_id = None
 
 class TestApplyRole(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
 
-    def clean_up_application(self):
-        global application_id
-        if application_id is not None:
-            # Make a DELETE request to the route to delete the application
-            response = self.client.delete(
-                f"/delete_application/{application_id}", follow_redirects=True
-            )
-            self.assertEqual(response.status_code, 200)
-
     def tearDown(self):
-        self.clean_up_application()
+        # Clean up: Delete the application created in the test
+        if self.application_id:
+            with app.app_context():
+                application = Application.query.get(self.application_id)
+                if application:
+                    db.session.delete(application)
+                    db.session.commit()
+
 
     def test_apply_role(self):
-        global application_id
         # Define your test data
         test_data = {
             "listing_id": 17
@@ -45,9 +41,9 @@ class TestApplyRole(unittest.TestCase):
 
         # Check the response content
         data = json.loads(response.data.decode("utf-8"))
-        application_id = data.get("application_id")
-        logging.info(f"Application ID in application: {application_id}")
-
+        self.application_id = data.get("application_id")
+        logging.info(f"Application ID in application: {self.application_id}")
+        
     def test_apply_existing_role(self):
         global application_id
         # Define your test data
