@@ -52,6 +52,7 @@ class TestApplyRole(unittest.TestCase):
 
     def tearDown(self):
         with app.app_context():
+            db.session.query(Application).delete()  # Delete any related Application records
             db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
             db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
             db.session.query(Staff).filter(Staff.staff_id == 140002).delete()
@@ -67,12 +68,13 @@ class TestApplyRole(unittest.TestCase):
             db.session.add(self.staff)
             db.session.add(self.listing)
             db.session.commit()
+        
 
         with self.client.session_transaction() as sess:
             sess["Staff_ID"] = 140002
             sess["Role"] = 2
 
-        # new_data = {"listing_id": 0}
+        new_data = {"listing_id": 0}
 
         response = self.client.post("/apply_role/0")
         print(response)
