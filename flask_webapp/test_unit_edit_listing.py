@@ -10,7 +10,8 @@ from app_factory import create_app
 
 class TestEditListing(unittest.TestCase):
     def setUp(self):
-        self.app = create_app("testing")
+        app.config["TESTING"] = True
+        self.client = app.test_client()
 
         test_database_url = config("TEST_DATABASE_URL")
         print("Test Database URL:", test_database_url)

@@ -5,7 +5,6 @@ import logging
 
 application_id = None
 
-
 class TestApplyRole(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True

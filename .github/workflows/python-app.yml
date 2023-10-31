@@ -41,4 +41,3 @@ jobs:
     - name: Run integration tests
       run: |
         python flask_webapp/test_integration_view_listings_HR.py
-
