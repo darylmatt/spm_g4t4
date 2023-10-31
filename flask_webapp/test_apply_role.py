@@ -1,103 +1,72 @@
 import pytest
-from app import app 
+from app import app, db
+from db_config.models import *
 import json
-import logging
+from decouple import config
 
-application_id = None
+app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
 
 @pytest.fixture
 def client():
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
-# Test-specific cleanup logic
-def clean_up_application(client):
-    global application_id
-    if application_id is not None:
-        # Make a DELETE request to the route to delete the application
-        response = client.delete(f'/delete_application/{application_id}', follow_redirects=True)
-        assert response.status_code == 200
-
-# Define a fixture that uses the test-specific cleanup logic
 @pytest.fixture
-def cleanup_application(request, client):
-    # This fixture will be automatically used before and after each test function
-    request.addfinalizer(lambda: clean_up_application(client))
+def test_data():
+    role = Role(
+        "Finance Manager",
+        "The Finance Manager is the lead finance business partner for the organisation and has responsibilities covering all aspects of financial management, performance management, financial accounting, budgeting, corporate reporting etc. He/she has sound technical as well as management skills and be able to lead a team consisting of finance professionals with varied, in-depth or niche technical knowledge and abilities; consolidating their work and ensuring its quality and accuracy, especially for reporting purposes. The Finance Manager is expected to provide sound financial advice and counsel on working capital, financing or the financial position of the organisation by synthesising internal and external data and studying the economic environment. He often has a key role in implementing best practices in order to identify and manage all financial and business risks and to meet the organisation's desired business and fiscal goals. He is expected to have a firm grasp of economic and business trends and to implement work improvement projects that are geared towards quality, compliance and efficiency in finance.",
+    )
+    manager1 = Staff(
+        171029,
+        "Somchai",
+        "Kong",
+        "Finance",
+        "Singapore",
+        "Somchai.Kong@allinone.com.sg",
+        3,
+    )
+    staff = Staff(
+        140002,
+        "Susan",
+        "Goh",
+        "Finance",
+        "Singapore",
+        "Susan.Goh@allinone.com.sg",
+        3,
+    )
+    listing = Role_Listing(
+        country="Singapore",
+        dept="Finance",
+        num_opening=4,
+        date_open="2023-10-30 00:00:00",
+        date_close="2023-11-30 00:00:00",
+        role_name="Finance Manager",
+        reporting_mng=171029,
+    )
 
-# Test creating a new application
-def test_apply_role(self):
-        global application_id
-        # Define your test data
-        test_data = {
-            "listing_id": 17
-        }
+    return role, manager1, staff, listing
 
-        with self.client.session_transaction() as sess:
-            sess['Staff_ID'] = 140002
-            sess['Role'] = 2
+def test_apply_role(client, test_data):
+    role, manager1, staff, listing = test_data
 
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        # Make a POST request to the route with test data
-        response = self.client.post('/apply_role/17', data=json.dumps(test_data), headers=headers, follow_redirects=True)
-
-        # Check the response status code
-        self.assertEqual(response.status_code, 201)  # You can adjust this based on your actual implementation
-
-        # Check the response content
-        data = json.loads(response.data.decode('utf-8'))
-        application_id = data.get("application_id")
-        logging.info(f"Application ID in application: {application_id}")
-        
-# Test trying to apply to same role again
-def test_apply_existing_role(client):
-    global application_id
-    # Define your test data
-    test_data = {
-        "listing_id": 2
-    }
-
-    with client.session_transaction() as sess:
-        sess['Staff_ID'] = 140002
-        sess['Role'] = 2
-
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    # Make a POST request to the route with test data
-    response = client.post('/apply_role/2', data=json.dumps(test_data), headers=headers, follow_redirects=True)
-
-    # Check the response status code
-    assert response.status_code == 400  # You can adjust this based on your actual implementation
-
-    expected_error_message = "You have already applied to this role"
-    assert expected_error_message in response.get_json()['error']
-
-# Test applying to a role that is already closed
-def test_apply_closed_role(client):
-    global application_id
-    # Define your test data
-    test_data = {
-        "listing_id": 18  # Replace with a valid listing ID for an open role
-    }
+    with app.app_context():
+        db.session.add(role)
+        db.session.add(manager1)
+        db.session.add(staff)
+        db.session.add(listing)
+        db.session.commit()
 
     with client.session_transaction() as sess:
-        sess['Staff_ID'] = 140002
-        sess['Role'] = 2
+        sess["Staff_ID"] = 140002
+        sess["Role"] = 2
 
-    headers = {
-        "Content-Type": "application/json"
-    }
+    response = client.post("/apply_role/0")
+    data = json.loads(response.data)
 
-    # Make a POST request to the route with test data
-    response = client.post('/apply_role/18', data=json.dumps(test_data), headers=headers, follow_redirects=True)
-    
-    # Check the response status code
-    assert response.status_code == 411  # You can adjust this based on your actual implementation
-
-    expected_error_message = "Role listing is closed or not yet open for applications"
-    assert expected_error_message in response.get_json()['error']
+    assert response.status_code == 201
+    # You can add more assertions to check the response data or database state if needed

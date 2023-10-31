@@ -1720,13 +1720,12 @@ def get_num_applicants_by_listing(listing_id):
 @app.route("/apply_role/<int:listing_id>", methods=["POST"])
 @login_required(allowed_roles=[1, 2])
 def apply_role(listing_id):
+    from db_config.models import Role_Listing
+    from db_config.models import Application
     try:
-        staff_id = session.get("Staff_ID")
+        staff_id = session.get('Staff_ID')
         if staff_id is None:
-            app.logger.error("User not authenticated")
-            return jsonify({"error": "User not authenticated"}, 401)
-
-        app.logger.info("User authenticated")
+            return jsonify({"error": "User not authenticated"}), 401
 
         status = "Pending"
         applied_date = datetime.now()
@@ -1734,47 +1733,23 @@ def apply_role(listing_id):
         # Check if the listing exists
         role_listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
         if not role_listing:
-            app.logger.error("Role listing not found")
-            return jsonify({"error": "Role listing not found"}, 404)
-
-        app.logger.info("Role listing found")
+            return jsonify({"error": "Role listing not found"}), 404
 
         # Check if the listing is closed (past the application deadline)
         current_datetime = datetime.now()
-        print(type(role_listing.date_close))
-        print(role_listing.date_close)
-        print(current_datetime)
-        print(type(current_datetime))
-
-        if (
-            role_listing.date_open > current_datetime
-            or role_listing.date_close < current_datetime
-        ):
-            app.logger.error("Role listing is closed or not yet open for applications")
-            return jsonify(
-                {"error": "Role listing is closed or not yet open for applications"},
-                411,
-            )
-
-        app.logger.info("Role listing is open")
+        if role_listing.date_open > current_datetime or role_listing.date_close < current_datetime:
+            return jsonify({"error": "Role listing is closed or not yet open for applications"}), 411
 
         # Check if the staff member has already applied to this listing
-        existing_application = Application.query.filter_by(
-            listing_id=listing_id, staff_id=staff_id
-        ).first()
+        existing_application = Application.query.filter_by(listing_id=listing_id, staff_id=staff_id).first()
         if existing_application:
-            app.logger.error("User has already applied to this role")
-            return jsonify({"error": "You have already applied to this role"}, 400)
-
-        app.logger.info("User has not applied to this role")
+            return jsonify({"error": "You have already applied to this role"}), 400
 
         # Insert application details
-        insert_sql = text(
-            """
+        insert_sql = text("""
             INSERT INTO application (listing_id, staff_id, status, applied_date)
             VALUES (:listing_id, :staff_id, :status, :applied_date)
-        """
-        )
+        """)
 
         params = {
             "listing_id": listing_id,
@@ -1789,32 +1764,12 @@ def apply_role(listing_id):
         # Fetch the last inserted ID using SQLAlchemy's execute method
         application_id = result.lastrowid
 
-        app.logger.info("Application submitted successfully")
-        return (
-            jsonify(
-                {
-                    "message": "Application submitted successfully",
-                    "application_id": application_id,
-                    "code": 201,
-                }
-            ),
-            201,
-        )
+        return jsonify({"message": "Application submitted successfully", "application_id": application_id, "code": 201}), 201
 
     except Exception as e:
         db.session.rollback()
-        app.logger.error(
-            "An error occurred while processing the application: %s", str(e)
-        )
-        return (
-            jsonify(
-                {
-                    "error": "An error occurred while processing your application",
-                    "code": 500,
-                }
-            ),
-            500,
-        )
+        traceback.print_exc()  # Print the exception traceback
+        return jsonify({"error": "An error occurred while processing your application", "code": 500}), 500
 
 
 @app.route("/check_application_status/<int:listing_id>", methods=["GET"])
@@ -2218,6 +2173,7 @@ def get_manager(country, dept):
 @app.route("/update/check_listing_exist/<int:id>", methods=["PUT"])
 # @login_required(allowed_roles=[4])
 def update_check_listing(id):
+    from db_config.models import Role_Listing
     staff_id = session.get("Staff_ID")
     # Get the JSON data from the request
     json_data = request.get_json()

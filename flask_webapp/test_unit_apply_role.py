@@ -53,10 +53,9 @@ class TestApplyRole(unittest.TestCase):
     def tearDown(self):
         with app.app_context():
             db.session.query(Application).delete()  # Delete any related Application records
-            db.session.query(Role_Listing).filter(Role_Listing.listing_id == 0).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 171029).delete()
-            db.session.query(Staff).filter(Staff.staff_id == 140002).delete()
-            db.session.query(Role).filter(Role.role_name == "Finance Manager").delete()
+            db.session.query(Role_Listing).delete() 
+            db.session.query(Staff).delete() 
+            db.session.query(Role).delete() 
 
             db.session.commit()
 
