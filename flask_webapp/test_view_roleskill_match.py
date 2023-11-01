@@ -5,117 +5,129 @@ from app import app
 from db_config.models import *
 from decouple import config
 from db_config.db import db
-# from sqlalchemy.orm import joinedload
-
-app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db.init_app(app)
+from sqlalchemy.exc import IntegrityError
 
 
 class TestRoleSkillMatch(unittest.TestCase):
-    staff_skills_data = [
-    {
-        "staff_id": 140002,
-        "skill_name": "Accounting and Tax Systems",
-    },
-    {
-        "staff_id": 140002,
-        "skill_name": "Business Environment Analysis",
-    },
-    {
-        "staff_id": 140002,
-        "skill_name": "Customer Relationship Management",
-    },
-    {
-        "staff_id": 140002,
-        "skill_name": "Professional and Business Ethics",
-    },
-    ]
-
-    skills_data = [
-    {
-        "skill_name": "Accounting and Tax Systems",
-        "skill_desc": "Implement accounting or tax software systems in the organisation"
-    },
-    {
-        "skill_name": "Accounting Standards",
-        "skill_desc": "Apply financial reporting framework prescribed by the relevant governing body to ensure all transactions meet regulatory requirements"
-    },
-    {
-        "skill_name": "Audit Compliance",
-        "skill_desc": "Ensure compliance with corporate policies and guidelines"
-    },
-    {
-        "skill_name": "Audit Frameworks",
-        "skill_desc": "Develop quality assurance frameworks to meet regulatory requirements",
-    },
-    {
-        "skill_name": "Business Acumen",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Collaboration",
-        "skill_desc": "Manage relationships and work collaboratively and effectively with others to achieve goals",
-    },
-    {
-        "skill_name": "Communication",
-        "skill_desc": "Convey and exchange thoughts, ideas and information effectively through various mediums and approaches",
-    },
-    {
-        "skill_name": "Data Analytics",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Finance Business Partnering",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Financial Management",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Financial Planning",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Financial Reporting",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Financial Statements Analysis",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Professional and Business Ethics",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Project Management",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Regulatory Compliance",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Regulatory Risk Assessment",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Stakeholder Management",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-    {
-        "skill_name": "Tax Implications",
-        "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
-    },
-
-    ]
 
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
+        app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
+        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+        db.init_app(app)
+        self.app_context = app.app_context()
+        self.app_context.push()
+
+        self.staff_skills_data = [
+        {
+            "staff_id": 140002,
+            "skill_name": "Accounting and Tax Systems",
+        },
+        {
+            "staff_id": 140002,
+            "skill_name": "Business Environment Analysis",
+        },
+        {
+            "staff_id": 140002,
+            "skill_name": "Customer Relationship Management",
+        },
+        {
+            "staff_id": 140002,
+            "skill_name": "Professional and Business Ethics",
+        },
+        ]
+
+        self.skills_data = [
+        {
+            "skill_name": "Accounting and Tax Systems",
+            "skill_desc": "Implement accounting or tax software systems in the organisation"
+        },
+        {
+            "skill_name": "Accounting Standards",
+            "skill_desc": "Apply financial reporting framework prescribed by the relevant governing body to ensure all transactions meet regulatory requirements"
+        },
+        {
+            "skill_name": "Audit Compliance",
+            "skill_desc": "Ensure compliance with corporate policies and guidelines"
+        },
+        {
+            "skill_name": "Audit Frameworks",
+            "skill_desc": "Develop quality assurance frameworks to meet regulatory requirements",
+        },
+        {
+            "skill_name": "Business Acumen",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Collaboration",
+            "skill_desc": "Manage relationships and work collaboratively and effectively with others to achieve goals",
+        },
+        {
+            "skill_name": "Communication",
+            "skill_desc": "Convey and exchange thoughts, ideas and information effectively through various mediums and approaches",
+        },
+        {
+            "skill_name": "Data Analytics",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Finance Business Partnering",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Financial Management",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Financial Planning",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Financial Reporting",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Financial Statements Analysis",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Professional and Business Ethics",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Project Management",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Regulatory Compliance",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Regulatory Risk Assessment",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Stakeholder Management",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Tax Implications",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Business Environment Analysis",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+        {
+            "skill_name": "Customer Relationship Management",
+            "skill_desc": "Assess the impact of changes in the business organisation, environment, and industry",
+        },
+
+        
+
+        ]
 
         self.manager = Staff(
             staff_id=171029,
@@ -163,75 +175,77 @@ class TestRoleSkillMatch(unittest.TestCase):
             role=2,
         )
 
-
     def tearDown(self):
-        with app.app_context():
-            db.session.query(Role_Listing).delete()
-            db.session.query(Role_Skill).delete()
-            db.session.query(Staff_Skill).delete()
-            db.session.query(Staff).delete()
-            db.session.query(Skill).delete()
-            db.session.query(Role).delete()
-            db.session.commit()
-
-
-            db.session.commit()
+        with self.app_context:
+            try:
+                db.session.query(Role_Listing).delete()
+                db.session.query(Role_Skill).delete()
+                db.session.query(Staff_Skill).delete()
+                db.session.query(Staff).delete()
+                db.session.query(Skill).delete()
+                db.session.query(Role).delete()
+                db.session.commit()
+            except Exception as e:
+                print(f"An error occurred during the cleanup: {e}")
+                db.session.rollback()
+                raise
 
     def test_match_skills(self):
-        with app.app_context():
+        with self.app_context:
+            # Populating necessary data in the skill table first
+            for skill_data in self.skills_data:
+                skill = Skill(**skill_data)
+                db.session.add(skill)
+            db.session.commit()
+
+            # Add other necessary data
             db.session.add(self.manager)
             db.session.add(self.role)
             db.session.add(self.role_listing)
             db.session.add(self.staff)
-            for role_skill in self.role_skills:  # Add each role_skill to the session
+            for role_skill in self.role_skills:
                 db.session.add(role_skill)
-            for skill_data in self.skills_data:
-                skill = Skill(**skill_data)
-                db.session.add(skill)
             for staff_skill_data in self.staff_skills_data:
                 staff_skill = Staff_Skill(**staff_skill_data)
                 db.session.add(staff_skill)
             db.session.commit()
         
-        
+        with app.test_client() as client:
+            response = client.get(f'/match_skills/0')
+            print(response.data)
+            data = response.get_json()
 
+            self.assertEqual(response.status_code, 200)
 
-        response = self.client.get(f'/match_skills/0')
-        print(response.data)
-        data = response.get_json()
+            self.assertIn("response_data", data)
+            self.assertIn("message", data)
+            self.assertIn("code", data)
 
-        self.assertEqual(response.status_code, 200)
+            # Check if the response data has the expected keys
+            response_data = data["response_data"]
+            self.assertIn("listing_id", response_data)
+            self.assertIn("role_name", response_data)
+            self.assertIn("staff_id", response_data)
+            self.assertIn("matched_skills", response_data)
+            self.assertIn("lacking_skills", response_data)
 
-        self.assertIn("response_data", data)
-        self.assertIn("message", data)
-        self.assertIn("code", data)
+            print("Staff Skills:")
+            for staff_skill in self.staff.staff_skills:
+                print(f"Skill Name: {staff_skill.skill_name}")
 
-        # Check if the response data has the expected keys
-        response_data = data["response_data"]
-        self.assertIn("listing_id", response_data)
-        self.assertIn("role_name", response_data)
-        self.assertIn("staff_id", response_data)
-        self.assertIn("matched_skills", response_data)
-        self.assertIn("lacking_skills", response_data)
+            print("\nRole Skills:")
+            for role_skill in self.role_skills:
+                print(f"Skill Name: {role_skill.skill_name}")
 
-        print("Staff Skills:")
-        for staff_skill in self.staff.staff_skills:
-            print(f"Skill Name: {staff_skill.skill_name}")
+            expected_message = "You have matching skills with this role!"
+            actual_message = data["message"]
+            self.assertEqual(actual_message, expected_message)
 
-        print("\nRole Skills:")
-        for role_skill in self.role_skills:
-            print(f"Skill Name: {role_skill.skill_name}")
-
-        expected_message = "You have matching skills with this role!"
-        actual_message = data["message"]
-        self.assertEqual(actual_message, expected_message)
-
-        # Check if the message is as expected
-        if not response_data["matched_skills"]:
-            self.assertEqual(data["message"], "You have no matching skills with this role!")
-        else:
-            self.assertEqual(data["message"], "You have matching skills with this role!")
-
+            # Check if the message is as expected
+            if not response_data["matched_skills"]:
+                self.assertEqual(data["message"], "You have no matching skills with this role!")
+            else:
+                self.assertEqual(data["message"], "You have matching skills with this role!")
 
 if __name__ == '__main__':
     unittest.main()
