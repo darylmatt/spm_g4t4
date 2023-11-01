@@ -294,21 +294,25 @@
         <div class="col-md-2">
           <select id="inputState2" name="country" class="form-select">
             <option value="Country" {% if not session_country %}selected{% endif %}>Country</option>
+            {% if countries %}
             {% for country in countries %}
               <option value="{{country.country}}" {% if session_country == country.country %}selected{% endif %}>
                 {{ country.country_name }}
               </option>
             {% endfor %}
+            {% endif %}
           </select>
         </div>
         <div class="col-md-2">
           <select id="inputState3" name="department" class="form-select">
             <option {% if not session_department %}selected{% endif %}>Department</option>
+            {% if departments %}
             {% for department in departments %}
               <option value="{{department}}" {% if session_department == department %}selected{% endif %}>
                 {{ department }}
               </option>
             {% endfor %}
+            {% endif %}
           </select>
         </div>
 
@@ -321,12 +325,14 @@
                               <button id="dropdownBtn" type="button" class="form-select">Required skills</button>
                               <div id="dropdownContent" class="custom-dropdown-content">
                                   <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+                                  {% if skills %}
                                   {% for skill in skills %}
                                     {% if (session_required_skills) and (skill in session_required_skills) %}
                                         <label><input type="checkbox" name="required_skills[]" value="{{ skill.skill_name }}" checked>{{ skill.skill_name }}</label>
                                     {% endif %}
                                         <label><input type="checkbox" name="required_skills[]" value="{{ skill.skill_name }}">{{ skill.skill_name }}</label>
                                   {% endfor %}
+                                  {% endif %}
                               </div>
                           </div>
                       </div>
@@ -425,11 +431,13 @@
             <ul class="pagination justify-content-center">
               <li class="page-item disabled">
               </li>
+           
               {% for page in range(1, pages_required + 1) %}
                 <li class="page-item {% if current_page == page %} active {% endif %}">
                   <a class="page-link" href="/all_listings_HR/{{page}}">{{ page }}</a>
                 </li>
               {% endfor %}
+       
               <li class="page-item">
               </li>
             </ul>
