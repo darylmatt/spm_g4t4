@@ -247,5 +247,37 @@ class TestRoleSkillMatch(unittest.TestCase):
             else:
                 self.assertEqual(data["message"], "You have matching skills with this role!")
 
+
+    def test_get_skills(self):
+        with self.app_context:
+            # Add a staff member to the database for testing
+            db.session.add(self.staff)
+            for staff_skill_data in self.staff_skills_data:
+                staff_skill = Staff_Skill(**staff_skill_data, staff_id=self.staff.staff_id)
+                db.session.add(staff_skill)
+
+            db.session.commit()
+
+        with app.test_client() as client:
+            # Simulate a logged-in session by setting the session's Staff_ID
+            with client.session_transaction() as sess:
+                sess["Staff_ID"] = self.staff.staff_id
+
+            # Access the /skills route
+            response = client.get('/skills')
+            data = response.get_json()
+
+            # Check if the response code is as expected
+            self.assertEqual(response.status_code, 200)
+
+            # Check if the response data has the expected keys
+            self.assertIn("code", data)
+            self.assertIn("data", data)
+
+            # Check if the data field has the expected keys
+            response_data = data["data"]
+            self.assertIn("skill_names", response_data)
+            self.assertIn("descriptions", response_data)
+
 if __name__ == '__main__':
     unittest.main()
