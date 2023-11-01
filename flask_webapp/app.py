@@ -644,7 +644,7 @@ def all_listings_staff(page):
         return str(e), 500  # Return an error response with a 500 status code
 
 
-# @app.route('/get_all_open_role_listings', methods=["GET"])
+@app.route('/get_all_open_role_listings', methods=["GET"])
 # @login_required(allowed_roles=[1,2,3,4])
 def get_all_open_role_listings(search, offset, limit):
     from db_config.models import Role_Listing
@@ -1108,7 +1108,7 @@ def all_skills():
 
 
 @app.route("/skills")
-# @login_required(allowed_roles=[1,2,3,4])
+@login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:
         staff_id = session.get("Staff_ID")
@@ -1976,10 +1976,11 @@ def get_all_skills():
 
 
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
-@login_required(allowed_roles=[1, 2, 3, 4])
+# @login_required(allowed_roles=[1, 2, 3, 4])
 def match_skills(listing_id):
     try:
-        staff_id = session.get("Staff_ID")
+        # staff_id = session.get("Staff_ID")
+        staff_id = 140002
 
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()

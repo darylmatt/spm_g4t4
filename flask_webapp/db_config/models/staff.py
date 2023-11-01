@@ -20,8 +20,8 @@ class Staff(db.Model):
     staff_skills = db.relationship('Staff_Skill', backref='staff')
     applications = db.relationship('Application', backref='staff')
     
-    def __init__(self, id, staff_fname, staff_lname, dept, country, email, role):
-        self.staff_id = id
+    def __init__(self, staff_id, staff_fname, staff_lname, dept, country, email, role):
+        self.staff_id = staff_id
         self.staff_fname = staff_fname
         self.staff_lname = staff_lname
         self.dept = dept
