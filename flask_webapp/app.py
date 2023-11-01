@@ -1978,6 +1978,10 @@ def get_all_skills():
 @app.route("/match_skills/<int:listing_id>", methods=["GET"])
 # @login_required(allowed_roles=[1, 2, 3, 4])
 def match_skills(listing_id):
+    from db_config.models import Role_Listing
+    from db_config.models import Role_Skill
+    from db_config.models import Role_Listing
+    from db_config.models import Staff_Skill
     try:
         # staff_id = session.get("Staff_ID")
         staff_id = 140002
