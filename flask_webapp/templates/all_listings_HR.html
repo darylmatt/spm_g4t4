@@ -262,7 +262,7 @@
             {% if session_role_search %}
           <input class="form-control me-2" name="role_name" type="search" value="{{ session_role_search }}" aria-label="Search">
           {% else %}
-          <input class="form-control me-2" name="role_name" type="search" placeholder="Search open role..." aria-label="Search">
+          <input class="form-control me-2" name="role_name" type="search" placeholder="Search listing..." aria-label="Search">
           {% endif %}
             
           </div>
@@ -410,14 +410,14 @@
 
           
 
-          <div class="card-body pb-0" style="height: 950px;">
+          <div class="card-body pb-0" style="height: 700px;">
             <h5 class="card-title">All Listings <span>| Showing {{offset}} - {{offset_end}} of {{num_role_listings}} </span></h5>
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               {% for listing in listings %}
                 <div class="post-item clearfix">
                   <div id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#{{listing.listing_id}}" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false" class="list-group-item list-group-item-action" data-listing-id="{{ listing.listing_id }}">
-                    <img src="{{ url_for('static', filename='assets/img/news-1.jpg') }}" alt="">
+                    <img src={{ url_for('static', filename='assets/img/' + listing.dept + '.jpg') }} alt="">
                     <h4><a href="#{{listing.listing_id}}">{{listing.role_name }}</a></h4>
                     <p> Posted: {{ listing.date_open }} | {{ listing.dept }} | {{ listing.country }} | </p>
                   </div>
