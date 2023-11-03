@@ -1,6 +1,7 @@
 import json
 import unittest
-from flask import Flask
+from flask import Flask, session, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from app import app
 from db_config.models import *
 from decouple import config
@@ -247,37 +248,39 @@ class TestRoleSkillMatch(unittest.TestCase):
             else:
                 self.assertEqual(data["message"], "You have matching skills with this role!")
 
+    def test_get_skills(self):
+        with self.app_context:
+            for skill_data in self.skills_data:
+                skill = Skill(**skill_data)
+                db.session.add(skill)
+            db.session.commit()
 
-    # def test_get_skills(self):
-    #     with self.app_context:
-    #         # Add a staff member to the database for testing
-    #         db.session.add(self.staff)
-    #         for staff_skill_data in self.staff_skills_data:
-    #             staff_skill = Staff_Skill(**staff_skill_data, staff_id=self.staff.staff_id)
-    #             db.session.add(staff_skill)
+            db.session.add(self.staff)
 
-    #         db.session.commit()
+            for staff_skill_data in self.staff_skills_data:
+                staff_skill = Staff_Skill(**staff_skill_data)
+                db.session.add(staff_skill)
+            db.session.commit()
+        
+        with self.client:
+            with app.test_request_context():
+                # Simulate a logged-in staff member
+                with app.test_client() as c:
+                    with c.session_transaction() as sess:
+                        sess['Staff_ID'] = 140002  # Replace with the appropriate staff ID
 
-    #     with app.test_client() as client:
-    #         # Simulate a logged-in session by setting the session's Staff_ID
-    #         with client.session_transaction() as sess:
-    #             sess["Staff_ID"] = self.staff.staff_id
+                    # Make a GET request to the skills route
+                    response = c.get('/skills')
 
-    #         # Access the /skills route
-    #         response = client.get('/skills')
-    #         data = response.get_json()
+                    # Assert that the response status code is 200
+                    self.assertEqual(response.status_code, 200)
 
-    #         # Check if the response code is as expected
-    #         self.assertEqual(response.status_code, 200)
-
-    #         # Check if the response data has the expected keys
-    #         self.assertIn("code", data)
-    #         self.assertIn("data", data)
-
-    #         # Check if the data field has the expected keys
-    #         response_data = data["data"]
-    #         self.assertIn("skill_names", response_data)
-    #         self.assertIn("descriptions", response_data)
+                    # Assert that the response contains the expected data keys
+                    data = json.loads(response.data)
+                    self.assertIn('code', data)
+                    self.assertIn('data', data)
+                    self.assertIn('skill_names', data['data'])
+                    self.assertIn('descriptions', data['data'])
 
 if __name__ == '__main__':
     unittest.main()

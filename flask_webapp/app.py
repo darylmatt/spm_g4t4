@@ -1109,6 +1109,7 @@ def all_skills():
 def get_skills():
     try:
         staff_id = session.get("Staff_ID")
+        # staff_id = 140002
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id=staff_id).first()
         print(staff)
