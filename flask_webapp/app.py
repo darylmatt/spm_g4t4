@@ -1105,9 +1105,11 @@ def all_skills():
 
 
 @app.route("/skills")
-@login_required(allowed_roles=[1,2,3,4])
+# @login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:
+        from db_config.models import Staff
+        from db_config.models import Skill
         staff_id = session.get("Staff_ID")
         # staff_id = 140002
         # Check if staff exists
@@ -1991,9 +1993,8 @@ def match_skills(listing_id):
     from db_config.models import Role_Listing
     from db_config.models import Staff_Skill
     try:
-        # staff_id = session.get("Staff_ID")
-        staff_id = 140002
-
+        staff_id = session.get("Staff_ID")
+        print(staff_id)
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
         if not role:

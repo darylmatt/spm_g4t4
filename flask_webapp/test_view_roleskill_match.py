@@ -141,8 +141,8 @@ class TestRoleSkillMatch(unittest.TestCase):
         )
 
         self.role = Role(
-            role_name='Finance Manager',
-            role_desc="The Finance Manager is the lead finance business partner for the organisation and has responsibilities covering all aspects of financial management, performance management, financial accounting, budgeting, corporate reporting etc. He/she has sound technical as well as management skills and be able to lead a team consisting of finance professionals with varied, in-depth or niche technical knowledge and abilities; consolidating their work and ensuring its quality and accuracy, especially for reporting purposes. The Finance Manager is expected to provide sound financial advice and counsel on working capital, financing or the financial position of the organisation by synthesising internal and external data and studying the economic environment. He often has a key role in implementing best practices in order to identify and manage all financial and business risks and to meet the organisation's desired business and fiscal goals. He is expected to have a firm grasp of economic and business trends and to implement work improvement projects that are geared towards quality, compliance and efficiency in finance.",
+            "Finance Manager",
+            "The Finance Manager is the lead finance business partner for the organisation and has responsibilities covering all aspects of financial management, performance management, financial accounting, budgeting, corporate reporting etc. He/she has sound technical as well as management skills and be able to lead a team consisting of finance professionals with varied, in-depth or niche technical knowledge and abilities; consolidating their work and ensuring its quality and accuracy, especially for reporting purposes. The Finance Manager is expected to provide sound financial advice and counsel on working capital, financing or the financial position of the organisation by synthesising internal and external data and studying the economic environment. He often has a key role in implementing best practices in order to identify and manage all financial and business risks and to meet the organisation's desired business and fiscal goals. He is expected to have a firm grasp of economic and business trends and to implement work improvement projects that are geared towards quality, compliance and efficiency in finance.",
         )
 
         self.role_skills = []
@@ -210,43 +210,49 @@ class TestRoleSkillMatch(unittest.TestCase):
                 staff_skill = Staff_Skill(**staff_skill_data)
                 db.session.add(staff_skill)
             db.session.commit()
-        
-        with app.test_client() as client:
-            response = client.get(f'/match_skills/0')
-            print(response.data)
-            data = response.get_json()
+            
+        with self.client:
+            with app.test_request_context():
+                # Simulate a logged-in staff member
+                with app.test_client() as c:
+                    with c.session_transaction() as sess:
+                        sess['Staff_ID'] = 140002
 
-            self.assertEqual(response.status_code, 200)
+                    response = c.get(f'/match_skills/0')
+                    print(response.data)
+                    data = response.get_json()
 
-            self.assertIn("response_data", data)
-            self.assertIn("message", data)
-            self.assertIn("code", data)
+                    self.assertEqual(response.status_code, 200)
 
-            # Check if the response data has the expected keys
-            response_data = data["response_data"]
-            self.assertIn("listing_id", response_data)
-            self.assertIn("role_name", response_data)
-            self.assertIn("staff_id", response_data)
-            self.assertIn("matched_skills", response_data)
-            self.assertIn("lacking_skills", response_data)
+                    self.assertIn("response_data", data)
+                    self.assertIn("message", data)
+                    self.assertIn("code", data)
 
-            print("Staff Skills:")
-            for staff_skill in self.staff.staff_skills:
-                print(f"Skill Name: {staff_skill.skill_name}")
+                    # Check if the response data has the expected keys
+                    response_data = data["response_data"]
+                    self.assertIn("listing_id", response_data)
+                    self.assertIn("role_name", response_data)
+                    self.assertIn("staff_id", response_data)
+                    self.assertIn("matched_skills", response_data)
+                    self.assertIn("lacking_skills", response_data)
 
-            print("\nRole Skills:")
-            for role_skill in self.role_skills:
-                print(f"Skill Name: {role_skill.skill_name}")
+                    print("Staff Skills:")
+                    for staff_skill in self.staff.staff_skills:
+                        print(f"Skill Name: {staff_skill.skill_name}")
 
-            expected_message = "You have matching skills with this role!"
-            actual_message = data["message"]
-            self.assertEqual(actual_message, expected_message)
+                    print("\nRole Skills:")
+                    for role_skill in self.role_skills:
+                        print(f"Skill Name: {role_skill.skill_name}")
 
-            # Check if the message is as expected
-            if not response_data["matched_skills"]:
-                self.assertEqual(data["message"], "You have no matching skills with this role!")
-            else:
-                self.assertEqual(data["message"], "You have matching skills with this role!")
+                    expected_message = "You have matching skills with this role!"
+                    actual_message = data["message"]
+                    self.assertEqual(actual_message, expected_message)
+
+                    # Check if the message is as expected
+                    if not response_data["matched_skills"]:
+                        self.assertEqual(data["message"], "You have no matching skills with this role!")
+                    else:
+                        self.assertEqual(data["message"], "You have matching skills with this role!")
 
     def test_get_skills(self):
         with self.app_context:
