@@ -5,7 +5,7 @@ from db_config.models import *  # Import your Role_Listing model
 import json
 import os
 from decouple import config
-from flask_webapp.app_factory import create_app
+from app_factory import create_app
 
 
 class TestCreateRole(unittest.TestCase):
@@ -83,6 +83,7 @@ class TestCreateRole(unittest.TestCase):
 
         print(response)
         data = json.loads(response.data)
+        print(response.status_code)
 
         self.assertEqual(
             response.status_code, 201
