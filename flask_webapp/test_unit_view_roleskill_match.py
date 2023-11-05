@@ -10,16 +10,26 @@ from sqlalchemy.exc import IntegrityError
 
 
 class TestRoleSkillMatch(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = app
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(cls.app)
 
     def setUp(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
-        app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        # app.config["TESTING"] = True
+        # self.client = app.test_client()
+        # app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
+        # app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-        db.init_app(app)
-        self.app_context = app.app_context()
+        # db.init_app(app)
+        # self.app_context = app.app_context()
+        # self.app_context.push()
+
+        self.app_context = self.app.app_context()
         self.app_context.push()
+        self.client = self.app.test_client()
 
         self.staff_skills_data = [
         {
