@@ -2206,6 +2206,9 @@ def update_check_listing(id):
     # Fetch current listing
     currListing = Role_Listing.query.filter_by(listing_id=id).first()
 
+    if not currListing:
+        return jsonify({"code": 404, "message": "Listing does not exist"}), 404
+
     try:
         currListing.role_name = name
         currListing.dept = department
@@ -2313,6 +2316,7 @@ def get_required_skills_for_roles(role_name):
 @app.route("/get_listing_by_id/<int:listing_id>")
 @login_required(allowed_roles=[1, 2, 3, 4])
 def get_listing(listing_id):
+    from db_config.models import Role_Listing
     try:
         # Check if listing if exists
         listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
