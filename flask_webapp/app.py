@@ -21,26 +21,6 @@ app = Flask(__name__)
 
 # Session settings
 app.secret_key = config("SECRET_KEY")
-# user_ids = ['140002', '160008']
-# user_dict = {'140002': {
-#                 'Staff_ID': '140002',
-#                 'Role' : 2,
-#                 'Staff_FName': 'Susan',
-#                 'Staff_LName': 'Goh',
-#                 'Dept': 'Sales',
-#                 'Country': 'Singapore',
-#                 'Email': 'Susan.Goh@allinone.com.sg'
-#             },
-
-#             '160008': {
-#                 'Staff_ID': '160008',
-#                 'Role' : 4,
-#                 'Staff_FName': 'Sally',
-#                 'Staff_LName': 'Loh',
-#                 'Dept': 'HR',
-#                 'Country': 'Singapore',
-#                 'Email': 'Sally.Loh@allinone.com.sg'
-#             }}
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URL")
@@ -1082,10 +1062,13 @@ def all_skills():
 
 
 @app.route("/skills")
-@login_required(allowed_roles=[1,2,3,4])
+# @login_required(allowed_roles=[1,2,3,4])
 def get_skills():
     try:
+        from db_config.models import Staff
+        from db_config.models import Skill
         staff_id = session.get("Staff_ID")
+        # staff_id = 140002
         # Check if staff exists
         staff = Staff.query.filter_by(staff_id=staff_id).first()
         print(staff)
@@ -1973,9 +1956,8 @@ def match_skills(listing_id):
     from db_config.models import Role_Listing
     from db_config.models import Staff_Skill
     try:
-        # staff_id = session.get("Staff_ID")
-        staff_id = 140002
-
+        staff_id = session.get("Staff_ID")
+        print(staff_id)
         # Check if the role exists
         role = Role_Listing.query.filter_by(listing_id=listing_id).first()
         if not role:
@@ -2250,7 +2232,7 @@ def update_check_listing(id):
 
 
 @app.route("/create/check_listing_exist", methods=["POST"])
-@login_required(allowed_roles=[1, 2, 3, 4])
+# @login_required(allowed_roles=[1, 2, 3, 4])
 def check_listing():
     # Get the JSON data from the request
     json_data = request.get_json()
