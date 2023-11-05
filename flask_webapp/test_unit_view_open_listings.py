@@ -21,6 +21,7 @@ class TestGetOpenListings(unittest.TestCase):
         self.app_context.push()
         self.client = self.app.test_client()
 
+
         # Replace the following with your session data
         self.staff_id = 140002  # staff ID for Sally Loh HR Singapore
         self.role = 2  # HR

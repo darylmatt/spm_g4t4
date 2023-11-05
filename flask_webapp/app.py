@@ -881,6 +881,15 @@ def calculate_pages_required_all_HR(search):
             "role_listings": role_listings
         }
 
+@app.route('/get_all_listings', methods=["GET"])
+@login_required(allowed_roles=[3,4])
+def get_all_listings_route():
+    data = request.json
+    search = data.get('search', None)
+    offset = data.get('offset', 0)
+    limit = data.get('limit', 8)
+    return get_all_listings(search, offset, limit)
+
 # @app.route('/get_all_listings', methods=["GET"])
 # @login_required(allowed_roles=[3,4])
 def get_all_listings(search, offset, limit):
