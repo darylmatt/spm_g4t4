@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("editManagerDropdown").value =
             "Searching our database...";
           document.getElementById("editManagerDropdown").disabled = true;
-          const id = this.id[7];
+          const id = this.id.substring(7);
           // Retrieve the listing data from the server
-          fetch("get_listing_by_id/" + id)
+          fetch("/get_listing_by_id/" + id)
             .then((response) => response.json())
             .then((data) => {
               var currName = data.data.role_name;

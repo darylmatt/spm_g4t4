@@ -2328,7 +2328,7 @@ def get_required_skills_for_roles(role_name):
 
 
 @app.route("/get_listing_by_id/<int:listing_id>")
-@login_required(allowed_roles=[1, 2, 3, 4])
+# @login_required(allowed_roles=[1, 2, 3, 4])
 def get_listing(listing_id):
     try:
         # Check if listing if exists
