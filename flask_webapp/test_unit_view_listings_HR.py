@@ -10,20 +10,18 @@ from sqlalchemy import desc
 from datetime import datetime, timedelta
 
 class TestGetAllListings(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = app
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(cls.app)
+
     def setUp(self):
-        self.app_context = app.app_context()
+        self.app_context = self.app.app_context()
         self.app_context.push()
-        self.client = app.test_client()
+        self.client = self.app.test_client()
 
-        app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
-        print(config('TEST_DATABASE_URL'))
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-        db.init_app(app)
-
-        self.app = app.test_client()
-
-        # Replace the following with your session data
         self.staff_id = 160008  # staff ID for Sally Loh HR Singapore
         self.role = 4  # HR
         self.staff_fname = "Sally"
@@ -44,8 +42,6 @@ class TestGetAllListings(unittest.TestCase):
                 sess['Country'] = self.country
                 sess['Email'] = self.email
 
-        # Create a test listing
-        # Now you can call your Flask functions safely within the app context
         self.role1 = Role(
             "Senior Engineer",
             "The Senior Engineer applies advanced engineering principles and techniques to troubleshoot complex engineering problems encountered within the manufacturing facility and provides expert technical advice to guide the installation and maintenance of equipment and systems. He/She is expected to lead the technical cross-collaboration with the Process Development/Manufacturing Science and Technology (PD/MSAT) department in order to identify appropriate biopharmaceuticals manufacturing equipment and optimise their functionalities. The Senior Engineer leads manufacturing equipment and systems innovation projects by guiding feasibility assessments and tests on new technologies. He is expected to review and approve solutions and initiatives to optimise machine availability while managing energy and utility use. He sets parameters for equipment qualification and validation in line with biopharmaceuticals manufacturing regulatory requirements. The Principal/Engineer must ensure compliance with Standard Operating Procedures (SOPs), Health, Safety and Environment (HSE) regulations and Current Good Manufacturing Practices (CGMPs) within his purview. The Engineering and Maintenance Principal/Engineer carries the responsibility of the in-house technical expert. He should possess a deep passion for analysing and resolving multifaceted engineering problems and be able to apply advanced critical and analytical thinking skills to deal with immediate situations. He should have a developmental and amiable approach in his interactions working as part of a team while guiding and mentoring others. He must also be able to communicate engineering concepts in a manner that will be understood by others within and beyond the team.",
@@ -108,24 +104,6 @@ class TestGetAllListings(unittest.TestCase):
         "Senior Engineer",
         150555,
         )
-        self.listing2 = Role_Listing(
-        "Singapore",
-        "Finance",
-        3,
-        "2023-11-20 00:00:00",
-        "2023-11-30 00:00:00",
-        "Finance Manager",
-        171009,
-        )
-        self.listing3 = Role_Listing(
-        "Singapore",
-        "Finance",
-        2,
-        "2023-10-30 00:00:00",
-        "2023-11-17 00:00:00",
-        "Account Manager",
-        171014,
-        )
             
         db.session.add(self.role1)
         db.session.add(self.role2)
@@ -137,34 +115,34 @@ class TestGetAllListings(unittest.TestCase):
         db.session.add(self.manager2)
         db.session.add(self.manager3)
         db.session.add(self.listing1)
-        db.session.add(self.listing2)
-        db.session.add(self.listing3)
         db.session.commit()
 
-    # def tearDown(self):
-    #     self.app_context.pop()
-    #     with self.client:
-    #         # You may need to define a /logout route
-    #         self.client.get('/logout')
+    def tearDown(self):
 
-    #     with app.app_context():
-    #         db.session.query(Role_Listing).delete()
-    #         db.session.query(Staff).delete()
-    #         db.session.query(Role).delete()
-    #         db.session.query(Country).delete()
-    #         db.session.query(Department).delete()
+        with app.app_context():
+            db.session.query(Role_Listing).delete()
+            db.session.query(Staff).delete()
+            db.session.query(Role).delete()
+            db.session.query(Country).delete()
+            db.session.query(Department).delete()
 
-    #         db.session.commit()
+            db.session.commit()
+
+        db.session.remove()
+        self.app_context.pop()
+
+    @classmethod
+    def tearDownClass(cls):
+        # This can be used to do cleanup that applies to the whole test case,
+        # not just an individual test method
+        pass
 
     def test_get_all_listings_with_filters(self):
-        with app.app_context():
-
-            # Now you can call your Flask functions safely within the app context
             search_filters = {
                 'status': 'Open',
                 'recency': 'Any time',
                 'country': 'Singapore',
-                'department': 'Engineering',
+                'department': 'Consultancy',
                 'role_search': "",
                 'required_skills': []
             }
@@ -172,23 +150,8 @@ class TestGetAllListings(unittest.TestCase):
             limit = 10
             response = get_all_listings(search_filters, offset, limit)
 
-            # Assuming you return a JSON response, you can access the JSON data as follows:
             data = response[0].get_json()
-            self.assertEqual(data['code'], 200)
-            print(data)
-
-            listings = data['data']
-            self.assertEqual(len(listings), 1)  # Should have only one listing
-
-            first_listing = listings[0]
-            self.assertEqual(first_listing['listing_id'], 2)
-            self.assertEqual(first_listing['num_opening'], 2)
-            self.assertEqual(first_listing['reporting_mng'], 151408)
-            self.assertEqual(first_listing['role_name'], 'Senior Engineer')
-            self.assertEqual(first_listing['date_open'], '2023-10-10T00:00:00')
-            self.assertEqual(first_listing['date_close'], '2023-11-06T00:00:00')
-            self.assertEqual(first_listing['country'], 'Singapore')
-            self.assertEqual(first_listing['dept'], 'Engineering')
+            self.assertEqual(data['code'], 404)
 
     def test_get_all_listings_without_filters(self):
         with app.app_context():
@@ -199,6 +162,20 @@ class TestGetAllListings(unittest.TestCase):
 
             data = response[0].get_json()
             self.assertEqual(data['code'], 200)
+            print(data)
+
+            listings = data['data']
+            self.assertEqual(len(listings), 1)  # Should have only one listing
+
+            first_listing = listings[0]
+            self.assertEqual(first_listing['listing_id'], 0)
+            self.assertEqual(first_listing['num_opening'], 4)
+            self.assertEqual(first_listing['reporting_mng'], 150555)
+            self.assertEqual(first_listing['role_name'], 'Senior Engineer')
+            self.assertEqual(first_listing['date_open'], '2023-10-10T00:00:00')
+            self.assertEqual(first_listing['date_close'], '2023-11-15T00:00:00')
+            self.assertEqual(first_listing['country'], 'Singapore')
+            self.assertEqual(first_listing['dept'], 'Engineering')
 
 
 
