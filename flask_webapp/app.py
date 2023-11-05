@@ -2244,7 +2244,6 @@ def update_check_listing(id):
 
 
 @app.route("/create/check_listing_exist", methods=["POST"])
-# @login_required(allowed_roles=[1, 2, 3, 4])
 def check_listing():
     from db_config.models import Role_Listing
     # Get the JSON data from the request

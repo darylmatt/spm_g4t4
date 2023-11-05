@@ -10,16 +10,17 @@ from sqlalchemy.exc import IntegrityError
 
 
 class TestRoleSkillMatch(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = app
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(cls.app)
 
     def setUp(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
-        app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-        db.init_app(app)
-        self.app_context = app.app_context()
+        self.app_context = self.app.app_context()
         self.app_context.push()
+        self.client = self.app.test_client()
 
         self.staff_skills_data = [
         {
@@ -193,13 +194,11 @@ class TestRoleSkillMatch(unittest.TestCase):
 
     def test_match_skills(self):
         with self.app_context:
-            # Populating necessary data in the skill table first
             for skill_data in self.skills_data:
                 skill = Skill(**skill_data)
                 db.session.add(skill)
             db.session.commit()
 
-            # Add other necessary data
             db.session.add(self.manager)
             db.session.add(self.role)
             db.session.add(self.role_listing)
@@ -213,7 +212,6 @@ class TestRoleSkillMatch(unittest.TestCase):
             
         with self.client:
             with app.test_request_context():
-                # Simulate a logged-in staff member
                 with app.test_client() as c:
                     with c.session_transaction() as sess:
                         sess['Staff_ID'] = 140002
@@ -228,7 +226,6 @@ class TestRoleSkillMatch(unittest.TestCase):
                     self.assertIn("message", data)
                     self.assertIn("code", data)
 
-                    # Check if the response data has the expected keys
                     response_data = data["response_data"]
                     self.assertIn("listing_id", response_data)
                     self.assertIn("role_name", response_data)
@@ -248,7 +245,6 @@ class TestRoleSkillMatch(unittest.TestCase):
                     actual_message = data["message"]
                     self.assertEqual(actual_message, expected_message)
 
-                    # Check if the message is as expected
                     if not response_data["matched_skills"]:
                         self.assertEqual(data["message"], "You have no matching skills with this role!")
                     else:
@@ -270,18 +266,14 @@ class TestRoleSkillMatch(unittest.TestCase):
         
         with self.client:
             with app.test_request_context():
-                # Simulate a logged-in staff member
                 with app.test_client() as c:
                     with c.session_transaction() as sess:
-                        sess['Staff_ID'] = 140002  # Replace with the appropriate staff ID
+                        sess['Staff_ID'] = 140002
 
-                    # Make a GET request to the skills route
                     response = c.get('/skills')
 
-                    # Assert that the response status code is 200
                     self.assertEqual(response.status_code, 200)
 
-                    # Assert that the response contains the expected data keys
                     data = json.loads(response.data)
                     self.assertIn('code', data)
                     self.assertIn('data', data)
