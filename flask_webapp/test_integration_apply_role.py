@@ -23,7 +23,7 @@ class TestApplyRole(unittest.TestCase):
     def test_apply_role(self):
         # Define your test data
         test_data = {
-            "listing_id": 17
+            "listing_id": 21
         }
 
         with self.client.session_transaction() as sess:
@@ -33,7 +33,7 @@ class TestApplyRole(unittest.TestCase):
         headers = {"Content-Type": "application/json"}
 
         # Make a POST request to the route with test data
-        response = self.client.post('/apply_role/17', data=json.dumps(test_data), headers=headers, follow_redirects=True)
+        response = self.client.post('/apply_role/21', data=json.dumps(test_data), headers=headers, follow_redirects=True)
 
         # Check the response status code
         self.assertEqual(
