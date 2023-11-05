@@ -5,7 +5,7 @@ from db_config.models import *  # Import your Role_Listing model
 import json
 import os
 from decouple import config
-from app_factory import create_app
+from flask_webapp.app_factory import create_app
 
 
 class TestCreateRole(unittest.TestCase):
@@ -50,8 +50,6 @@ class TestCreateRole(unittest.TestCase):
             reporting_mng=180012,
         )
 
-    
-                
 
     def tearDown(self):
         with app.app_context():
