@@ -8,6 +8,7 @@ class TestApplyRole(unittest.TestCase):
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
+        self.application_id = None
 
     def tearDown(self):
         # Clean up: Delete the application created in the test
