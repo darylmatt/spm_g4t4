@@ -1,25 +1,24 @@
 import unittest
-from app import app  # Import your Flask app and db
-from db_config.db import db
+from app import app, db  # Import your Flask app and db
 from db_config.models import *  # Import your Role_Listing model
 import json
-import os
+
 from decouple import config
-from app_factory import create_app
 
 
 class TestEditListing(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = app
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(cls.app)
+
     def setUp(self):
-        app.config["TESTING"] = True
-        self.client = app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
 
-        test_database_url = config("TEST_DATABASE_URL")
-        print("Test Database URL:", test_database_url)
-
-        app.config["SQLALCHEMY_DATABASE_URI"] = test_database_url
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-        db.init_app(app)
 
         self.app = app.test_client()
 
