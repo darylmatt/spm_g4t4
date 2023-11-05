@@ -7,15 +7,17 @@ from decouple import config
 
 
 class TestApplyRole(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = app
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(cls.app)
+
     def setUp(self):
-
-        app.config["TESTING"] = True
-        self.client = app.test_client()
-        app.config["SQLALCHEMY_DATABASE_URI"] = config("TEST_DATABASE_URL")
-
-        app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-        db.init_app(app)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
 
         self.role1 = Role(
             "Finance Manager",
@@ -106,57 +108,81 @@ class TestApplyRole(unittest.TestCase):
 
         # You can add more assertions to check the response data or database state if needed
 
-    # def test_apply_existing_role(self):
-    #     # Create a test Role_Listing
-    #     with app.app_context():
-    #         db.session.add(self.role1)
-    #         db.session.add(self.manager1)
-    #         db.session.add(self.staff)
-    #         db.session.add(self.listing)
-    #         db.session.add(self.existing_application)
+    def test_apply_existing_role(self):
+        # Create a test Role_Listing
+        with app.app_context():
+            db.session.add(self.role1)
+            db.session.add(self.manager1)
+            db.session.add(self.staff)
+            db.session.add(self.listing)
+            db.session.add(self.existing_application)
     
-    #         db.session.commit()
+            db.session.commit()
         
 
-    #     with self.client.session_transaction() as sess:
-    #         sess["Staff_ID"] = 140002
-    #         sess["Role"] = 2
+        with self.client.session_transaction() as sess:
+            sess["Staff_ID"] = 140002
+            sess["Role"] = 2
 
-    #     new_data = {"listing_id": 0}
+        new_data = {"listing_id": 0}
 
-    #     response = self.client.post("/apply_role/0")
-    #     print(response)
-    #     data = json.loads(response.data)
+        response = self.client.post("/apply_role/0")
+        print(response)
+        data = json.loads(response.data)
 
-    #     self.assertEqual(
-    #         response.status_code, 400
-    #     )  # Check if the response status code is 201 (Created)
+        self.assertEqual(
+            response.status_code, 400
+        )  # Check if the response status code is 201 (Created)
 
-    # def test_apply_closed_role(self):
-    #     # Create a test Role_Listing
-    #     with app.app_context():
-    #         db.session.add(self.role2)
-    #         db.session.add(self.manager1)
-    #         db.session.add(self.staff)
-    #         db.session.add(self.closed_listing)
+    def test_apply_closed_role(self):
+        # Create a test Role_Listing
+        with app.app_context():
+            db.session.add(self.role2)
+            db.session.add(self.manager1)
+            db.session.add(self.staff)
+            db.session.add(self.closed_listing)
     
-    #         db.session.commit()
+            db.session.commit()
         
 
-    #     with self.client.session_transaction() as sess:
-    #         sess["Staff_ID"] = 140002
-    #         sess["Role"] = 2
+        with self.client.session_transaction() as sess:
+            sess["Staff_ID"] = 140002
+            sess["Role"] = 2
 
-    #     new_data = {"listing_id": 0}
+        new_data = {"listing_id": 0}
 
-    #     response = self.client.post("/apply_role/0")
-    #     print(response)
-    #     data = json.loads(response.data)
+        response = self.client.post("/apply_role/0")
+        print(response)
+        data = json.loads(response.data)
 
-    #     self.assertEqual(
-    #         response.status_code, 411
-    #     )  # Check if the response status code is 201 (Created)
+        self.assertEqual(
+            response.status_code, 411
+        )  # Check if the response status code is 201 (Created)
 
+    def test_apply_closed_role(self):
+        # Create a test Role_Listing
+        with app.app_context():
+            db.session.add(self.role2)
+            db.session.add(self.manager1)
+            db.session.add(self.staff)
+            db.session.add(self.closed_listing)
+    
+            db.session.commit()
+        
+
+        with self.client.session_transaction() as sess:
+            sess["Staff_ID"] = 140002
+            sess["Role"] = 2
+
+        new_data = {"listing_id": 0}
+
+        response = self.client.post("/apply_role/0")
+        print(response)
+        data = json.loads(response.data)
+
+        self.assertEqual(
+            response.status_code, 411
+        )  # Check if the response status code is 201 (Created)
 
 
 if __name__ == "__main__":
