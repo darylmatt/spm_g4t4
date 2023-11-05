@@ -21,26 +21,6 @@ app = Flask(__name__)
 
 # Session settings
 app.secret_key = config("SECRET_KEY")
-# user_ids = ['140002', '160008']
-# user_dict = {'140002': {
-#                 'Staff_ID': '140002',
-#                 'Role' : 2,
-#                 'Staff_FName': 'Susan',
-#                 'Staff_LName': 'Goh',
-#                 'Dept': 'Sales',
-#                 'Country': 'Singapore',
-#                 'Email': 'Susan.Goh@allinone.com.sg'
-#             },
-
-#             '160008': {
-#                 'Staff_ID': '160008',
-#                 'Role' : 4,
-#                 'Staff_FName': 'Sally',
-#                 'Staff_LName': 'Loh',
-#                 'Dept': 'HR',
-#                 'Country': 'Singapore',
-#                 'Email': 'Sally.Loh@allinone.com.sg'
-#             }}
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URL")
@@ -2269,7 +2249,7 @@ def update_check_listing(id):
 
 
 @app.route("/create/check_listing_exist", methods=["POST"])
-@login_required(allowed_roles=[1, 2, 3, 4])
+# @login_required(allowed_roles=[1, 2, 3, 4])
 def check_listing():
     # Get the JSON data from the request
     json_data = request.get_json()
