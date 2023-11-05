@@ -28,6 +28,8 @@ jobs:
     - name: Set up environment variables
       env:
         SECRET_KEY: Our_secret_key
+        DATABASE_URL: DATABASE_URL=mysql+mysqlconnector://g4t4:password@spm-g4t4-live.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_new SECRET_KEY=Our_secret_key TEST_DATABASE_URL = mysql+mysqlconnector://g4t4:password@spm-g4t4-live.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test
+
       run: |
         echo "SECRET_KEY=$SECRET_KEY" >> .env
     - name: Lint with flake8
