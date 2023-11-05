@@ -73,11 +73,7 @@ class TestCreateRole(unittest.TestCase):
                     "manager": 180012,
                     "vacancy": 4}
         
-        response = self.app.post("/create/check_listing_exist", json=new_data)
-
-        print(response)
-        data = json.loads(response.data)
-        print(response.status_code)
+        response = self.client.post("/create/check_listing_exist", json=new_data)
 
         self.assertEqual(
             response.status_code, 201
@@ -104,10 +100,7 @@ class TestCreateRole(unittest.TestCase):
                         "manager": 180012,
                         "vacancy": 2}
             
-            response = self.app.post("/create/check_listing_exist", json=new_data)
-
-            print(response)
-            data = json.loads(response.data)
+            response = self.client.post("/create/check_listing_exist", json=new_data)
 
             self.assertEqual(
                 response.status_code, 400
