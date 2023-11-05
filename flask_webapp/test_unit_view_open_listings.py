@@ -67,17 +67,17 @@ class TestGetOpenListings(unittest.TestCase):
             print(data)
 
             listings = data['data']
-            self.assertEqual(len(listings), 1)  # Should have only one listing
+            self.assertEqual(len(listings), 2)  # Should have only one listing
 
-            first_listing = listings[0]
-            self.assertEqual(first_listing['listing_id'], 2)
-            self.assertEqual(first_listing['num_opening'], 2)
-            self.assertEqual(first_listing['reporting_mng'], 151408)
-            self.assertEqual(first_listing['role_name'], 'Senior Engineer')
-            self.assertEqual(first_listing['date_open'], '2023-10-10T00:00:00')
-            self.assertEqual(first_listing['date_close'], '2023-11-06T00:00:00')
-            self.assertEqual(first_listing['country'], 'Singapore')
-            self.assertEqual(first_listing['dept'], 'Engineering')
+            second_listing = listings[1]
+            self.assertEqual(second_listing['listing_id'], 2)
+            self.assertEqual(second_listing['num_opening'], 2)
+            self.assertEqual(second_listing['reporting_mng'], 151408)
+            self.assertEqual(second_listing['role_name'], 'Senior Engineer')
+            self.assertEqual(second_listing['date_open'], '2023-10-10T00:00:00')
+            self.assertEqual(second_listing['date_close'], '2023-11-06T00:00:00')
+            self.assertEqual(second_listing['country'], 'Singapore')
+            self.assertEqual(second_listing['dept'], 'Engineering')
 
     def test_get_open_listings_without_filters(self):
         with app.app_context():

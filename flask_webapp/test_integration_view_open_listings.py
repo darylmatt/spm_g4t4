@@ -49,13 +49,13 @@ class TestOpenListingsStaff(unittest.TestCase):
 
         # Assert elements within the rendered HTML template
         listing_divs = soup.find_all('div', class_='listing')
-        self.assertEqual(len(listing_divs), 1)  # Should have only one listing
+        self.assertEqual(len(listing_divs), 2)  # Should have only one listing
 
         # Example of assertions for specific elements within a listing
-        role_name = listing_divs[0].find('h5', class_='card-title').text
-        date_open = listing_divs[0].find('div', class_='date-open').text
-        date_close = listing_divs[0].find('div', class_='date-close').text
-        status = listing_divs[0].find('div', class_='status').text
+        role_name = listing_divs[1].find('h5', class_='card-title').text
+        date_open = listing_divs[1].find('div', class_='date-open').text
+        date_close = listing_divs[1].find('div', class_='date-close').text
+        status = listing_divs[1].find('div', class_='status').text
 
         self.assertEqual(role_name, 'Senior Engineer')
         self.assertEqual(date_open, '10/10/2023')

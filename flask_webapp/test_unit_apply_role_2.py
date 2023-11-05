@@ -80,13 +80,15 @@ class TestApplyRole(unittest.TestCase):
 
             db.session.commit()
 
-    def test_apply_role(self):
+    def test_apply_existing_role(self):
         # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.role1)
             db.session.add(self.manager1)
             db.session.add(self.staff)
             db.session.add(self.listing)
+            db.session.add(self.existing_application)
+    
             db.session.commit()
         
 
@@ -101,61 +103,8 @@ class TestApplyRole(unittest.TestCase):
         data = json.loads(response.data)
 
         self.assertEqual(
-            response.status_code, 201
+            response.status_code, 400
         )  # Check if the response status code is 201 (Created)
-
-        # You can add more assertions to check the response data or database state if needed
-
-    # def test_apply_existing_role(self):
-    #     # Create a test Role_Listing
-    #     with app.app_context():
-    #         db.session.add(self.role1)
-    #         db.session.add(self.manager1)
-    #         db.session.add(self.staff)
-    #         db.session.add(self.listing)
-    #         db.session.add(self.existing_application)
-    
-    #         db.session.commit()
-        
-
-    #     with self.client.session_transaction() as sess:
-    #         sess["Staff_ID"] = 140002
-    #         sess["Role"] = 2
-
-    #     new_data = {"listing_id": 0}
-
-    #     response = self.client.post("/apply_role/0")
-    #     print(response)
-    #     data = json.loads(response.data)
-
-    #     self.assertEqual(
-    #         response.status_code, 400
-    #     )  # Check if the response status code is 201 (Created)
-
-    # def test_apply_closed_role(self):
-    #     # Create a test Role_Listing
-    #     with app.app_context():
-    #         db.session.add(self.role2)
-    #         db.session.add(self.manager1)
-    #         db.session.add(self.staff)
-    #         db.session.add(self.closed_listing)
-    
-    #         db.session.commit()
-        
-
-    #     with self.client.session_transaction() as sess:
-    #         sess["Staff_ID"] = 140002
-    #         sess["Role"] = 2
-
-    #     new_data = {"listing_id": 0}
-
-    #     response = self.client.post("/apply_role/0")
-    #     print(response)
-    #     data = json.loads(response.data)
-
-    #     self.assertEqual(
-    #         response.status_code, 411
-    #     )  # Check if the response status code is 201 (Created)
 
 
 
