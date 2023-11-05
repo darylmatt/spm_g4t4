@@ -44,8 +44,9 @@ jobs:
       run: |
         python flask_webapp/test_unit_edit_listing.py
         python flask_webapp/test_unit_create_role.py
-        python flask_webapp/test_unit_view_roleskill_match.py
         python flask_webapp/test_unit_apply_role.py
+        python flask_webapp/test_unit_view_roleskill_match.py
+        
         
 
         
