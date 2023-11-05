@@ -62,8 +62,8 @@ class TestCreateRole(unittest.TestCase):
     def test_create_role(self):
         # Create a test Role_Listing
         with app.app_context():
-            db.session.add(self.role1)
             db.session.add(self.manager1)
+            db.session.add(self.role1)
             db.session.commit()
         
 
