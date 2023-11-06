@@ -95,7 +95,7 @@ class TestGetAllListings(unittest.TestCase):
         "Engineering",
         4,
         "2023-10-10 00:00:00",
-        "2023-11-15 00:00:00",
+        "2024-11-15 00:00:00",
         "Senior Engineer",
         150555,
         )
@@ -177,7 +177,7 @@ class TestGetAllListings(unittest.TestCase):
             self.assertEqual(first_listing['reporting_mng'], 150555)
             self.assertEqual(first_listing['role_name'], 'Senior Engineer')
             self.assertEqual(first_listing['date_open'], '2023-10-10T00:00:00')
-            self.assertEqual(first_listing['date_close'], '2023-11-15T00:00:00')
+            self.assertEqual(first_listing['date_close'], '2024-11-15T00:00:00')
             self.assertEqual(first_listing['country'], 'Singapore')
             self.assertEqual(first_listing['dept'], 'Engineering')
 
