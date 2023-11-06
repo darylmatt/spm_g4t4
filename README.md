@@ -23,18 +23,14 @@ In this first release, we have rolled out the following features.
 10. **[Secondary]** As a staff member, I can cancel my application for an open role, so that I can withdraw my application in the case that I am no longer interested or I have already gotten another position.
 
 ## Executing the program
-
 1. Download the zip from this git repository https://github.com/darylmatt/spm_g4t4
 2. Unzip the folder and open the package in a text-editor of your choice (eg. VSCode)
-3. Ensure that Python and Pylance extensions are installed on your VSCode
+3. Ensure that Python and Pylance extensions are installed on your VSCode, and version 3.11 of Python is installed on your machine
 4. Navigate to flask_webapp folder and paste the provided .env file
 5. Install the corresponding dependencies in the terminal by calling the following commands
-   
-   i. ```bash pip install Flask```
-   ii. 
-   pip install flask-cors
-   pip install flask_sql_alchemy
-   pip install python-decouple
-   pip install my-sql-connector-python
-   
+   i. ```pip install Flask```
+   ii. ```pip install flask-cors```
+   iii. ```pip install flask_sql_alchemy```
+   iv. ```pip install python-decouple```
+   v. ``` pip install my-sql-connector-python```
 6. Run the app.py code in your terminal and access the webpage via http:localhost:5500
