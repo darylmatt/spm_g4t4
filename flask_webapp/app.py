@@ -1973,14 +1973,16 @@ def get_all_skills():
 def match_skills(listing_id):
     from db_config.models import Role_Listing
     from db_config.models import Role_Skill
-    from db_config.models import Role_Listing
     from db_config.models import Staff_Skill
     try:
         staff_id = session.get("Staff_ID")
         print(staff_id)
+        print(listing_id)
+        
         # Check if the role exists
-        role = Role_Listing.query.filter_by(listing_id=listing_id).first()
-        if not role:
+        role_listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
+        print(role_listing)
+        if not role_listing:
             return jsonify({"error": "Role does not exist.", "code": "404"}), 404
 
         # Retrieve the role_name using the listing_id
