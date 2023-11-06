@@ -34,11 +34,10 @@ In this first release, we have rolled out the following features.
 3. Ensure that Python and Pylance extensions are installed on your VSCode
 4. Navigate to the flask_webapp folder and paste the provided .env file
 5. Install the corresponding dependencies in the terminal by calling the following commands:
-
    - `pip install Flask`
    - `pip install flask-cors`
    - `pip install flask_sql_alchemy`
    - `pip install python-decouple`
    - `pip install my-sql-connector-python`
-
-6. Run the app.py code in your terminal and access the webpage via http://localhost:5500. You should be automatically redirected to the login page http://localhost:5500/login.
+6. Run the app.py file in your terminal using the command python `app.py`
+7. Access the portal via `http://localhost:5500` on a browser. You should be automatically redirected to the login page `http://localhost:5500/login`.
