@@ -1,15 +1,15 @@
-# All-In-One SBRP Portal [G4-T4]
+# All-In-One SBRP Portal [G4-T4] 🌐
 
-## About All-In-One SBRP Portal :rocket:
+## About All-In-One SBRP Portal
 
 The SBRP Portal serves as a tool for All-In-One staff to apply for open positions within the company.
 From the portal, staff members are able to see the skills they have acquired and how relevant their skills are to each role opening.
 
-## Features
+## Features :rocket:
 
 In this first release, we have rolled out the following features.
 
-### User Stories
+### User Stories 📖
 
 1. **[Core]** As a member of the HR team, I want to view all the role listings, so that I can see the roles listings that have been created.
 2. **[Core]** As a member of the HR team, I can add new open roles so that all staff members are aware of new open roles available.
@@ -27,7 +27,7 @@ In this first release, we have rolled out the following features.
 1. VSCode (or text-editor of your choice)
 2. Python Version 3.11
 
-## Executing the program
+## Executing the program ⚙️
 
 1. Download the zip from this git repository [GitHub Repo](https://github.com/darylmatt/spm_g4t4)
 2. Unzip the folder and open the package in VSCode
