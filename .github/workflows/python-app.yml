@@ -47,6 +47,8 @@ jobs:
         python flask_webapp/test_unit_create_role.py
         python flask_webapp/test_unit_apply_role.py
         python flask_webapp/test_unit_view_roleskill_match.py
+        python flask_webapp/test_unit_view_listings_HR.py
+        python flask_webapp/test_unit_view_open_listings.py
         
            
         
