@@ -56,7 +56,7 @@ class TestEditListing(unittest.TestCase):
 
     def tearDown(self):
         with app.app_context():
-            db.session.query(Role).delete(Role_Listing)
+            db.session.query(Role_Listing).delete() 
             db.session.query(Staff).delete() 
             db.session.query(Role).delete() 
 
