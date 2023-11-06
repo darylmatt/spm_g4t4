@@ -39,5 +39,5 @@ In this first release, we have rolled out the following features.
    - `pip install flask_sql_alchemy`
    - `pip install python-decouple`
    - `pip install my-sql-connector-python`
-6. Run the app.py file in your terminal using the command python `app.py`
+6. Run the app.py file in your terminal using the command `python app.py`
 7. Access the portal via `http://localhost:5500` on a browser. You should be automatically redirected to the login page `http://localhost:5500/login`.
