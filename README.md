@@ -40,7 +40,7 @@ In this first release, we have rolled out the following features.
    To access our application as a staff member:
    - ID:  140002
    - Name: Susan Goh
-   - 
+     
    To access our application as a HR staff:
    - ID:  160008
    - Name: Sally Loh
