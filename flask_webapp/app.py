@@ -97,8 +97,7 @@ def calculate_num_listings(search):
         return result
     else:
         if search:
-            print("there is input search")
-            print(search)
+
             role_name = search["role_search"]
             recency = search["recency"]
             country = search["country"]
@@ -552,42 +551,11 @@ def all_listings_staff(page):
             session_country = session.get("country")
             session_department = session.get("department")
             session_required_skills = session.get("required_skills")
-
-            print(f"session_role_search: {session_role_search}")
-            print(f"session_recency: {session_recency}")
-            print(f"session_country: {session_country}")
-            print(f"session_department: {session_department}")
-            print(f"session_required_skills: {session_required_skills}")
-
-            print(session_role_search)
-            print(session_recency)
-            print(session_country)
-            print(session_department)
-            print(session_required_skills)
-            print(pages_required)
-            print(page)
-
-            # countries_response = requests.get('http://127.0.0.1:5500/get_all_countries')
-            # print("debug7")
-            # if countries_response.status_code == 200:
-            #     countries_data = countries_response.json()
-            #     countries = countries_data.get("countries")
-
-            # departments_response = requests.get('http://127.0.0.1:5500/get_all_departments')
-            # if departments_response.status_code == 200:
-            #     departments_data = departments_response.json()
-            #     departments = departments_data.get("departments")
-
-            # skills_response = requests.get('http://127.0.0.1:5500/get_all_skills')
-            # if skills_response.status_code == 200:
-            #     skills_data = skills_response.json()
-            #     skills = skills_data.get("skills")
         
             if offset_end >= num_open_listings:
                 print("offset_end greater than total")
                 offset_end = num_open_listings
 
-            print("reached here")
             return render_template(
                 "all_listings_staff.html",
                 num_results="0",
@@ -619,19 +587,16 @@ def get_all_open_role_listings(search, offset, limit):
     try:
         # Scenario where there is input search & filter
         if search:
-            print("there is input search")
-            print(search)
+         
             role_name = search["role_search"]
             recency = search["recency"]
             country = search["country"]
             department = search["department"]
             required_skills = search["required_skills"]
-            print(department)
-            print(required_skills)
-            print("test here")
+        
 
             current_time = datetime.now()
-            print("checkpoint1")
+        
             base_query = Role_Listing.query.filter(
                 and_(
                     Role_Listing.date_open <= current_time,
@@ -639,47 +604,34 @@ def get_all_open_role_listings(search, offset, limit):
                     Role_Listing.num_opening > 0,
                 )
             ).order_by(desc(Role_Listing.date_open))
-            print("checkpoint2")
-            print(base_query.all())
-            print("checkpoint3")
+    
             if role_name:
-                print("filtering by name")
-                # Setting a similarity threshold for search and role matching
-                # Set a threshold for matching similarity
+      
                 base_query = base_query.filter(
                     Role_Listing.role_name.like(f"%{role_name}%")
                 )
 
             if department != "Department":
-                print("filtering by department")
+
                 base_query = base_query.filter(Role_Listing.dept == department)
 
-            print(base_query.all())
 
             if country != "Country":
-                print("Filtering by country")
+
                 base_query = base_query.filter(Role_Listing.country == country)
 
-            print(base_query.all())
-
             if recency != "Any time":
-                print("Filtering by recency")
                 if recency == "Past 24 hours":
-                    print("Filtering by past 24 hours")
                     base_query = base_query.filter(
                         Role_Listing.date_open >= current_time - timedelta(days=1)
                     )
                 elif recency == "Past week":
-                    print("Filtering by past week")
-                    print(Role_Listing.date_open)
-                    print(current_time)
-                    print(current_time - timedelta(days=7))
-                    print(Role_Listing.date_open >= current_time - timedelta(days=7))
+
                     base_query = base_query.filter(
                         Role_Listing.date_open >= current_time - timedelta(days=7)
                     )
                 elif recency == "Past month":
-                    print("Filtering by past month")
+
                     base_query = base_query.filter(
                         Role_Listing.date_open >= current_time - timedelta(days=30)
                     )
@@ -698,13 +650,12 @@ def get_all_open_role_listings(search, offset, limit):
                     pass
                     """
 
-            print(base_query.all())
 
             role_listings = base_query.all()
-            print("testxxx")
+ 
             print(len(role_listings))
             if len(required_skills) > 0:
-                print("yes")
+       
                 filtered_role_listings = []
                 for listing in role_listings:
                     skills_required_json = get_skills_required(listing.role_name)
@@ -731,7 +682,7 @@ def get_all_open_role_listings(search, offset, limit):
                     200,
                 )
             else:
-                print("no such listing")
+      
                 return (
                     jsonify({"code": 404, "data": "There are no role listings",}),
                     404,
@@ -739,11 +690,7 @@ def get_all_open_role_listings(search, offset, limit):
 
         # Scenario where there isn't input search & filter
         else:
-            print("there is no input search")
-            print("debug4")
-
-            print(f"Requested offset: {offset}")
-            print(f"Requested limit: {limit}")
+       
 
             current_time = datetime.now()
             role_listings = (
@@ -761,10 +708,9 @@ def get_all_open_role_listings(search, offset, limit):
                 .all()
             )
 
-            print("debug5")
-            print(len(role_listings))
+
             if len(role_listings) > 0:
-                print(len(role_listings))
+               
                 return (
                     jsonify(
                         {
@@ -779,7 +725,7 @@ def get_all_open_role_listings(search, offset, limit):
 
     except Exception as e:
         db.session.rollback()
-        print(traceback.format_exc())
+      
         return jsonify({"code": 500, "data": str(e)}), 500
 
 
@@ -789,7 +735,7 @@ def calculate_pages_required_all_HR(search):
     if search == None:
         listings_per_page = 8
         role_listings = Role_Listing.query.all()
-        print(role_listings)
+ 
         num_role_listings = len(role_listings)
 
         pages_required = (
@@ -818,7 +764,7 @@ def calculate_pages_required_all_HR(search):
         current_time = datetime.now()
 
         if status != "Status":
-            print("Filtering by status")
+       
             if status == "Open":
                 base_query = Role_Listing.query.filter(
                     and_(
@@ -837,7 +783,7 @@ def calculate_pages_required_all_HR(search):
                 )
 
         if role_name:
-            print("filtering by name")
+    
             # Setting a similarity threshold for search and role matching
             # Set a threshold for matching similarity
             base_query = base_query.filter(
@@ -845,31 +791,27 @@ def calculate_pages_required_all_HR(search):
             )
 
         if department != "Department":
-            print("filtering by department")
+         
             base_query = base_query.filter(Role_Listing.dept == department)
 
         if country != "Country":
-            print("Filtering by country")
+      
             base_query = base_query.filter(Role_Listing.country == country)
 
         if recency != "Any time":
-            print("Filtering by recency")
+      
             if recency == "Past 24 hours":
-                print("Filtering by past 24 hours")
+             
                 base_query = base_query.filter(
                     Role_Listing.date_open >= current_time - timedelta(days=1)
                 )
             elif recency == "Past week":
-                print("Filtering by past week")
-                print(Role_Listing.date_open)
-                print(current_time)
-                print(current_time - timedelta(days=7))
-                print(Role_Listing.date_open >= current_time - timedelta(days=7))
+            
                 base_query = base_query.filter(
                     Role_Listing.date_open >= current_time - timedelta(days=7)
                 )
             elif recency == "Past month":
-                print("Filtering by past month")
+             
                 base_query = base_query.filter(
                     Role_Listing.date_open >= current_time - timedelta(days=30)
                 )
@@ -884,8 +826,7 @@ def calculate_pages_required_all_HR(search):
         pages_required = (
             num_role_listings + listings_per_page - 1
         ) // listings_per_page
-        print(num_role_listings)
-        print(pages_required)
+     
         return {
             "pages_required": pages_required,
             "num_role_listings": num_role_listings,
@@ -901,8 +842,6 @@ def get_all_listings_route():
     limit = data.get('limit', 8)
     return get_all_listings(search, offset, limit)
 
-# @app.route('/get_all_listings', methods=["GET"])
-# @login_required(allowed_roles=[3,4])
 def get_all_listings(search, offset, limit):
     from db_config.models import Role_Listing
     try:
@@ -1976,12 +1915,11 @@ def match_skills(listing_id):
     from db_config.models import Staff_Skill
     try:
         staff_id = session.get("Staff_ID")
-        print(staff_id)
-        print(listing_id)
+
         
         # Check if the role exists
         role_listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
-        print(role_listing)
+   
         if not role_listing:
             return jsonify({"error": "Role does not exist.", "code": "404"}), 404
 
@@ -2008,10 +1946,6 @@ def match_skills(listing_id):
             .all()
         )
 
-        # Debugging: Print the retrieved skills
-        print("Role Name:", role_name)
-        print("Role Skills:", role_skills)
-        print("Staff Skills:", staff_skills)
 
         # Calculate lacking skills
         lacking_skills = role_skills - staff_skills
@@ -2076,10 +2010,7 @@ def get_matching_skills(listing_id, staff_id):
             .all()
         )
 
-        # Debugging: Print the retrieved skills
-        print("Role Name:", role_name)
-        print("Role Skills:", role_skills)
-        print("Staff Skills:", staff_skills)
+
 
         # Calculate lacking skills
         lacking_skills = role_skills - staff_skills
@@ -2205,27 +2136,7 @@ def update_check_listing(id):
     manager = json_data["manager"]
     vacancy = json_data["vacancy"]
 
-    # Query database to see if a role listing like this exists
-
-    # matching_listings = Role_Listing.query.filter(
-    #     and_(Role_Listing.role_name == name,
-    #     Role_Listing.dept == department,
-    #     Role_Listing.country == country,
-    #     Role_Listing.date_close >= start_date,
-    #     Role_Listing.listing_id != id)
-    # ).all()
-
-    # if matching_listings:
-    #     # If matching listings are found, there are duplicates
-    #     print(matching_listings)
-    #     return jsonify({
-
-    #         "code":400,
-    #         "message": "Listing failed to update. There's an active listing."
-    #         }), 400
-
-    # else:
-    # Fetch current listing
+  
     currListing = Role_Listing.query.filter_by(listing_id=id).first()
 
     if not currListing:
@@ -2261,7 +2172,6 @@ def check_listing():
     from db_config.models import Role_Listing
     # Get the JSON data from the request
     json_data = request.get_json()
-    print(json_data)
 
     name = json_data["title"]
     department = json_data["department"]
@@ -2270,13 +2180,7 @@ def check_listing():
     end_date = json_data["endDate"]
     manager = json_data["manager"]
     vacancy = json_data["vacancy"]
-    # skills=json_data["skills"]
-    # desc = json_data["description"]
 
-    # print("Printing manager...")
-    # print(manager)
-
-    # Query database to see if a role listing like this exists
 
     matching_listings = Role_Listing.query.filter(
         and_(
@@ -2288,8 +2192,7 @@ def check_listing():
     ).all()
 
     if matching_listings:
-        # If matching listings are found, there are duplicates
-        print(matching_listings)
+    
         return (
             jsonify(
                 {
@@ -2353,20 +2256,6 @@ def get_listing(listing_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"code": 500, "error": str(e)}), 500
-
-
-# @app.route('/filtered_data', methods=["POST"])
-# @login_required(allowed_roles=[1, 4])
-# def filtered_data():
-#     country = request.form['country']
-#     department = request.form['department']
-
-#     # Use the selected country and department to filter data from the database
-#     # Perform the necessary filtering operations here
-
-#     # Return the filtered data as a JSON response
-#     return jsonify(filtered_data)
-
 
 if __name__ == "__main__":
     app.run(port=5500, debug=True)
