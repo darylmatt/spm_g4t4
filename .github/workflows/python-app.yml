@@ -44,6 +44,7 @@ jobs:
     - name: Run unit tests
       run: |
         python flask_webapp/test_unit_create_role.py
+        python flask_webapp/test_unit_apply_role.py
         
         
 
@@ -54,5 +55,6 @@ jobs:
 
     - name: Run integration tests
       run: |
+        python flask_webapp/test_integration_apply_role.py
         python flask_webapp/test_integration_role_skill_match.py
       
