@@ -24,16 +24,17 @@ In this first release, we have rolled out the following features.
 
 ## Executing the program
 
-1. Download the zip from the git repository https://github.com/darylmatt/spm_g4t4
+1. Download the zip from this git repository https://github.com/darylmatt/spm_g4t4
 2. Unzip the folder and open the package in a text-editor of your choice (eg. VSCode)
 3. Ensure that Python and Pylance extensions are installed on your VSCode
 4. Navigate to flask_webapp folder and paste the provided .env file
 5. Install the corresponding dependencies in the terminal by calling the following commands
-   ```bash
-   pip install Flask
+   
+   i. ```bash pip install Flask```
+   ii. 
    pip install flask-cors
    pip install flask_sql_alchemy
    pip install python-decouple
    pip install my-sql-connector-python
-   ```
+   
 6. Run the app.py code in your terminal and access the webpage via http:localhost:5500
