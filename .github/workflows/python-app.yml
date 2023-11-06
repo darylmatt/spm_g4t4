@@ -54,5 +54,5 @@ jobs:
 
     - name: Run integration tests
       run: |
-        python flask_webapp/test_integration_view_open_listings.py
+        python flask_webapp/test_integration_role_skill_match.py
       
