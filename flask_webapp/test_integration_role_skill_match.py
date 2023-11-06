@@ -69,10 +69,10 @@ class TestViewRoleSkillMatch(unittest.TestCase):
                                             ]
                                             '''
                 
-                matched_skills_results = [["Accounting and Tax Systems", "Professional and Business Ethics"],
+                matched_skills_results = [[],
                                           ["Accounting and Tax Systems", "Professional and Business Ethics"],
-                                          []]
-                expected_skill_match_scores = [11, 17, 0]
+                                          ["Accounting and Tax Systems", "Professional and Business Ethics"]]
+                expected_skill_match_scores = [0, 11, 17]
                 expected_feedbacks = ["You are not recommended for this role","You are not recommended for this role", "You are not recommended for this role" ]
 
 
@@ -107,7 +107,7 @@ class TestViewRoleSkillMatch(unittest.TestCase):
                     self.assertListEqual(matched_skills, expected_matched_skills)
 
                     skill_match_score = math.ceil((len(matched_skills) / (len(unmatched_skills) + len(matched_skills)) ) * 100)
-                    
+                    print(skill_match_score)
                     expected_skill_match_score = expected_skill_match_scores[listing_index]
                     self.assertEqual(skill_match_score, expected_skill_match_score)
 

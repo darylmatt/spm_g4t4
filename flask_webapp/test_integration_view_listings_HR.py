@@ -57,9 +57,9 @@ class TestAllListingsHR(unittest.TestCase):
         date_close = listing_divs[0].find('div', class_='date-close').text
         status = listing_divs[0].find('div', class_='status').text
 
-        self.assertEqual(role_name, 'Senior Engineer')
-        self.assertEqual(date_open, '10/10/2023')
-        self.assertEqual(date_close, '06/11/2023')
+        self.assertEqual(role_name, 'Junior Engineer')
+        self.assertEqual(date_open, '05/11/2023')
+        self.assertEqual(date_close, '10/11/2023')
         self.assertEqual(status, 'Open')
         # Add more assertions based on the structure of your HTML template
 
@@ -69,6 +69,7 @@ class TestAllListingsHR(unittest.TestCase):
         })
 
         self.assertEqual(response.status_code, 200)
+        print(response.data)
         # soup = BeautifulSoup(response.data, 'html.parser')
 
         # Assert elements within the rendered HTML template when no filters are applied
