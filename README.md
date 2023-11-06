@@ -29,7 +29,7 @@ In this first release, we have rolled out the following features.
 
 ## Executing the program ⚙️
 
-1. Download the zip from this git repository [GitHub Repo](https://github.com/darylmatt/spm_g4t4)
+1. Download the zip file or clone the repository https://github.com/darylmatt/spm_g4t4
 2. Unzip the folder and open the package in VSCode
 3. Ensure that Python and Pylance extensions are installed on your VSCode
 4. Navigate to the flask_webapp folder and paste the provided .env file
