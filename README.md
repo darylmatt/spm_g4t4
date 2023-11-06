@@ -1,6 +1,6 @@
 # All-In-One SBRP Portal [G4-T4]
 
-## About All-In-One SBRP Portal
+## About All-In-One SBRP Portal :rocket:
 
 The SBRP Portal serves as a tool for All-In-One staff to apply for open positions within the company.
 From the portal, staff members are able to see the skills they have acquired and how relevant their skills are to each role opening.
@@ -22,7 +22,7 @@ In this first release, we have rolled out the following features.
 9. **[Secondary]** As a staff member, I can view my skills profile, so that I can conveniently get an overview of my current abilities at a glance.
 10. **[Secondary]** As a staff member, I can cancel my application for an open role, so that I can withdraw my application in the case that I am no longer interested or I have already gotten another position.
 
-## Required Software On Your Machine
+## Pre-Requisites
 
 1. VSCode (or text-editor of your choice)
 2. Python Version 3.11
