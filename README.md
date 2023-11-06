@@ -36,3 +36,11 @@ In this first release, we have rolled out the following features.
 5. Install the corresponding dependencies in the terminal by running the file `install_dependencies.py` in the terminal using the command `python install_dependencies.py`
 6. Run the app.py file in your terminal using the command `python app.py`
 7. Access the portal via `http://localhost:5500` on a browser. You should be automatically redirected to the login page `http://localhost:5500/login`.
+   To access our application as a staff member:
+   - ID:  140002
+   - Name: Susan Goh
+   To access our application as a HR staff:
+   - ID:  160008
+   - Name: Sally Loh
+  
+     
