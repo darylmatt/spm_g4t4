@@ -59,7 +59,7 @@ class TestAllListingsHR(unittest.TestCase):
 
         self.assertEqual(role_name, 'Junior Engineer')
         self.assertEqual(date_open, '05/11/2023')
-        self.assertEqual(date_close, '10/11/2023')
+        self.assertEqual(date_close, '10/11/2024')
         self.assertEqual(status, 'Open')
         # Add more assertions based on the structure of your HTML template
 
