@@ -1,12 +1,9 @@
-import json
 import unittest
-from flask import Flask, session, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from app import app
-from db_config.models import *
+from app import app, db  # Import your Flask app and db
+from db_config.models import *  # Import your Role_Listing model
+import json
+
 from decouple import config
-from db_config.db import db
-from sqlalchemy.exc import IntegrityError
 
 
 class TestRoleSkillMatch(unittest.TestCase):
@@ -197,7 +194,6 @@ class TestRoleSkillMatch(unittest.TestCase):
             for skill_data in self.skills_data:
                 skill = Skill(**skill_data)
                 db.session.add(skill)
-            db.session.commit()
 
             db.session.add(self.manager)
             db.session.add(self.role)
@@ -209,46 +205,45 @@ class TestRoleSkillMatch(unittest.TestCase):
                 staff_skill = Staff_Skill(**staff_skill_data)
                 db.session.add(staff_skill)
             db.session.commit()
-            
-        with self.client:
-            with app.test_request_context():
-                with app.test_client() as c:
-                    with c.session_transaction() as sess:
-                        sess['Staff_ID'] = 140002
+            print(f"Role Listing ID: {self.role_listing.listing_id}")
 
-                    response = c.get(f'/match_skills/0')
-                    print(response.data)
-                    data = response.get_json()
+            with self.client as c:
+            # Set up session data within the context of the test client
+                with c.session_transaction() as sess:
+                    sess['Staff_ID'] = 140002 
 
-                    self.assertEqual(response.status_code, 200)
+                response = c.get(f'/match_skills/0')
+                print(response.data)
+                data = response.get_json()
+                self.assertEqual(response.status_code, 200)
 
-                    self.assertIn("response_data", data)
-                    self.assertIn("message", data)
-                    self.assertIn("code", data)
+                self.assertIn("response_data", data)
+                self.assertIn("message", data)
+                self.assertIn("code", data)
 
-                    response_data = data["response_data"]
-                    self.assertIn("listing_id", response_data)
-                    self.assertIn("role_name", response_data)
-                    self.assertIn("staff_id", response_data)
-                    self.assertIn("matched_skills", response_data)
-                    self.assertIn("lacking_skills", response_data)
+                response_data = data["response_data"]
+                self.assertIn("listing_id", response_data)
+                self.assertIn("role_name", response_data)
+                self.assertIn("staff_id", response_data)
+                self.assertIn("matched_skills", response_data)
+                self.assertIn("lacking_skills", response_data)
 
-                    print("Staff Skills:")
-                    for staff_skill in self.staff.staff_skills:
-                        print(f"Skill Name: {staff_skill.skill_name}")
+                print("Staff Skills:")
+                for staff_skill in self.staff.staff_skills:
+                    print(f"Skill Name: {staff_skill.skill_name}")
 
-                    print("\nRole Skills:")
-                    for role_skill in self.role_skills:
-                        print(f"Skill Name: {role_skill.skill_name}")
+                print("\nRole Skills:")
+                for role_skill in self.role_skills:
+                    print(f"Skill Name: {role_skill.skill_name}")
 
-                    expected_message = "You have matching skills with this role!"
-                    actual_message = data["message"]
-                    self.assertEqual(actual_message, expected_message)
+                expected_message = "You have matching skills with this role!"
+                actual_message = data["message"]
+                self.assertEqual(actual_message, expected_message)
 
-                    if not response_data["matched_skills"]:
-                        self.assertEqual(data["message"], "You have no matching skills with this role!")
-                    else:
-                        self.assertEqual(data["message"], "You have matching skills with this role!")
+                if not response_data["matched_skills"]:
+                    self.assertEqual(data["message"], "You have no matching skills with this role!")
+                else:
+                    self.assertEqual(data["message"], "You have matching skills with this role!")
 
     def test_get_skills(self):
         with self.app_context:
