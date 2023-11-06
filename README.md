@@ -45,4 +45,6 @@ In this first release, we have rolled out the following features.
    - ID:  160008
    - Name: Sally Loh
   
+   You can access the portal using any other ID that belongs to a staff or a HR member in the database.
+  
      
