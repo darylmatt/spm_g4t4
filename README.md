@@ -32,7 +32,7 @@ In this first release, we have rolled out the following features.
 1. Download the zip file or clone the repository https://github.com/darylmatt/spm_g4t4
 2. Unzip the folder and open the package in VSCode
 3. Ensure that Python and Pylance extensions are installed on your VSCode
-4. Navigate to the flask_webapp folder and paste the provided .env file
+4. Navigate to the flask_webapp folder and create an `.env` file, pasting the provided code.
 5. Install the corresponding dependencies in the terminal by running the file `install_dependencies.py` in the terminal using the command `python install_dependencies.py`
 6. Run the app.py file in your terminal using the command `python app.py`
 7. Access the portal via `http://localhost:5500` on a browser. You should be automatically redirected to the login page `http://localhost:5500/login`.
