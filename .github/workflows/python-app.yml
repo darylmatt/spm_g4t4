@@ -44,6 +44,7 @@ jobs:
     - name: Run unit tests
       run: |
         python flask_webapp/test_unit_edit_listing.py
+        python flask_webapp/test_unit_apply_role.py
         
         
 
