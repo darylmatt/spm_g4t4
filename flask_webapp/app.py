@@ -16,18 +16,29 @@ import traceback
 
 # from fuzzywuzzy import fuzz
 
-app = Flask(__name__)
+def create_app(test_config=None):
+    # Create the Flask application
+    app = Flask(__name__)
 
+    # Configure the application
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.secret_key = config("SECRET_KEY")
 
-# Session settings
-app.secret_key = config("SECRET_KEY")
+    if test_config is not None:
+        # Load the test config if passed in
+        app.config.update(test_config)
+    else:
+        # Otherwise, load the config from the environment variable
+        app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URL")
 
+    # Initialize plugins
+    db.init_app(app)
+    
+    # Additional setup, such as registering blueprints, can go here
 
-app.config["SQLALCHEMY_DATABASE_URI"] = config("DATABASE_URL")
+    return app
 
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db.init_app(app)
+app = create_app()
 
 
 @app.route("/")

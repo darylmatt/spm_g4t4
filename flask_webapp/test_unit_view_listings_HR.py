@@ -1,33 +1,41 @@
-import json
 import unittest
-from app import app, get_all_listings  # Import your Flask app and db
+from app import create_app, get_all_listings  # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 from decouple import config
+from test_config import TestConfig
 
 class TestGetAllListings(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = app
-        cls.app.config['TESTING'] = True
-        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
-        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        cls.app = create_app(test_config=TestConfig.__dict__)
         db.init_app(cls.app)
 
     def setUp(self):
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
-        self.transaction = db.session.begin_nested()
 
-        with app.app_context():
-            db.session.query(Role_Listing).delete()
-            db.session.query(Staff).delete()
-            db.session.query(Role).delete()
-            db.session.query(Country).delete()
-            db.session.query(Department).delete()
+        # Replace the following with your session data
+        self.staff_id = 160008  # staff ID for Sally Loh HR Singapore
+        self.role = 4  # HR
+        self.staff_fname = "Sally"
+        self.staff_lname = "Loh"
+        self.staff_name = self.staff_fname + " " + self.staff_lname
+        self.dept = "HR"
+        self.country = "Singapore"
+        self.email = "Sally.Loh@allinone.com.sg"
 
-            db.session.commit()
+        with self.client:
+            with self.client.session_transaction() as sess:
+                sess['Staff_ID'] = self.staff_id
+                sess['Role'] = self.role
+                sess['Staff_Fname'] = self.staff_fname
+                sess['Staff_Lname'] = self.staff_lname
+                sess['Staff_Name'] = self.staff_name
+                sess['Dept'] = self.dept
+                sess['Country'] = self.country
+                sess['Email'] = self.email
 
         self.role1 = Role(
             "Senior Engineer",
@@ -91,11 +99,23 @@ class TestGetAllListings(unittest.TestCase):
         "Senior Engineer",
         150555,
         )
+
+        db.session.add(self.role1)
+        db.session.add(self.role2)
+        db.session.add(self.role3)
+        db.session.add(self.country1)
+        db.session.add(self.department1)
+        db.session.add(self.department2)
+        db.session.add(self.manager1)
+        db.session.add(self.manager2)
+        db.session.add(self.manager3)
+        db.session.add(self.listing1)
+        db.session.commit()
             
 
     def tearDown(self):
 
-        with app.app_context():
+        with self.app.app_context():
             db.session.query(Role_Listing).delete()
             db.session.query(Staff).delete()
             db.session.query(Role).delete()
@@ -104,63 +124,33 @@ class TestGetAllListings(unittest.TestCase):
 
             db.session.commit()
 
-        self.transaction.rollback()
         db.session.remove()
         self.app_context.pop()
 
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
     def test_get_all_listings_with_filters(self):
-        with app.app_context():
-            db.session.add(self.role1)
-            db.session.add(self.role2)
-            db.session.add(self.role3)
-            db.session.add(self.country1)
-            db.session.add(self.department1)
-            db.session.add(self.department2)
-            db.session.add(self.manager1)
-            db.session.add(self.manager2)
-            db.session.add(self.manager3)
-            db.session.add(self.listing1)
-            db.session.commit()
+        with self.app.app_context():
 
-        with self.client:
-            with self.client.session_transaction() as sess:
-                sess["Staff_ID"] = 160008
-                sess["Role"] = 4
+            search_filters = {
+                'status': 'Open',
+                'recency': 'Any time',
+                'country': 'Singapore',
+                'department': 'Consultancy',
+                'role_search': None,
+                'required_skills': []
+            }
+            offset = 0
+            limit = 10
+            response = get_all_listings(search_filters, offset, limit)
 
-        search_filters = {
-            'status': 'Open',
-            'recency': 'Any time',
-            'country': 'Singapore',
-            'department': 'Consultancy',
-            'role_search': None,
-            'required_skills': []
-        }
-        offset = 0
-        limit = 10
-        response = get_all_listings(search_filters, offset, limit)
-
-        data = response[0].get_json()
-        self.assertEqual(data['code'], 404)
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 404)
 
     def test_get_all_listings_without_filters(self):
-        with app.app_context():
-            db.session.add(self.role1)
-            db.session.add(self.role2)
-            db.session.add(self.role3)
-            db.session.add(self.country1)
-            db.session.add(self.department1)
-            db.session.add(self.department2)
-            db.session.add(self.manager1)
-            db.session.add(self.manager2)
-            db.session.add(self.manager3)
-            db.session.add(self.listing1)
-            db.session.commit()
-
-        with self.client:
-            with self.client.session_transaction() as sess:
-                sess["Staff_ID"] = 160008
-                sess["Role"] = 4
-
+        with self.app.app_context():
             search_filters = {
                 'status': 'Status',
                 'recency': 'Any time',
@@ -171,15 +161,10 @@ class TestGetAllListings(unittest.TestCase):
             }
             offset = 0
             limit = 8
-            test_data = {
-                'search': search_filters,
-                'offset': offset,
-                'limit': limit
-            }
-            response = self.client.get('/get_all_listings', json=test_data)
+            response = get_all_listings(search_filters, offset, limit)
 
-            data = response.get_json() 
-            self.assertEqual(response.status_code, 200)
+            data = response[0].get_json()
+            self.assertEqual(data['code'], 200)
             print(data)
 
             listings = data['data']

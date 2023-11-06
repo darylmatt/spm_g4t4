@@ -1,25 +1,17 @@
-import json
 import unittest
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from app import app, get_all_open_role_listings # Import your Flask app and db
+from app import create_app, get_all_open_role_listings # Import your Flask app and db
 from db_config.db import db
 from db_config.models import *  # Import your Role_Listing model
 from test_config import TestConfig  # Import your TestConfig
-from decouple import config
 
 class TestGetOpenListings(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.app = app
-        cls.app.config['SQLALCHEMY_DATABASE_URI'] = config('TEST_DATABASE_URL')
-        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        db.init_app(cls.app)
 
     def setUp(self):
+        self.app = create_app(test_config=TestConfig.__dict__)
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
+        db.init_app(self.app)
 
 
         # Replace the following with your session data
@@ -120,7 +112,7 @@ class TestGetOpenListings(unittest.TestCase):
         db.session.commit()
 
     def tearDown(self):
-        with app.app_context():
+        with self.app.app_context():
             db.session.query(Role_Listing).delete()
             db.session.query(Staff).delete()
             db.session.query(Role).delete()
@@ -132,18 +124,13 @@ class TestGetOpenListings(unittest.TestCase):
         db.session.remove()
         self.app_context.pop()
 
-    @classmethod
-    def tearDownClass(cls):
-        # This can be used to do cleanup that applies to the whole test case,
-        # not just an individual test method
-        pass
-
     def test_get_open_listings_with_filters(self):
+        with self.app.app_context():
             search_filters = {
                 'recency': 'Any time',
                 'country': 'Singapore',
                 'department': 'Consultancy',
-                'role_search': "",
+                'role_search': None,
                 'required_skills': []
             }
             offset = 0
@@ -155,7 +142,7 @@ class TestGetOpenListings(unittest.TestCase):
             self.assertEqual(data['code'], 404)
 
     def test_get_open_listings_without_filters(self):
-        with app.app_context():
+        with self.app.app_context():
             search_filters = {}
             offset = 0
             limit = 10
