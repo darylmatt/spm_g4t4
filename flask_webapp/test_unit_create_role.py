@@ -1,6 +1,6 @@
 import unittest
-from app import app, db  # Import your Flask app and db
-from db_config.models import *  # Import your Role_Listing model
+from app import app, db  
+from db_config.models import *  
 import json
 
 from decouple import config
@@ -54,7 +54,6 @@ class TestCreateRole(unittest.TestCase):
             db.session.commit()
 
     def test_create_role(self):
-        # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.manager1)
             db.session.add(self.role1)
@@ -80,7 +79,6 @@ class TestCreateRole(unittest.TestCase):
         ) 
 
     def test_create_overlap_existing(self):
-        # Create a test Role_Listing
             with app.app_context():
                 db.session.add(self.role1)
                 db.session.add(self.manager1)

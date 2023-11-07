@@ -1,6 +1,6 @@
 import unittest
-from app import app, db  # Import your Flask app and db
-from db_config.models import *  # Import your Role_Listing model
+from app import app, db  
+from db_config.models import *  
 import json
 
 from decouple import config
@@ -185,7 +185,6 @@ class TestRoleSkillMatch(unittest.TestCase):
                 db.session.query(Role).delete()
                 db.session.commit()
             except Exception as e:
-                print(f"An error occurred during the cleanup: {e}")
                 db.session.rollback()
                 raise
 
@@ -205,15 +204,12 @@ class TestRoleSkillMatch(unittest.TestCase):
                 staff_skill = Staff_Skill(**staff_skill_data)
                 db.session.add(staff_skill)
             db.session.commit()
-            print(f"Role Listing ID: {self.role_listing.listing_id}")
 
             with self.client as c:
-            # Set up session data within the context of the test client
                 with c.session_transaction() as sess:
                     sess['Staff_ID'] = 140002 
 
                 response = c.get(f'/match_skills/0')
-                print(response.data)
                 data = response.get_json()
                 self.assertEqual(response.status_code, 200)
 
@@ -227,14 +223,6 @@ class TestRoleSkillMatch(unittest.TestCase):
                 self.assertIn("staff_id", response_data)
                 self.assertIn("matched_skills", response_data)
                 self.assertIn("lacking_skills", response_data)
-
-                print("Staff Skills:")
-                for staff_skill in self.staff.staff_skills:
-                    print(f"Skill Name: {staff_skill.skill_name}")
-
-                print("\nRole Skills:")
-                for role_skill in self.role_skills:
-                    print(f"Skill Name: {role_skill.skill_name}")
 
                 expected_message = "You have matching skills with this role!"
                 actual_message = data["message"]

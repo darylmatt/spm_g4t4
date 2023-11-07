@@ -1,6 +1,6 @@
 import unittest
-from app import app, db  # Import your Flask app and db
-from db_config.models import *  # Import your Role_Listing model
+from app import app, db 
+from db_config.models import *  
 import json
 
 from decouple import config
@@ -104,12 +104,9 @@ class TestApplyRole(unittest.TestCase):
 
         self.assertEqual(
             response.status_code, 201
-        )  # Check if the response status code is 201 (Created)
-
-        # You can add more assertions to check the response data or database state if needed
+        ) 
 
     def test_apply_existing_role(self):
-        # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.role1)
             db.session.add(self.manager1)
@@ -132,10 +129,9 @@ class TestApplyRole(unittest.TestCase):
 
         self.assertEqual(
             response.status_code, 400
-        )  # Check if the response status code is 201 (Created)
+        ) 
 
     def test_apply_closed_role(self):
-        # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.role2)
             db.session.add(self.manager1)
@@ -157,7 +153,7 @@ class TestApplyRole(unittest.TestCase):
 
         self.assertEqual(
             response.status_code, 411
-        )  # Check if the response status code is 201 (Created)
+        ) 
 
 if __name__ == "__main__":
     unittest.main()
