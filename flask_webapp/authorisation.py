@@ -9,7 +9,6 @@ def login_required(allowed_roles=None):
                 return redirect(url_for('login'))
             
             if allowed_roles is None:
-                # No specific roles required, allow access
                 return func(*args, **kwargs)
             
             user_role = session.get('Role')

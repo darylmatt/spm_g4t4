@@ -13,7 +13,6 @@ class Role_Listing(db.Model):
     date_open= db.Column(db.DateTime,nullable=False)
     date_close= db.Column(db.DateTime,nullable=False)
 
-    # Foreign key relationship to role table
     role_name = db.Column(db.String(20), ForeignKey('role.role_name'), nullable=False, autoincrement=True)
     reporting_mng = db.Column(db.Integer, ForeignKey('staff.staff_id'), nullable=False)
     applications = db.relationship('Application', backref='role_listing')
@@ -33,8 +32,8 @@ class Role_Listing(db.Model):
             'country': self.country,
             'dept': self.dept,
             'num_opening': self.num_opening,
-            'date_open': self.date_open.isoformat(),  # Convert to ISO format for JSON
-            'date_close': self.date_close.isoformat(),  # Convert to ISO format for JSON
+            'date_open': self.date_open.isoformat(),
+            'date_close': self.date_close.isoformat(),
             'role_name': self.role_name,
             'reporting_mng': self.reporting_mng,
             'applications': [app.json() for app in self.applications]

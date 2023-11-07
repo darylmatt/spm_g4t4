@@ -13,6 +13,5 @@ def create_app(config_name):
 
     db.init_app(app)
 
-    # Import and register your blueprints, set up other configurations, etc.
 
     return app

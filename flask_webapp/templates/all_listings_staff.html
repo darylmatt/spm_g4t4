@@ -9,15 +9,12 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
   
-  <!-- Favicons -->
   <link href="static/assets/img/favicon.png" rel="icon">
   <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
@@ -26,20 +23,15 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
 
-    <!-- Include jQuery (required for Select2) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Include Select2 CSS and JS files -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
-
-  <!-- Template Main CSS File -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/style.css') }}">
 
   <style>
-       /* Add custom styling for the dropdown */
        .custom-dropdown {
             position: relative;
             display: inline-block;
@@ -52,7 +44,6 @@
             min-width: 300px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
-            /* Make options appear vertically */
             top: 100%;
             left: 0;
             max-height: 250px;
@@ -69,7 +60,7 @@
             background-color: #ddd;
         }
 
-        /* Style for the search input */
+
         .search-input {
             width: 100%;
             padding: 5px;
@@ -79,18 +70,12 @@
         }
 </style>
 
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Updated: Aug 30 2023 with Bootstrap v5.3.1
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+
 </head>
 
 <body>
 
-  <!-- ======= Header ======= -->
+
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -100,7 +85,7 @@
         <span class="d-none d-lg-block">SBRP</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
+    </div>
 
 
     <nav class="header-nav ms-auto">
@@ -110,10 +95,7 @@
           <a class="nav-link nav-icon search-bar-toggle " href="#">
             <i class="bi bi-search"></i>
           </a>
-        </li><!-- End Search Icon-->
-
- 
-
+        </li>
   
         <li class="nav-item dropdown pe-3">
 
@@ -124,7 +106,7 @@
             {% else %}
               Unknown
             {% endif %}</span>
-          </a><!-- End Profile Iamge Icon -->
+          </a>
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
@@ -152,15 +134,14 @@
               </a>
             </li>
 
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
+          </ul>
+        </li>
 
       </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
 
-  </header><!-- End Header -->
+  </header>
 
-  <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -182,8 +163,7 @@
           <span class="d-none d-md-block"> Access: Staff </span>
         </div>
 
-        
-      </a><!-- End Profile Image Icon -->
+      </a>
       
       <li class="nav-item">
        
@@ -210,18 +190,12 @@
             
             
           </ul>
-        </li><!-- End Components Nav -->
-      </li><!-- End Dashboard Nav -->
-
-      
-
-      
-
-     
+        </li>
+      </li>
 
     </ul>
 
-  </aside><!-- End Sidebar-->
+  </aside>
 
   <main id="main" class="main">
 
@@ -230,9 +204,8 @@
       <br>
       <h2>All Open Listings</h2>
       <nav>
-
       </nav>
-    </div><!-- End Page Title -->
+    </div>
 
     <section class="section dashboard">
       <form action="" method="post">
@@ -248,8 +221,6 @@
     
       <br>
       <div class="row">
-
-       
       
         <div class="col-md-2">
           <select id="inputState1" name="recency" class="form-select">
@@ -298,44 +269,35 @@
                   </div>
               </div>
           </div>
-      
-          <!-- Include Bootstrap and jQuery JS -->
+     
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
           <script>
               $(document).ready(function () {
-                  // Show/hide the custom dropdown when the button is clicked
                   $("#dropdownBtn").click(function () {
                       $("#dropdownContent").toggle();
                   });
       
-                  // Handle checkbox changes to update the button text
-                  $("#dropdownContent input[type='checkbox']").change(function () {
-                      // Uncomment the following line if you want to update the button text with selected options
+                  $("#dropdownContent input[type='checkbox']").change(function () {           
                        updateButtonText();
                   });
       
-                  // Handle search input
                   $("#searchInput").on("input", function () {
                       filterOptions();
                   });
       
-                  // Initial update of the option filter
                   filterOptions();
               });
       
-              // Function to update the button text based on selected checkboxes
               function updateButtonText() {
                   let selectedOptions = [];
                   $("#dropdownContent input[type='checkbox']:checked").each(function () {
                       selectedOptions.push($(this).val());
                   });
       
-                  // Update the button text with selected options
                   $("#dropdownBtn").text(selectedOptions.length > 0 ? selectedOptions.join(', ') : "Required Skills");
               }
       
-              // Function to filter options based on the search input
               function filterOptions() {
                   let searchText = $("#searchInput").val().toLowerCase();
                   $("#dropdownContent label").each(function () {
@@ -359,17 +321,10 @@
       
       <div class="row">
       <div class="col-lg-5">
-        <!-- News & Updates Traffic -->
         <div class="card">
-          
-
-    
-
 
           <div class="card-body pb-0" style="height: 850px;">
             <h5 class="card-title"> Search Results<span> | Showing {{offset}}-{{offset_end}} of {{num_role_listings}} results</span></h5>
-
-            
 
             <div class="news nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               {% if listings %}
@@ -384,7 +339,7 @@
                 {% endfor %}
               {% endif %}
 
-            </div><!-- End sidebar recent posts-->
+            </div>
 
           </div>
 
@@ -401,17 +356,15 @@
               </li>
             </ul>
           </nav>
-        </div><!-- End News & Updates -->
+        </div>
       </div>
 
 
       <div class="col-lg-7">
-        <!-- News & Updates Traffic -->
         <div class="card">
 
           {% if listings %}
           <div class="card-body pt-3">
-            <!-- Bordered Tabs -->
 
             <div class="d-flex align-items-start">
               <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -450,15 +403,10 @@
                 </div>
 
             <br>
-            <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}" >
-              Apply
-            </button> -->
             <button type="button" data-bs-toggle="modal" data-bs-target="#modal{{listing.listing_id}}" class="btn btn-primary apply-button" data-listing-id="{{listing.listing_id}}">
               Apply
             </button>
             
-
-
             <br>
             <br>
 <div class="card">
@@ -467,8 +415,6 @@
     <h6> {{listing.manager_name}} | <i>{{listing.manager_dept}}</i></h6>
   </div>
 </div>
-
-          <!-- Vertically centered Modal -->
 
 <div class="card">
   <div class="card-body">
@@ -491,22 +437,16 @@
   </div>
 </div>
 
-
-
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">Skill-match score</h5>
-
-    <!-- Progress Bars with labels-->
 
     <div class="progress mt-3">
       <div id="skillProgressBar-{{ listing.listing_id }}" class="progress-bar bg-warning" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 
-
     <br>
 
-    <!-- Inside the loop that iterates over listings -->
     <div class="row">
       <div class="col-lg-6">
         <h6> <b>Matched Skills:</b> </h6>
@@ -534,7 +474,7 @@
     <div class="row">
       <div class="col-lg-12">
         <h6> <b>Feedback:</b> </h6>
-        <div id="feedback-{{ listing.listing_id }}"></div> <!-- Added feedback div -->
+        <div id="feedback-{{ listing.listing_id }}"></div>
       </div>
     </div>
 
@@ -542,8 +482,6 @@
 
 </div>
 
-
-<!-- <div class="modal fade" id="verticalycentered" tabindex="-1"> -->
 <div class="modal fade" id="modal{{listing.listing_id}}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -561,23 +499,17 @@
       </div>
     </div>
   </div>
-</div>
-
-<!-- End Vertically centered Modal-->                
+</div>             
                 
                 <br>
-
                 <br>
-
 
               </div>
               {% endfor %}
               {% endif %}
-        
 
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
-                <!-- Profile Edit Form -->
                 <form>
                   <div class="row mb-3">
                     <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
@@ -677,13 +609,12 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                   </div>
-                </form><!-- End Profile Edit Form -->
+                </form>
 
               </div>
 
               <div class="tab-pane fade pt-3" id="profile-settings">
 
-                <!-- Settings Form -->
                 <form>
 
                   <div class="row mb-3">
@@ -719,12 +650,11 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                   </div>
-                </form><!-- End settings Form -->
+                </form>
 
               </div>
 
               <div class="tab-pane fade pt-3" id="profile-change-password">
-                <!-- Change Password Form -->
                 <form>
 
                   <div class="row mb-3">
@@ -751,30 +681,23 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Change Password</button>
                   </div>
-                </form><!-- End Change Password Form -->
+                </form>
 
               </div>
 
-            </div><!-- End Bordered Tabs -->
+            </div>
 
           </div>
         </div>
         {% endif %}
       </div>
-
-
-
-      
       
     </section>
 
-  </main><!-- End #main -->
-
-
+  </main>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  <!-- Vendor JS Files -->
   <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
@@ -784,50 +707,38 @@
   <script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/match_staff_skills.js') }}"></script>
-
-  <!-- Template Main JS File -->
   
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
   
   <script>
-    // Function to close the modal
     function closeModal(modalId) {
       var modal = document.getElementById(modalId);
       var bsModal = bootstrap.Modal.getInstance(modal);
       bsModal.hide();
     }
   
-    // Add event listener to the Confirm button
     document.querySelectorAll('.confirm-button').forEach(function(button) {
       button.addEventListener('click', function() {
         var listingId = this.getAttribute('data-listing-id');
-        // Close the modal
         closeModal('modal' + listingId);
-        // Perform other actions if needed
       });
     });
   </script>
 
 
-<!-- <script src="static/assets/js/match_staff_skills.js"></script> -->
 <script>
   $(document).ready(function () {
-    // Find all "Apply" buttons
     const applyButtons = $('.apply-button');
 
-    // Loop through each button to check and disable if necessary
     applyButtons.each(function () {
       const button = $(this);
       const listingId = button.data('listing-id');
 
-      // Send a request to check the application status
       $.get(`/check_application_status/${listingId}`, function (data) {
         console.log("Listing ID:", listingId);
         console.log("Application Status:", data.status);
         if (data.status === "Pending") {
-          // User has already applied, disable the button
           button.prop('disabled', true);
-          // Change button style to green with white text and update label to "Applied"
           button.removeClass('btn-primary').addClass('btn-success').text('Applied');
         }
       });
@@ -835,16 +746,12 @@
   });
 </script>
 
-
   <script>
     $(document).ready(function () {
-  // Add a click event listener to the parent container of the "Apply" buttons
   $('.tab-pane').on('click', '.confirm-button', function () {
-      // Get the listing ID associated with the clicked button
       const listingId = $(this).data('listing-id');
       console.log("listingId:", listingId)
 
-      // Send an HTTP POST request to apply for the role with the listingId
       fetch(`/apply_role/${listingId}`, {
           method: 'POST',
           headers: {
@@ -854,20 +761,15 @@
       })
       .then(response => {
           if (response.status === 201) {
-              // Application was submitted successfully
               alert('Application submitted successfully');
-              // You can also disable the "Apply" button here if needed
           } else if (response.status === 400) {
-              // User has already applied to this role
               return response.json();
           } else {
-              // Handle other response statuses (e.g., error cases)
               alert('Error submitting application');
           }
       })
       .then(data => {
           if (data && data.error) {
-              // Display the specific error message for "You have already applied"
               alert(data.error);
           }
       })
@@ -885,10 +787,6 @@
     var listingData = {{ listings | tojson | safe }};
   </script>
    {% endif %}
-
-
-  
-
 
 </body>
 

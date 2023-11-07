@@ -9,7 +9,6 @@ class Application(db.Model):
     status = db.Column(db.String(20), nullable = False)
     applied_date = db.Column(db.DateTime, nullable=False)
 
-    # Foreign attributes
     listing_id = db.Column(db.Integer, ForeignKey('role_listing.listing_id'))
     staff_id = db.Column(db.Integer, ForeignKey('staff.staff_id'))
 
