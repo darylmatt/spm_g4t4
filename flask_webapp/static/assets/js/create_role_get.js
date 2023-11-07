@@ -478,6 +478,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add a click event listener to the button
   backButton.addEventListener("click", function () {
-    window.location.href = "../../all_listings_HR";
+    window.location.href = "../../all_listings_HR/1";
   });
 });
