@@ -115,7 +115,6 @@ class TestViewRoleSkillMatch(unittest.TestCase):
                     #self.assertListEqual(matched_skills, expected_matched_skills)
 
                     skill_match_score = math.ceil((len(matched_skills) / (len(unmatched_skills) + len(matched_skills)) ) * 100)
-                    print(skill_match_score)
                     expected_skill_match_score = expected_skill_match_scores[listing_index]
                     self.assertEqual(skill_match_score, expected_skill_match_score)
 
