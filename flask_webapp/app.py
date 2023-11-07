@@ -1028,13 +1028,12 @@ def get_skills():
         from db_config.models import Skill
         staff_id = session.get("Staff_ID")
         # staff_id = 140002
-        # Check if staff exists
+
         staff = Staff.query.filter_by(staff_id=staff_id).first()
         print(staff)
         if not staff:
             return jsonify({"code": 404, "data": "Staff does not exist"}), 404
 
-        # Staff is found, get staff_skills
         staff_details = staff.json()
         staff_skills = staff_details.get("staff_skills", [])
 
@@ -1043,7 +1042,6 @@ def get_skills():
 
         skills = [skill.get("skill_name") for skill in staff_skills]
 
-        # Get skill description
         desc_list = [
             Skill.query.filter_by(skill_name=name).first().json().get("skill_desc", [])
             for name in skills
@@ -1916,21 +1914,17 @@ def match_skills(listing_id):
     try:
         staff_id = session.get("Staff_ID")
 
-        
-        # Check if the role exists
         role_listing = Role_Listing.query.filter_by(listing_id=listing_id).first()
    
         if not role_listing:
             return jsonify({"error": "Role does not exist.", "code": "404"}), 404
 
-        # Retrieve the role_name using the listing_id
         role_name = (
             db.session.query(Role_Listing.role_name)
             .filter_by(listing_id=listing_id)
             .scalar()
         )
 
-        # Retrieve the role's required skills
         role_skills = set(
             skill[0]
             for skill in db.session.query(Role_Skill.skill_name)
@@ -1938,7 +1932,6 @@ def match_skills(listing_id):
             .all()
         )
 
-        # Retrieve the staff's skills
         staff_skills = set(
             skill[0]
             for skill in db.session.query(Staff_Skill.skill_name)
@@ -1946,11 +1939,8 @@ def match_skills(listing_id):
             .all()
         )
 
-
-        # Calculate lacking skills
         lacking_skills = role_skills - staff_skills
 
-        # Perform skill matching logic
         matched_skills = staff_skills.intersection(role_skills)
 
         response_data = {
