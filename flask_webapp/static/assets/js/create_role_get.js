@@ -28,7 +28,6 @@ function checkFields() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Fetch data and populate dropdowns
   fetch("/create/get_data")
     .then((response) => response.json())
     .then((data) => {
@@ -69,26 +68,21 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("done");
     });
 
-  //Get all skills
-  //Get modal body
   skillSelectModal = document.getElementById("skillSelectModalBody");
 
-  // Default role-skill button
   defaultSkillBtn = document.getElementById("defaultSkillBtn");
   selected_skills = document.getElementById("selectedSkills");
   defaultSkillBtn.addEventListener("click", function () {
-    //Clear the selected skills
+
     selected_skills.innerHTML = "";
     get_default_skills();
   });
 
-  //Clear button
   clearBtn = document.getElementById("clearAllBtn");
   clearBtn.addEventListener("click", function () {
     selected_skills.innerHTML = "";
     has_skills = false;
 
-    //Change all checkboxes to unchecked
     var checkboxes = document
       .getElementById("skillSelectModalBody")
       .querySelectorAll('input[type="checkbox"]');
@@ -115,17 +109,14 @@ document.addEventListener("DOMContentLoaded", function () {
         checkboxLabel.className = "form-check-label";
         checkboxLabel.textContent = skill;
 
-        // Append checkboxLabel to checkbox
         checkboxDiv.appendChild(checkbox);
-        checkboxDiv.appendChild(checkboxLabel); // Append the label after the checkbox
+        checkboxDiv.appendChild(checkboxLabel);
         skillSelectModal.appendChild(checkboxDiv);
       });
     });
 
-  // Role is selected
   const selected_role = document.getElementById("createRoleDropdown");
 
-  //Function to get skills that belong to that role
   function get_default_skills() {
     fetch("/get_skills_required/" + selected_role.value)
       .then((response) => response.json())
@@ -163,13 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   selected_role.addEventListener("change", function () {
-    // Fetch the correct description from the database
     fetch("/get_role_description/" + selected_role.value)
       .then((response) => response.json())
       .then((data) => {
-        //set role_selected to true
         has_role = true;
-        // Populate the description box with this data
         text_area = document.getElementById("create_role_desc");
         description = data.data;
         text_area.value = description;
@@ -179,18 +167,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     get_default_skills();
 
-    //Hide skills error
     skillsError.hidden = true;
-
-    //Enable select skills button
-    // skillsSelectBtn.disabled = false;
-    // document.getElementById("defaultSkillBtn").innerHTML =
-    //   "Default skills for " + selected_role.value;
 
     checkFields();
   });
 
-  // Function to handle changes in selected_skills div
   function handleSelectedSkillsChange() {
     var selected_skill_values = [];
     var selected_skills = document.getElementById("selectedSkills");
@@ -203,11 +184,9 @@ document.addEventListener("DOMContentLoaded", function () {
       has_skills = true;
       noSkillsError.hidden = true;
       selected_skills.childNodes.forEach((child) => {
-        // Get their values first and store in a list
         selected_skill_values.push((skill_id = child.childNodes[0].id));
       });
 
-      // Change their checked status
       var checkboxes = document
         .getElementById("skillSelectModalBody")
         .querySelectorAll('input[type="checkbox"]');
@@ -223,20 +202,15 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   }
 
-  // Create a MutationObserver to watch for changes in the selected_skills div
   const observer = new MutationObserver(handleSelectedSkillsChange);
 
-  // Start observing changes in the selected_skills div
   observer.observe(selected_skills, { childList: true });
 
-  //Onclick
   var saveBtn = document.getElementById("saveSelection");
   saveBtn.addEventListener("click", function () {
-    //Clear the selected skills container
     container = document.getElementById("selectedSkills");
     container.innerHTML = "";
 
-    //Get ids of all checkboxes that are checked
     checkedSkills = [];
     var checkboxes = document
       .getElementById("skillSelectModalBody")
@@ -248,7 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    //Populate the selected skills container
     checkedSkills.forEach((skill) => {
       const skillDiv = document.createElement("div");
 
@@ -265,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function () {
       skillCloseBtn.setAttribute("aria-label", "Close");
 
       skillCloseBtn.addEventListener("click", function () {
-        // Remove the entire container when the close button is clicked
         skillDiv.remove();
       });
 
@@ -283,10 +255,8 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/get_manager/" + selected_country.value + "/" + selected_dept.value)
       .then((response) => response.json())
       .then((data) => {
-        // Populate the reporting manager box
         code = data.code;
         if (code != 200) {
-          //Error message on the reporting manager box
           document.getElementById("createManagerDropdown").hidden = true;
           document.getElementById("reportingMngError").value = data.message;
           document.getElementById("reportingMngError").hidden = false;
@@ -296,14 +266,11 @@ document.addEventListener("DOMContentLoaded", function () {
         manager_names = data.data.name_list;
         manager_ids = data.data.id_list;
 
-        // Provide select options
         document.getElementById("reportingMngError").hidden = true;
 
-        // Create select element
         const managerOptions = document.getElementById("createManagerDropdown");
 
         managerOptions.innerHTML = "";
-        // Create default option
         const defaultOption = document.createElement("option");
         defaultOption.value = "Select a manager";
         defaultOption.textContent = "Select a manager";
@@ -312,7 +279,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         managerOptions.appendChild(defaultOption);
 
-        // Populate the select element with manager options
         manager_names.forEach((name, index) => {
           const option = document.createElement("option");
           option.value = manager_ids[index];
@@ -338,7 +304,6 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
-  //check if a manager has been selected
   var selected_manager = document.getElementById("createManagerDropdown");
   selected_manager.addEventListener("change", function () {
     if (selected_manager.hidden == false) {
@@ -349,7 +314,6 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
-  // check if vacancy has been entered
   var vacancy = document.getElementById("createVacancyInput");
   vacancy.addEventListener("change", function () {
     if (vacancy.value < 1) {
@@ -362,9 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
-  // If user selected country first
   selected_country.addEventListener("change", function () {
-    // Fetch the correct description from the database
     has_country = true;
     if (selected_dept.value != "Select a department") {
       get_manager();
@@ -375,10 +337,8 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
-  // If user selected department first
   selected_dept.addEventListener("change", function () {
     has_dept = true;
-    // Fetch the correct description from the database
     if (selected_country.value != "Select a country") {
       get_manager();
     } else {
@@ -388,18 +348,15 @@ document.addEventListener("DOMContentLoaded", function () {
     checkFields();
   });
 
-  // Set the calendar date
   var today = new Date().toISOString().split("T")[0];
   document.getElementById("startDate").setAttribute("min", today);
 
-  //Get start date
   var startDate = document.getElementById("startDate");
   var errorMsg = document.getElementById("deadlineError");
   var endDate = document.getElementById("endDate");
 
   startDate.addEventListener("change", function () {
     has_startDate = true;
-    //User setting date for the first time
     console.log(startDate.value);
     console.log(endDate.value);
     if (errorMsg.hidden == false) {
@@ -408,7 +365,6 @@ document.addEventListener("DOMContentLoaded", function () {
       endDate.hidden = false;
     }
 
-    //User setting date for the second time
     else {
       endDate.setAttribute("min", startDate.value);
     }
@@ -422,7 +378,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log(startDate.value);
     console.log(endDate.value);
     startDate.setAttribute("max", endDate.value);
-    //Check if earlier than start date
     if (endDate.value < startDate.value) {
       endDate.setAttribute("min", startDate.value);
       endDate.value = startDate.value;
@@ -449,13 +404,12 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/create/check_listing_exist", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", // Set the content type to JSON
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+      body: JSON.stringify(requestData),
     })
       .then((response) => response.json())
       .then((data) => {
-        //Get the code
         code = data.code;
         if (code == 201) {
           document.getElementById("createMsgLabel").innerHTML =
@@ -473,10 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  // Get the button element by its id
   var backButton = document.getElementById("backToListings");
 
-  // Add a click event listener to the button
   backButton.addEventListener("click", function () {
     window.location.href = "../../all_listings_HR/1";
   });
