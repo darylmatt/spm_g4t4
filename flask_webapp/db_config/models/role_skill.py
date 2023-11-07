@@ -6,7 +6,6 @@ class Role_Skill(db.Model):
 
     __tablename__ = 'role_skill'
 
-    # Foreign key relationship to access_control table
     role_name = db.Column(db.String(20), ForeignKey('role.role_name'), primary_key = True, nullable=False)
     skill_name = db.Column(db.String(50), ForeignKey('skill.skill_name'),primary_key = True, nullable=False)
 

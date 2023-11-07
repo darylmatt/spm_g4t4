@@ -3,11 +3,9 @@ import platform
 import subprocess
 
 def install_dependencies():
-    # Navigate to the project directory
     project_directory = './'
     os.chdir(project_directory)
 
-    # List of packages to install
     packages = [
         'Flask',
         'flask-cors',
@@ -16,7 +14,6 @@ def install_dependencies():
         'mysql-connector-python'
     ]
 
-    # Install the packages
     for package in packages:
         subprocess.call(['pip', 'install', package])
 
