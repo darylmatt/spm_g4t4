@@ -12,9 +12,7 @@ class Staff(db.Model):
     country= db.Column(db.String(50), nullable=False)
     email= db.Column(db.String(50), nullable=False)
 
-    # Foreign key relationship to access_control table
     role = db.Column(db.Integer, ForeignKey('access_control.access_id'), nullable=False)
-
 
     role_listings = db.relationship('Role_Listing', backref='staff')
     staff_skills = db.relationship('Staff_Skill', backref='staff')

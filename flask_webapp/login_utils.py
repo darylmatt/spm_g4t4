@@ -1,9 +1,6 @@
-# login_utils.py
-
 from flask_login import login_user
 
 def login_as_user(user_id, allowed_roles):
-    # Create a mock user with the specified user ID and roles
     class MockUser:
         def is_authenticated(self):
             return True

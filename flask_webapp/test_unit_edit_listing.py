@@ -1,6 +1,6 @@
 import unittest
-from app import app, db  # Import your Flask app and db
-from db_config.models import *  # Import your Role_Listing model
+from app import app, db  
+from db_config.models import *  
 import json
 
 from decouple import config
@@ -64,7 +64,6 @@ class TestEditListing(unittest.TestCase):
 
     def test_update_check_listing(self):
 
-        # Create a test Role_Listing
         with app.app_context():
             db.session.add(self.role)
             db.session.add(self.manager1)
@@ -83,8 +82,6 @@ class TestEditListing(unittest.TestCase):
         }
 
         response = self.app.put("/update/check_listing_exist/0", json=new_data)
-        print(response)
-        print(response.data)
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 201)

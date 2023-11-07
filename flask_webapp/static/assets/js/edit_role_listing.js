@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Fetch all data
   fetch("/create/get_data")
     .then((response) => response.json())
     .then((data) => {
@@ -13,17 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", function () {
           console.log("Edit button with ID:", this.id, "was clicked");
 
-          // Open the modal using Bootstrap attributes
           const modal = new bootstrap.Modal(
             document.getElementById("editListingModal")
           );
 
-          // Reset the manager box
           document.getElementById("editManagerDropdown").value =
             "Searching our database...";
           document.getElementById("editManagerDropdown").disabled = true;
           const id = this.id.substring(7);
-          // Retrieve the listing data from the server
           fetch("/get_listing_by_id/" + id)
             .then((response) => response.json())
             .then((data) => {
@@ -35,9 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
               var currEnd = data.data.date_close.substring(0, 10);
               var currManager = data.data.reporting_mng;
 
-              // Set the default values for the dropdowns
-
-              //Create an option for the name, country and dept
               const roleSelectOption = document.createElement("option");
               roleSelectOption.value = currName;
               roleSelectOption.textContent = currName;
@@ -63,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
               setDropdownDefault("editManagerDropdown", data.data.manager_id);
 
-              //set the default values of others
               document.getElementById("editVacancyInput").value = currVacancy;
               document.getElementById("editStartDate").value = currStart;
               document.getElementById("editEndDate").value = currEnd;
@@ -74,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
           save_btn.addEventListener("click", function () {
-            //Get all my values from the form
             console.log("save button clicked for id:", id);
             var requestData = {
               title: selected_role.value,
@@ -89,9 +80,9 @@ document.addEventListener("DOMContentLoaded", function () {
             fetch("/update/check_listing_exist/" + id, {
               method: "PUT",
               headers: {
-                "Content-Type": "application/json", // Set the content type to JSON
+                "Content-Type": "application/json",
               },
-              body: JSON.stringify(requestData), // Convert the JavaScript object to JSON
+              body: JSON.stringify(requestData),
             })
               .then((response) => response.json())
               .then((data) => {
@@ -108,12 +99,9 @@ document.addEventListener("DOMContentLoaded", function () {
               });
           });
 
-          // Show the modal
           modal.show();
 
           const selected_role = document.getElementById("editRoleDropdown");
-
-          // Fetch the correct description from the database
 
           selected_role.addEventListener("change", function () {
             fetchRoleDescription(selected_role.value);
@@ -126,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const selected_dept = document.getElementById("editDeptDropdown");
 
           selected_country.addEventListener("change", function () {
-            // Fetch the correct description from the database
             has_country = true;
             if (selected_dept.value != "Select a department") {
               get_manager(selected_country.value, selected_dept.value, null);
@@ -136,10 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           });
 
-          // If user selected department first
           selected_dept.addEventListener("change", function () {
             has_dept = true;
-            // Fetch the correct description from the database
             if (selected_country.value != "Select a country") {
               get_manager(selected_country.value, selected_dept.value, null);
             } else {
@@ -197,17 +182,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function get_manager(country, dept, currManager) {
-    // Make it disabled first
     document.getElementById("save_btn").disabled = true;
-    //Append a loading option and set it to disabled
     document.getElementById("editManagerDropdown").disabled = true;
     fetch("/get_manager/" + country + "/" + dept)
       .then((response) => response.json())
       .then((data) => {
-        // Populate the reporting manager box
         code = data.code;
         if (code != 200) {
-          //Error message on the reporting manager box
           document.getElementById("editManagerDropdown").hidden = true;
           document.getElementById("reportingMngError").value = data.message;
           document.getElementById("reportingMngError").hidden = false;
@@ -217,14 +198,11 @@ document.addEventListener("DOMContentLoaded", function () {
         manager_names = data.data.name_list;
         manager_ids = data.data.id_list;
         document.getElementById("editManagerDropdown").disabled = false;
-        // Provide select options
         document.getElementById("reportingMngError").hidden = true;
 
-        // Create select element
         const managerOptions = document.getElementById("editManagerDropdown");
 
         managerOptions.innerHTML = "";
-        // Create default option
         const defaultOption = document.createElement("option");
         defaultOption.value = "Select a manager";
         defaultOption.textContent = "Select a manager";
@@ -239,7 +217,6 @@ document.addEventListener("DOMContentLoaded", function () {
           mIndex = manager_ids.indexOf(currManager);
         }
 
-        // Populate the select element with manager options
         manager_names.forEach((name, index) => {
           var option = document.createElement("option");
           option.value = manager_ids[index];
@@ -257,16 +234,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Check vacancy value
   var save_btn = document.getElementById("save_btn");
   save_btn.disabled = true;
   var vacancyInput = document.getElementById("editVacancyInput");
   vacancyInput.addEventListener("change", function () {
     console.log(vacancyInput.value);
     if (vacancyInput.value < 1) {
-      // Show the warning
       document.getElementById("vacancyInputWarning").hidden = false;
-      // Disable the save button
       document.getElementById("save_btn").disabled = true;
     } else {
       document.getElementById("save_btn").disabled = false;
@@ -283,6 +257,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     checkFields();
   });
-
-  //On click save button
+  
 });

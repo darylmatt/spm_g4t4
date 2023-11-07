@@ -1,8 +1,8 @@
 import unittest
-from app import create_app, get_all_open_role_listings # Import your Flask app and db
+from app import create_app, get_all_open_role_listings 
 from db_config.db import db
-from db_config.models import *  # Import your Role_Listing model
-from test_config import TestConfig  # Import your TestConfig
+from db_config.models import *  
+from test_config import TestConfig  
 
 class TestGetOpenListings(unittest.TestCase):
 
@@ -14,9 +14,8 @@ class TestGetOpenListings(unittest.TestCase):
         db.init_app(self.app)
 
 
-        # Replace the following with your session data
-        self.staff_id = 140002  # staff ID for Sally Loh HR Singapore
-        self.role = 2  # HR
+        self.staff_id = 140002 
+        self.role = 2  
         self.staff_fname = "Susan"
         self.staff_lname = "Goh"
         self.staff_name = self.staff_fname + " " + self.staff_lname
@@ -137,7 +136,6 @@ class TestGetOpenListings(unittest.TestCase):
             limit = 10
             response = get_all_open_role_listings(search_filters, offset, limit)
 
-            # Assuming you return a JSON response, you can access the JSON data as follows:
             data = response[0].get_json()
             self.assertEqual(data['code'], 404)
 
@@ -150,10 +148,9 @@ class TestGetOpenListings(unittest.TestCase):
 
             data = response[0].get_json()
             self.assertEqual(data['code'], 200)
-            print(data)
 
             listings = data['data']
-            self.assertEqual(len(listings), 1)  # Should have only one listing
+            self.assertEqual(len(listings), 1) 
 
             first_listing = listings[0]
             self.assertEqual(first_listing['listing_id'], 0)

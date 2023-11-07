@@ -1,7 +1,7 @@
 import unittest
-from app import create_app, get_all_listings  # Import your Flask app and db
+from app import create_app, get_all_listings  
 from db_config.db import db
-from db_config.models import *  # Import your Role_Listing model
+from db_config.models import *  
 from decouple import config
 from test_config import TestConfig
 
@@ -16,9 +16,8 @@ class TestGetAllListings(unittest.TestCase):
         self.app_context.push()
         self.client = self.app.test_client()
 
-        # Replace the following with your session data
-        self.staff_id = 160008  # staff ID for Sally Loh HR Singapore
-        self.role = 4  # HR
+        self.staff_id = 160008  
+        self.role = 4  
         self.staff_fname = "Sally"
         self.staff_lname = "Loh"
         self.staff_name = self.staff_fname + " " + self.staff_lname
@@ -165,11 +164,9 @@ class TestGetAllListings(unittest.TestCase):
 
             data = response[0].get_json()
             self.assertEqual(data['code'], 200)
-            print(data)
 
             listings = data['data']
-            print(listings)
-            self.assertEqual(len(listings), 1)  # Should have only one listing
+            self.assertEqual(len(listings), 1) 
 
             first_listing = listings[0]
             self.assertEqual(first_listing['listing_id'], 0)

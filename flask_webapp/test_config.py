@@ -1,3 +1,8 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class TestConfig:
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://g4t4:password@spm-g4t4-live.cybxkypjkirc.ap-southeast-2.rds.amazonaws.com:3306/sbrp_test'
+    TESTING = os.getenv('TESTING', 'False') == 'True'
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL')

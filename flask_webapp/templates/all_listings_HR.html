@@ -7,22 +7,18 @@
 
   <title> All-in-One SBRP portal </title>
 
-    <!-- Script to fetch data from database -->
     <script src="{{url_for('static', filename='assets/js/edit_role_listing.js')}}">
     </script>
 
   <meta content="" name="description">
   <meta content="" name="keywords">
 
-  <!-- Favicons -->
   <link href="static/assets/img/favicon.png" rel="icon">
   <link href="static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}">
@@ -31,30 +27,25 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}">
 
-  <!-- Include jQuery (required for Select2) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Include Select2 CSS and JS files -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
-  <!-- Template Main CSS File -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/style.css') }}">
 
-<!-- Font Awesome -->
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
   rel="stylesheet"
 />
-<!-- Google Fonts -->
+
 <link
   href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
   rel="stylesheet"
 />
 
 <style>
-  /* Add custom styling for the dropdown */
   .custom-dropdown {
        position: relative;
        display: inline-block;
@@ -67,7 +58,6 @@
        min-width: 300px;
        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
        z-index: 1;
-       /* Make options appear vertically */
        top: 100%;
        left: 0;
        max-height: 250px;
@@ -85,7 +75,6 @@
        background-color: #ddd;
    }
 
-   /* Style for the search input */
    .search-input {
        width: 100%;
        padding: 5px;
@@ -100,20 +89,10 @@
 </style>
 
 
-
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Updated: Aug 30 2023 with Bootstrap v5.3.1
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
 
-  <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -122,7 +101,7 @@
         <span class="d-none d-lg-block">SBRP(Admin)</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
+    </div>
 
 
     <nav class="header-nav ms-auto">
@@ -132,7 +111,7 @@
           <a class="nav-link nav-icon search-bar-toggle " href="#">
             <i class="bi bi-search"></i>
           </a>
-        </li><!-- End Search Icon-->
+        </li>
 
 
         <li class="nav-item dropdown pe-3">
@@ -145,7 +124,7 @@
             {% else %}
               Unknown
             {% endif %}</span>
-          </a><!-- End Profile Iamge Icon -->
+          </a>
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
@@ -181,15 +160,14 @@
               </a>
             </li>
 
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
+          </ul>
+        </li>
 
       </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
 
-  </header><!-- End Header -->
+  </header>
 
-  <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -204,11 +182,9 @@
             {% else %}
               Unknown
             {% endif %}
-
-
           </span>
         </div>
-      </a><!-- End Profile Image Icon -->
+      </a>
       
       <li class="nav-item">
        
@@ -227,33 +203,20 @@
                 <i class="bi bi-circle"></i><span>All roles</span>
               </a>
             </li>
-            <!-- <li>
-              <a href="/applied_roles_staff">
-                <i class="bi bi-circle"></i><span>My applied roles</span>
-              </a>
-            </li> -->
-            
-            
+
           </ul>
-        </li><!-- End Components Nav -->
-      </li><!-- End Dashboard Nav -->
-
-      
-
-      
-
-     
-
+        </li>
+      </li>
     </ul>
 
-  </aside><!-- End Sidebar-->
+  </aside>
 
   <main id="main" class="main">
     <br>
     <div class="pagetitle">
       <h2>Manage Listings</h2>
     
-    </div><!-- End Page Title -->
+    </div>
 
     <section class="section dashboard">
       <form action="" method="post">
@@ -340,43 +303,34 @@
               </div>
           </div>
       
-          <!-- Include Bootstrap and jQuery JS -->
           <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.2/dist/js/bootstrap.bundle.min.js"></script>
           <script>
               $(document).ready(function () {
-                  // Show/hide the custom dropdown when the button is clicked
                   $("#dropdownBtn").click(function () {
                       $("#dropdownContent").toggle();
                   });
       
-                  // Handle checkbox changes to update the button text
                   $("#dropdownContent input[type='checkbox']").change(function () {
-                      // Uncomment the following line if you want to update the button text with selected options
                        updateButtonText();
                   });
       
-                  // Handle search input
                   $("#searchInput").on("input", function () {
                       filterOptions();
                   });
       
-                  // Initial update of the option filter
                   filterOptions();
               });
       
-              // Function to update the button text based on selected checkboxes
               function updateButtonText() {
                   let selectedOptions = [];
                   $("#dropdownContent input[type='checkbox']:checked").each(function () {
                       selectedOptions.push($(this).val());
                   });
       
-                  // Update the button text with selected options
                   $("#dropdownBtn").text(selectedOptions.length > 0 ? selectedOptions.join(', ') : "Required Skills");
               }
-      
-              // Function to filter options based on the search input
+
               function filterOptions() {
                   let searchText = $("#searchInput").val().toLowerCase();
                   $("#dropdownContent label").each(function () {
@@ -404,11 +358,7 @@
 
       <div class="row">
       <div class="col-lg-5">
-        <!-- News & Updates Traffic -->
         <div class="card">
-          
-
-          
 
           <div class="card-body pb-0" style="height: 850px;">
             <h5 class="card-title">All Listings <span>| Showing {{offset}} - {{offset_end}} of {{num_role_listings}} </span></h5>
@@ -423,9 +373,8 @@
                   </div>
                 </div>
               {% endfor %}
-            </div><!-- End s/idebar recent posts-->
+            </div>
           </div>
-
 
           <nav aria-label="...">
             <ul class="pagination justify-content-center">
@@ -442,28 +391,14 @@
               </li>
             </ul>
           </nav>
-        </div><!-- End News & Updates -->
+        </div>
       </div>
 
 
-      
-    
-
-  
-
-
- 
-
-      
-
-
       <div class="col-lg-7">
-        <!-- News & Updates Traffic -->
         <div class="card">
 
-          
           <div class="card-body pt-3">
-            <!-- Bordered Tabs -->
 
             <div class="d-flex align-items-start">
               <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -471,8 +406,6 @@
               </div>
              
             </div>
-
-
           
             <div class="tab-content" id="v-pills-tabContent">
 
@@ -532,12 +465,8 @@
   <div class="card-body">
     <h5 class="card-title">Hiring manager</h5>
     <h6> {{listing.manager_name}} | <i>{{listing.manager_dept}}</i></h6>
-   
-    <!-- Progress Bars with labels-->
   </div>
 </div>
-
-          <!-- Vertically centered Modal -->
 
 <div class="card">
   <div class="card-body">
@@ -560,9 +489,6 @@
 </div>
 
 
-
-
-
 <div class="modal fade" id="verticalycentered" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -579,19 +505,14 @@
       </div>
     </div>
   </div>
-</div><!-- End Vertically centered Modal-->                
-                
+</div>            
                 <br>
-
                 <br>
-
-
               </div>
               {% endfor %}
-              <!-- Modal for edit listing -->
+
               <div id="editListingModal" class="modal fade modal-lg" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-              
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -602,56 +523,44 @@
                       <section class="section">
       
                         <div class="col-lg">
-                
                           <div class="card">
                             <div class="card-body">
                               <h5 class="card-title d-flex justify-content-center">Role Details</h5>
 
-                              <!-- General Form Elements -->
                               <form>
-                
-                                <!-- Role -->
                                 <div class="row mb-3">
                                   <label for="inputText" class="col-sm-2 col-form-label">Role Name</label>
-                
-                                  <div class="col-sm-10">
-                
+                                  <div class="col-sm-10">             
                                     <select class="form-select" aria-label="createRoleDropdown" id = "editRoleDropdown" disabled>
                   
                                     </select> 
                                   </div>
                                 </div>
                 
-                                 <!-- Department -->
                                  <div id="dcDropdown">
                                  <div class="row mb-3">
                                   <label for="inputDepartment" class="col-sm-2 col-form-label">Department</label>
                                   
                                   <div class="col-sm-10">
                 
-                                    <!-- Department -->
                                     <select class="form-select" aria-label="createSelectDepartment" id = "editDeptDropdown" disabled>
                                     </select>
                                   </div>
                                   </div>
                 
-                                <!-- Country -->
                                 <div class="row mb-3">
                                   <label for="inputCountry" class="col-sm-2 col-form-label">Country</label>
                                   
                                   <div class="col-sm-10">
                 
-                                    <!-- Country Dropdown List -->
                                     <select class="form-select" aria-label="createSelectCountry" id = "editCountryDropdown" disabled>
                                     </select>
                                   </div>
                                 </div>
                 
-                                <!-- Vacancy -->
                                 <div class="row mb-3">
                                   <label for="inputVacancy" class="col-sm-2 col-form-label">Vacancy</label>
                                   <div class="col-sm-10">
-                                    <!-- Vacancy Input Field -->
                                     <input type="number" class="form-control" id="editVacancyInput" min="1" required>
                                     <p class="text-danger" id="vacancyInputWarning" style="color: red; font-size: 12px;" hidden>
                                       Please enter a value of at least 1.
@@ -659,22 +568,16 @@
                                   </div>
                                 </div>
                 
-                
                                 <div class="row mb-3">
                                   <label for="inputCountry" class="col-sm-2 col-form-label">Required skills</label>
                                   <div class="col-sm-10">
-    
-                            
                                     <div class="container">
-                
                                       <div class="row" id="editSelectedSkills">
                                       </div>
                                     </div>                
-                                  
                                   </div>          
                                 </div>
-              
-                             
+           
                           <div class="row my-3">
                                 <label for="inputResponsibility" class="col-sm-2 py-2 col-form-label">Responsibilities</label>
     
@@ -683,8 +586,6 @@
                                  
                                 </div>
                           </div>
-                
-                              
                 
                                 <div class="row my-3">
                                   <label for="inputReportingMng" class="col-sm-2 col-form-label">Reporting Manager</label>
@@ -709,7 +610,7 @@
                                     <input type="date" class="form-control" id="editEndDate">
                                   </div>
                               </div>
-                              <!-- submit button -->
+                  
                               <div class="row mb-3 pt-3 d-flex justify-content-center">
                                   <div class="d-flex justify-content-center mt-4">
                                     <button type="button" class="btn btn-primary" id="save_btn">Save Changes</button>
@@ -722,7 +623,7 @@
                                   </div>
                               </div>
                 
-                              </form><!-- End General Form Elements -->
+                              </form>
                             </div>
                           </div>
                         </div>
@@ -732,10 +633,8 @@
                 </div>
               </div>
 
-
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
-                <!-- Profile Edit Form -->
                 <form>
                   <div class="row mb-3">
                     <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
@@ -835,13 +734,12 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                   </div>
-                </form><!-- End Profile Edit Form -->
+                </form>
 
               </div>
 
               <div class="tab-pane fade pt-3" id="profile-settings">
 
-                <!-- Settings Form -->
                 <form>
 
                   <div class="row mb-3">
@@ -877,12 +775,11 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                   </div>
-                </form><!-- End settings Form -->
+                </form>
 
               </div>
 
               <div class="tab-pane fade pt-3" id="profile-change-password">
-                <!-- Change Password Form -->
                 <form>
 
                   <div class="row mb-3">
@@ -909,32 +806,22 @@
                   <div class="text-center">
                     <button type="submit" class="btn btn-primary">Change Password</button>
                   </div>
-                </form><!-- End Change Password Form -->
+                </form>
 
               </div>
 
-            </div><!-- End Bordered Tabs -->
+            </div>
 
           </div>
         </div>
       </div>
 
-
-
-      
-      
     </section>
 
-  </main><!-- End #main -->
-
-
+  </main>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  
-
-
-  <!-- Vendor JS Files -->
   <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
@@ -944,35 +831,26 @@
   <script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
   
-
-  <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
   <script>
     const viewApplicantsButtons = document.querySelectorAll(".view-applicants-button");
 
-    // Add a click event listener to each button
     viewApplicantsButtons.forEach(button => {
       button.addEventListener("click", function() {
-        // Retrieve the listing_id from the data attribute
         const listingId = this.getAttribute("data-listing-id");
 
-        // Construct the URL with the listing_id query parameter
         const url = `/all_applicants_HR?listing_id=${listingId}`;
 
-        // Navigate to the all_applicants_HR page with the listing_id in the URL
         window.location.href = url;
       });
     });
   </script>
 
-  <!-- Add MDBootstrap JavaScript components, such as the select component -->s
 <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.19.1/js/mdb.min.js"></script>
 <script>
-  // Initialize MDBootstrap select component
   $(document).ready(function () {
     $('.select').materialSelect();
   });
-  
 
 </script>
 
