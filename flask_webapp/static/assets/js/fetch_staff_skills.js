@@ -1,9 +1,7 @@
-// Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", function () {
   fetch("/skills")
     .then((response) => response.json())
     .then((data) => {
-      // Access and render the skills data in the skills card
       const skillsCard = document.getElementById("skillsAccordion");
       const skillsNameList = data.data.skill_names;
       const skillsDescList = data.data.descriptions;
