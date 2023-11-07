@@ -29,6 +29,8 @@ In this first release, we have rolled out the following features.
 
 ## Executing the program ⚙️
 
+#### Disclaimer: The pages take an average of 5 - 10 seconds to load. Thank you for your understanding.
+
 1. Download the zip file or clone the repository https://github.com/darylmatt/spm_g4t4
 2. Unzip the folder and open the package in VSCode
 3. Ensure that Python and Pylance extensions are installed on your VSCode
